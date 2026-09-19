@@ -1,0 +1,53 @@
+USER FAQ FOR THE BRAIN-BUILDER
+
+CREATE AN EXAM (STRUCTURE) AND SPECIFY THE NUMBER OF QUESTIONS IT WILL CONTAIN
+Before you populate your questions with data (title, topic, question, answers, correct answers, detailed explanations, etc.) you must first create an exam, also called an exam structure. 
+An exam structure contains questions without the data. When the app is first executed, the 'All Available Exams' section lists ten (10) exams (Exam 1, Exam 2 etc.). You may customize
+this list as explained in the following section.
+
+Always create your exams sequentially (Exam 1, then Exam 2, etc.). Select Exam 1 and you will be prompted for the number of questions you wish to include in this exam, currently limited to ten (10). To determine the number of answer structures and questions created click "Number of Created Exams/Questions", as explained below.
+
+CUSTOMIZE THE LIST OF EXAM LABELS IN THE "All Available Exams" SECTION
+When the Builder app is first loaded it displays default settings of list exams such as Exam 1, Exam 2, Exam 3, etc. To modify/customize these exam titles click 'Exam Labels' where you will be presented with an OptionPane holding ten labels with corresponding TextField rows. 
+
+Make your changes to one or more of these text fields and select 'Yes" to apply those changes. Unfortunately, after those changes have been made you will be informed that to see those changes take effect the app must close (which it will automatically), requiring you to load it up once again.
+
+ADD ADDITONAL QUESTIONS TO THE EXAM (STRUCTURE)
+Select the exam from the list and click "Add Additional Questions to this Exam" and follow the prompt.
+
+
+
+DELETE AN EXAM
+Select the exam from the list and click "Delete an Exam".
+
+DETERMINE HOW MANY EXAMS/QUESTIIONS HAVE BEEN CREATED
+To remind you of how many exams you created, and the number of questions created in each exam, click "Number of Created Exams/Questions". Then, to determine which questions have been populated with data, and to display that data, first select the exam in the left-hand pane and select your question in the adjacent "Individual Exams With Questions" pane.
+If necessary, click one of the preview buttons beneath the large preview pane.
+
+POPULATE AND CREATE EXAM QUESTIONS
+WARNING! Never type your questions and answers directly into these data fields as they could be lost, along with all of that wasted hard work. Always type up your questions and answers into a text editor, such as ie., a word processor or Notepad Wordpad. Then copy and paste that data into the appropriate fields. 
+REMEMBER - Always make a radio button selection to indicate which answer is the correct answer. Failure to do so renders all answers false.
+This section is where most of the work takes place. As always, first, select your exam. Then select the question from the "Individual Exams With Questions" pane. At any time you may click "Preview Answers" or "Preview Correct Answers" to see a more user-friendly summary of what you have created. These applications have built in redundancy so that a catastrophic failure (hard drive crashes) can beenrecovered from easily and you will be spared the laborious task of entering all of your information again.
+
+MODIFY AND UPDATE QUESTIONS
+Select the exam, then bring up your question, make your changes and click "Update Q".
+ 
+DELETE A QUESTION
+Select the exam, then bring up your question and click "Delete Question".
+
+PREVIEW CREATED QUESTIONS AND ANSWERS
+
+PRINT A QUESTION
+I never tried it.
+
+Clear the preview pane
+CLEAR THE PREVIEW PANE
+
+IDENTIFY HOW MANY ROWS EACH TABLE CONTAINS
+For the administrator? See the READ_ME FILE.
+A user might want to know this, eh?
+
+CREATE ADDITIONAL TABLES
+For the administrator. See the READ_ME FILE.
+
+

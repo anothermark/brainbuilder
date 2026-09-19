@@ -1,0 +1,1715 @@
+TodoBuilder copied from BrainBuilder3.java comments at the top
+
+// Limit additional questions to 10
+
+// 8-9 In add additional question if input is dismissed with null or "" it throws exception
+// like over in creating a question so fix this also!!!
+
+// DONE - 8-11 Add a message that additional question was added
+
+
+
+// Next 8-9 delete exams, then create them again
+
+//  8-8 BIG CHANGE. PUT INITIAL PLACEHOLDERS TO NULL IN BOTH 5TH OUTER AND DISPLAY OUTER
+sO MUCH EASIER AND CREATING THEM WORKS.
+// AND !!! I MIGHT NOT EVEN NEED RE-CREATE BUTTON BECAUSE IF IT'S DELETED
+AND SET TO NULL IN BOTH OUTERS, JUST CREATE ANOTHER ONE. 
+
+
+
+
+8-8 Don't forget that you probably need another method for adding
+// additional questions. 
+
+
+// 8-6 At end of day Friday the initials were loaded from Create an exam in all three sections
+// I'm quite sure. 4 tables, display and 5th outer. 
+Next, create a second exam, then delete it and recreate it. 
+// Also click the exam 1 create an exam button.
+// Also check  number of exams and questions
+
+
+// DANGER IMPORTANT - 8-7 Make absolutely certain that nothing from the 5th outer gets into display exams table outer
+// because right now that is a flaw I haven't discovered yet, how 8 finished exams got
+into display. So track that down in builder and if it still shows up it must
+be being added from tester at Finish.
+
+
+
+
+// re deleting exam, if I set the master in 5th outer to null, and the master in display outer to null
+// does that mean I have to set the serlists in the first 4 tables to null also?
+// And if the 4 tables' rows have a null in there now for the selist,
+how will that mess things up? 
+// 8-6  And how to use it to recreate an exam? I would have to set (UPDATE) 
+all four tables, but what existing methods do that? Do I just use the same
+Create an Exam code and set null serlist placeholders in there? And in the display table's outer?
+
+
+// Next, I think I have the setting of placeholders in the first 4 tables and the
+display table fixed, supposedly. But before I can
+recreate I need to delete an exam.
+And, I can't check number of exams until I give this a test run after
+I create that second exam and delete it and then check number and questions display
+and then delete exam 2 and recreate it. 
+
+
+// 8-6 HUGE PROBLEM when adding additional questions and sticking that in the display table
+// because it might override created questions. So I need to - when creating that
+// serlist for additional questions - I need to pull up the serlist and add the 
+// null serlist after whatever is in there whether another null ser list
+// or a serlist with created questions. This is a big deal. so where to 
+do that? When I create the additional questions in LoadInitialMasterList class'
+loadMasterList() method in this section:
+} else if (numberOfAdditionalQuestions > 0) {
+But instead of calling listOfQuestionsSER = deSerializeListOfQuestionsSER(selectedExamIndex);
+get the serlist from the display instead and add (not set) to add more null questions
+// to the serlist. 
+
+
+// The ser list is not getting set in the innermaster [] when it should have been
+when recreated cause it worked down the line No, that's wrong because we're not 
+creating a question, 
+DANGER DANGER 
+// And, I'm getting size of 8 in the inner master of display because I took 8 exams
+and again that is getting set, those final graded exams, are getting set in display when
+they should not ***********************************************************************
+
+// 8-5 If exam 2 is null it shouldn't let me create it but redirect to re-create it.
+
+Table 5 says it is null, which it should be, but displayExamsAndQuestions says the 
+outer only has the Exam 1 and no null for exam. Problem could be that I'm 
+using dispay table to compare and if/else but not the 5th table
+with new variable outerMasterListOfMastersSER_5th, so I changed it from 
+testing display table to the 5th table. Let's see if that works.
+
+
+
+
+8-3 ***** Problem DANGER DANGER - - When I updated a question that had the first answer selected, then changed
+that selection on update to number 5, it still showed selection 1 on evaluate, so on update
+I might need to reset the selection button previously selected maybe to null? And start over?
+// But after I cleared out all the old stuff (tables) and started fresh it worked in
+that I could change selection answer and it tested fine.
+
+
+
+
+
+And, I was able to make my first spring app!!!
+
+SAY WHAT? I THINK DONE 7-30 BUT NOT POSITIVE. I removed this from top of // public class DisplayExamsAndQuestions { 7-25-26
+// 6-16 I think what I need to do is first get the outer from the 5th table and work with that.
+// then extract the inner master but no need to add any null placeholders. 
+// Because the number of populated questions will match the available questions. 
+// So get the outer, extract the relevant master (selectedExamIndex) and set 
+// the new listOfQuestionsSER passed in from profsfinal into that master, and then
+// set this updated master into the outer and that outer goes in the DISPLAY_EXAMS_QUESTIONS_TABLE_1 
+// so you are not setting the masterOfCreatedExamsDisplayed in this table anymore
+// and it is the outer that the Questions In Selected Exam button pulls up and uses to 
+// display the stuff, or pass that to the ShowQuestionsPerExam class !!!
+
+
+
+
+sAY WHAT? There is redundant code in BuilderDBTesterUtility from when
+I changed the to deleting all rows. Must remove.
+try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR4)) {
+
+			int affectedRowsR4 = stmt.executeUpdate();
+			System.out.println(affectedRowsR4 + " Number of effectedRowsR4 deleted");
+		}
+
+
+
+fIXED // 7-21 DANGER DANGER I THOUGHT I FIXED ALL OF THIS BUT OBVIOUSLY
+I DID NOT. CAN'T DISPLAY NUM EXCAMS OR QUESTIONS. NULLPOINTERS
+at main.java.BrainBuilder3$6.actionPerformed(BrainBuilder3.java:616)
+
+// 	BIG DEAL BIG PROBLEM, TRYING TO FIX WINDOWBUILDER.
+7-21 It has to be the code because I had no problem building a small
+test project, two actually, one dependent on another and it worked fine.
+So it is the code and if I remember the problem appeared right around the time
+that I did the "don't show again" and tHe persistence and prefs. So maybe
+comment that out and see what that does? (TRIED IT BUT IT DIDN'T HRLP)
+
+
+
+7-11 also add to readme that Update doesn't set to null 
+
+// //////////////////////////////////////////////////////////////////////////////////////////
+// 7-15 One of the first things I need to do is figure out how
+to back up the db and then reuse it or reload it easily so I
+can clear out the tables and not have to retype all of my questions
+//////////////////////////////////////////////////////////////////////////////////////
+
+Danger danger 7-15 I might have fixed it but the problem was for exam 1 with
+the atheist stuff in there, it wasn't setting the placeholders properly in 
+the InsertInitialOuterNestedPlaceholders class in the loadInitialOuterNested() in both
+the if and the else. Somehow I got it to work, for now, and exam 4 works good,
+and review works fine, except for exam 1 which throws indexoutofbounds Index 0 out of bounds for length 0
+when I click the num display button but that makes sense because it was [] and not null or whatever
+so check it again tomorrow when I get some juice back. 
+
+But for 7-16 i NEED TO FIGURE OUT HOW TO SAVE A COPY OF THAT DB AND DROP IT
+RIGHT BACK IN THERE. iS IT SIMPLY H2? I never want to retype all of these things!!!  
+
+
+
+
+7-11 Remember to build one RED button that deletes all table rows
+of all tables with a serious CAVEAT - that it simply makes
+the job easier and quicker, but must fix WindowBuilder first. 
+
+// 6-19 DANGER all of those System.out.println()s used for testing have to come out
+// because they will and are throwing exceptions !!!!@!!!!!!!
+
+
+// DANGER DANGER. in all of those classes with trywithresources I failed to implement close()
+But the only time I use trywithresoiurces is when connecting to the db and those
+two resources I believe implement close() already. 
+
+// Can I back up the DB into another DB on another hard drive, or thumb drive, and/or on the same hard drive? Important.
+
+// maybe add a message to each manual delete of all rows in a table, such
+// as "Delete all rows in this table? It can't be undone." Do that last, maybe because 
+it would drive me nuts every time I do a delete, ... 
+
+// Add to the builder faq a section on Trouble-shooting problems
+
+// FINISH FAQ AND READ ME
+
+// DANGER DANGER - 5-15 Traverse order for q and A doesn't work. It either tabs endlessly through a textfield, or
+// if I tab to a scroll pane it is invisible, which google says is maybe because
+// I didn't set the frame to visible, but I'm not using a frame. 
+
+// RE TOOL TIPS. MAYBE NOT. THEY CAN BE ANNOYING AND GET IN THE WAY. Tool tips, lots of them. BUTTONS 
+// AND LABELS, AND THE FAQ, SPEAK FOR THEMSELVES
+
+// Back up the DB big time!!! 5-9 REMEMBER YOU CAN ALSO FOR NOW JUST MAKE
+// A HARD BACKUP COPY OF THE DATABASE WHICH WOULD BE A COPY ON THUMB-DRIVES
+// Can I back up the DB into another DB on another hard drive, or thumb drive, and/or on the same hard drive? Important.
+
+// HOW TO PLACE THE CURSOR AT THE TOP, NOT BOTTOM OF THE PREVIEW TEXTAREA? I can't seem to scroll up
+// to the top of the jtextpane at startup and I tried with the google code.
+// can't get it to work.	
+
+// tool tips, lots of them?
+
+// Fix all of the the annoying dialog messages
+
+// HALF-DONE - and 2) how to program and recompile to bring up the latest changes??? very important !!! Maybe
+// load initial placeholder in the Exam Labels button? For now they just have to reload or bring up the app
+// until I figure out the thing about loading another class, says Google. It has something to do with a class loader.
+
+//  MON 3-24, AS FOR PACKAGING THE TESTER FOR EXPORT, MAYBE JUST ZIP BOTH PACKAGES AND
+// DELETE THE BrainBuilder3 main class file. 
+// Also, how in the world do you compile and run the Tester? Control + F11 how to automate that?
+
+// STILL HAVE A FEW LEFT TO TO - At the top of each class comment/specify what it does re methods etc.
+
+// DONE "ONCE" FOR THE FIRST POPUP, BUT CAN'T FIGURE OUT HOW TO DO MULTIPLES. I fixed it in 
+//the main method but:ArrayList// Question: // But do I need a 
+//new prefs for each dialog? Because I will have multiple confirmdialogs on this page.
+// At some point they won't want to keep seeing the automatic JOptionPane.showMessageDialog  message 
+// at start up, so how to get rid of it??? How to include a "Don't show this message again MULTIPLE TIMES? Very important.
+
+// re prefs and persistence. Pop up message to use test editor/copy and paste and don't show this again. THIS IS THAT MULTIPLE 
+// PREFS ISSUE AND HOW TO USE PERSISTENCE. Simple if with a boolean?
+
+// Figure out true/false selection (that's a Builder problem, not a tester, right?)
+
+// Oracle license
+
+// Start drafting 3 exams with 10 questions each.
+
+// TESTER PROBlEM. Is there any way to add more exams dynamically in the combobox? Yes, probably. It should be possible like the
+// first JList for the Builder, but that would have to be done in the Tester THAT i CAN TELL with restricted 
+// access to the administrator/creater? Probably, but not if they don't want this thing. 
+
+// Move DB over into Tester so Tester can be severed and zipped etc. Or, create a second db in Tester
+// and copy the first db to the tester?
+
+// Should I rebuild from scratch?
+
+// Lots of work in QuestionSuper weeding it and removing the many
+// methods and variables that are not used. QuestionSuper needs a lot of work still. Many methods are not used, so figure those out
+
+// DRAG AND DROP? DON'T BOTHER UNLESS THEY REQUIRE IT. DOES THAT EVEN WORK? WHAT GOOD IS SHUFFLING AROUND QUESTIONS AND EXAMS IF THAT
+// DOESN'T ALSO CHANGE THE LISTS THEY ARE STORED IN? i DON'T SEE HOW THAT COULD WORK
+
+//  NOTE THESE BELOW ARE FOUND IN THE DELETE QUESTIONS CLASS.
+		UpdateProfsFinalList updateProfsFinalList = new UpdateProfsFinalList();
+		updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER);		
+		updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
+		updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER); 
+		
+		
+		
+		
+
+// =============== DONE AND FIXED - 5-9-26 Below this line is the numbers fiasco ================================
+
+
+// DONE and fixed 5-13 - STILL A PROBLEM. IF A QUESTION IS NULL OR WAS DELETED I NEVER CLEARED THAT RADIOBUTTON SELECTION. 
+// so must I just clear the selection, or set dthat cleared selection in the object? But that object
+// was deleted so that would be pointless.
+
+// DONE 5-9 AND FIXED !!!5-3 IMPORTANT - Here is a new expanded idea. Find a way to loop through that dfisplay outernested object and display not only
+// how many raw available questions there are, but also identify which questions are populated with
+// questions and those, by index, which are null/empty. So this is part of that numbers display fiasco thing.
+// DO THIS! Actually, I would need 2 new buttons. One for the initial placeholdeer outertriplenested object and 
+// another for questions and which are empty. 
+
+// THUR BIG PROBLEM. ADFTER I DELETE ALL 3 ROWS, MY NUMBER OF DISPLAY WINDOW STILL SHOWS THE ORIGINAL NUMBER OF ROWS AND QUESTIONS
+// but maybe change this number thing to something else?? It's important, though, but take a different approach? 
+
+// re the next, 
+//	HUGE PROJECT. wHEN i DELETE A ROW IT MUST BE REFLECTED IN ALL OF THE CHAINED TABLES AND
+// IN THE 'NUMBER OF CREATED EXAMS/QUESTIONS' DISPLAY PREVIEW. FOR NOW, MAKE IT EMPTY??
+// But I also have to automate deleting those rows through all chained tables. Dadgummit!!
+// but first, do the NUMBER OF CREATED EXAMS/QUESTIONS' DISPLAY PREVIEW. part first.
+// so when I delete a row i have to go to PrimeExamsQuestionsDisplay class and use the setSerialMasterOfCreatedExamsDisplayed() method
+// to Re-set the masterOfCreatedExamsDisplayed, probably setting the particular row from the SERlist to null??
+// so I need to set/delete instead of masterOfCreatedExamsDisplayed.add(listOfQuestionsSER);
+// But I'M BETTER OFF CREATING ANOTHER METHOD TO DELETE/SET-TO-NULL, RIGHT? jUST USE THE CODE FROM THIS METHOD
+// so instead of adding listOfQuestionsSER, just set it to null, although that might result
+// in unwanted nullpointers, but at least the indexes are the same and consistent and don't keep 
+// changing if I do a remove. that would really mess things up
+
+// So I just checked 4-23 and clicked numberdisplay and it says there are no exams to display,
+// but there is one with 3 questions, so I did not load placeholders initially when creating the
+// exam. So do that the next time and figure this number mess out later. But it is important.
+
+// But look in the Delete Row button and in there is a major headache.
+
+// MORE NUMBER OF STUFF
+//  **** Also, clicking Number of Created Exams/Questions without having actually created the
+// questions will throw a nullpointer cause there's just a bunch of nulls in there, so
+// I THINK I DONE THIS PART - must warn and prevent with dialog message that questions must be created, not simply declared.****
+
+// THUR 3-26 Automate LoadInitialDisplayQA instead of clicking the button by calling it first thing
+// in the 'Create an Exam' button, and that loads the placeholders in first row with INSERT 
+// AND the second exam should load exam 2 into the second row. 
+
+// NEXT - MAJOR OBSTACLE - THUR, ALSO, FIND OUT HOW TO AUTOMATICALLY DO AN initial load of masterOfCreatedExamsDisplayed placeholders
+// without having to manually click that button. cAN i MOVE IT INTO THAT BUTTON? 
+
+// PRETTY SURE MY PROBLEM IS WITH INITIAL LOAD OF THE masterOfCreatedExamsDisplayed, because that's all that really changed,
+// and it worked fine before. So, I'm inserting something when I should be updating? Or I could be wrong.
+// try not doing an intial load of masterOfCreatedExamsDisplayed to find out. Nope, that's not the problem.
+// Why on earth am I getting 4 questions instead of 2?
+
+// DANGER DANGER. LoadInitialDisplayQA needs major work!!!
+
+
+++++++++++++++++++++++++ DONE STUFF BELOW THIS LINE 5-9-26 now 6-27-26, now 7-12, NOW 8-3-26   +++++++++++++++++++++++++++++++++
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// DONE - 7-28-26 Tuesday - DONE - change the TrueFalse code in display to only
+preview selections a and b for true and false and do an if/else to use 
+the preview for TF, or a multiple choice preview, and do this 
+in Tester as well.
+
+// DONE 7-25 Sat Just finished cleaning last of the dirty Builder files.
+
+// DONE Next 7-25 - Need to format the questions so they display properly
+// in Tester, like the true or false 
+
+Go  over all ReadMes and fAQs.
+
+DONE // Next to clean up 7-25 is DeleteQuestions class
+
+DONE // to do 7-23 clean up all the files, and celebrate because
+// my two jars work and I can make changes in the builder and it shows up 
+in tester so they must be sharing the same db jar. 
+
+
+//  FIXED - 7-31 PROBLEM SAT WHEN i UPDATE QUESTION IT IS NOT GETTING SAVED SO 
+// I CAN'T BRING IT UP.
+// solution - for some reason using (T) won't let it save to display db, but
+if I just use a letter character or word like True it works fine. 
+
+FIXED - 7-31 MASSIVE PROBLEM. IT'S NOT UPDATING THE n/a or anything in truefalse questions
+// the first question updates, but not the second true false.
+
+FIXED 8-1 4 masterListOfQuestionsSER.size() kxw743 this should not have a size of 4 but 1, right?
+// 7-31 and true/false will not update but the others will, the not t/f questions
+
+FIXED - 7-31OTHER MASSIVE PROBLEM. I'M TYPING BACKWARDS.
+
+
+// FIXED 7-12 Do this still - 7-1 I messed it up but when I try to create q 2 before null q 1 It asks for
+a title first and then warns it can't be done. sO i NEED TO FIGURE OUT how
+to move validation for title down further in the code block
+
+FIXED WITH A MESSAGE WARNING. - Next, if I 7-1 select Exam 2 which has not been created and then try to delete it
+it does not block me or warn me that you can't delete an exam that does not exist
+but just warns to think long and hard. This is the wrong message. 
+Maybe use outer size?
+
+7-12 FIXED WITH selectedExcamIndex instead of get(0) - DANGER DANGER 7-1 deleting an exam doesn't 
+work - actually it works, and it6 is deleted, and if I try to Create Exam it says I cannot and must Recreate it,
+but clicking recreate exam does nothing 
+
+NOT ANY MORE so done. 7-12 - And after I delete it and click Create Exam it tells me to just add additional questions
+but I can't do that if it is deleted. so how to  know if it is deleted? 
+
+FIXED 7-12 - 7-1 NEXT PROBLEM - Before I select an exam clicking Re-create deleted exam asks for number of questions
+and throws  java.lang.NumberFormatException: Cannot parse null string, probably cause ... ??? 
+So block this. But, how to test? What to test for? Can't recreate unless it is null, and
+if not null, nothing to recreate before it is deleted. 
+And, what happens when I delete an exam??
+
+FIXED And, if I select Exam 2 which does not exist and click re-create it throws Index 1 out 
+of bounds for length 1, so block this and all others also. 
+
+DANGER DANGER 7-2 another massive problem. When I deleted an exam I never deleted 
+the profs correct answers and got an indexoutofbounds in the factory???
+ java.lang.IndexOutOfBoundsException: Index 2 out of bounds for length 1
+ 
+but the message "There are no populated questions to display" in the ShowQuestionsPerEdam class is 
+correct cause it tests serlist for null which it is. 
+
+Adding additional questions adds another level of problemds.
+
+Because the serlist is null it looks like this [[null]]:
+[[null]] outerMasterListOfMastersSER after delete exam 132dsf
+So you are okay here. I now have a null instead of a serlist
+
+The problem with deleting an exam (exam 1) and then creating and exam (exam 2) is that
+the serlist is null in both instances and the second one gets that
+message intended for only the deleted on. - big problem. 
+
+ouch. So this is what I get when I try to add a question to the second exam created:
+[[null]] innerMasterListOfMastersSER nnb76
+but there should be two nulls, the first is the deleted one. So create a 3rd exam and 
+see what is in there. 
+
+Solution? Maybe the problem is when I delete that serlist I'm setting that column to null
+when I should be setting the contents of the serlist to null and just update that new serlist?
+
+
+
+//////////////////////////////////////////////////////////////////////////////
+// DANGER DANGER OUCH FOR 7-2 
+So when I delete an exam the questions were not deleted and still showed up when
+displaying them, when they should be empty. 
+So when I delete the exam that serlist of anons should each be set to null. !!!
+
+So I forgot to update this other big table with the questions as well. But I don't think, 
+double check, that I need to update anything else in that outerMasterListOfMastersSER, or 
+do I also have to set the exam to null as well? CONFUSE. 
+// 7-1 MAJOR HEADACHE. I CAN'T DELETE AN EXAM.
+So even if deleting an exam just sets values to null, why 
+isn't the question I also created set back to empty?? Is it because I need to 
+change that in the DISPLAY_EXAMS_QUESTIONS_TABLE_1 ? Or set them to null? and return that 
+when they click 'Questions in Selected Exam'? 
+
+And when I delete an exam it says it is still there, but can't re-create it or create another.
+
+So when I delete a row I need to update the outer in 
+var displayExamsAndQuestions = new DisplayExamsAndQuestions();
+				try {
+					outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed();
+				} catch (ClassNotFoundException | SQLException | IOException e1) {
+					e1.printStackTrace();
+				}
+using setUpdateOuterDisplay(ArrayList<ArrayList<ArrayList<QuestionSuper>>> 
+
+
+DANGER DANGER 7-4 Did I ever fix adding additional questions part to 
+change the outerMasterListOfMastersSER ?
+// This is probably a problem because I can't add an additional question cause
+Danger - when taking the test it gives me a false answer (red, not green) and on second q throws Index 1 out of bounds for length 1
+ 
+ I think this problem is in the factory cause I'm setting to 0
+
+// so I can insert now without throwing nullpoingter, but I still have that
+exam over in testerMaybe when I grade it the exam should be set or updated
+there instead of added? but still it should be 0 for revieew !!!!.
+
+// Big big 7-3 problem over in tester because when I create an exam it adds
+it to the 5th outer and throws a nullpointer when I try to review, say, Exam 1,
+and when i take that exam it adds that taken exam for review to the outer giving
+me two exams when there should only be 1 in there. So,
+the solution might be that when I create an exam I don't add the exam
+to the 5th outer????? After all, that outer is only for graded and finished exams.
+So track the initial placeholders and try to stop adding that exam to the last outer.
+
+//  7-2 HUGE HUGE PROBLEM PROBLEM OUCH!!
+// 7-2 When I delete an exam I am deleting a serlist. So that deletion has to make it
+to the final outer-nesteds table and set back to null. And the display table 
+DISPLAY_EXAMS_QUESTIONS_TABLE_1 has to also be updated with a new outer whose
+inner now has a null for the serlist also. And that is how I get empty, and this
+is probably why nothing appears deleted when I delete. But while I know I can
+delete the serlist in DISPLAY_EXAMS_QUESTIONS_TABLE_1, how do I delete it in all
+of the preceding tables? Do I just delete the final outer? Or must each be 
+deleted? Using which methods? And there is deleting before questions are populated,
+and those after populated. 
+
+So this problem is with deleting the exam, right? And I shouldn't have to delete the individual
+questions in the serlist, right? Just set the entire serlist to null? Or do I need to loop
+through a serlist and set each to null? I don't think so.
+But don't I need to update every table with the deleted/null serlist??? And I can't
+use the initial load methods but those used when creating the questions? 
+And I don't need to use DeleteQuestion class because I'm not deleting a 
+question but the entire exam/serlist.
+
+Oh, it does delete the exams using dbUtility class and those 
+four methods like updateExamToNull1stTbl. So maybe start there and see
+how that deletes it in the 5th and last triple-outer, and the displayExams table.
+
+CAVEAT !!1 7-2 So those funky four methods in dbUtility set the listOfQuestionsSER to null 
+in the first four tables, but not the 5th or the display tables and that might
+be the problem..
+
+SOLUTION?? I think I found the problem 7-2 - While I deleted the exam in the first four tables, it
+was not deleted in the display table. So must delete it or set it to null 
+in the outer from the display table.
+
+So after I delete the exam which works and click question display it says there
+are no populated questions which is correct because the exam was deleted. 
+However, after deleted when I click Number of exams it says No exams have been created (because it is null)
+and in the preview pane it shows:
+NUMBER OF EXAMS CREATED AND AVAILABLE QUESTIONS
+Number of Exams Created: 1 
+but nothing about questions, so this is a bit misleading. 
+
+And, if I click Create an exam after deleting it it
+messages that I can only crerate an exam one time and should 
+add additional questions if I want which is incorrect. It should
+say you can create only once, and even if deleted or this exam was
+deleted, you must re-create it and add questions, not create it again.
+And when I click re-create it says it already exists and can't re-create it. 
+So this is all messed up. 
+
+Once I set these things to null the size does not change so I can't
+use size to test a lot of things. 
+
+DANGER DANGER DANGER - 7-2 So I can't even re-create the exam now.
+
+Major major headache 
+//Index 1 out of bounds for length 1
+			// because I'm guessing it needs to be added the first time? 
+			// But that only works if everything is sequential!!!
+			// Try adding, but it won't work when I add more questions !!!
+			outerMasterCorrectAnswersProfs.add(masterListOfProfsCorrectAnswers);
+			//outerMasterCorrectAnswersProfs.set(selectedExamIndex, masterListOfProfsCorrectAnswers);
+			
+			
+// $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$
+Maybe the solution to the profscorrect problem is to 
+do an initial placeholder for the OUTER_MASTER_ANSWERS_TABLE_1 with 
+ten (10) exams outerMasterCorrectAnswersProfs.add(new ArrayList<ArrayList<Boolean>>());
+these things - new ArrayList<ArrayList<Boolean>>()); each being one exam that holds 10 spots
+for the serlist ArrayList<Boolean>>() so I can dispense with inserts and just go with Updates. 
+And do this every time I create an exam, must be sequential though. Call the OUTER_MASTER_ANSWERS_TABLE_1
+from the 2d profsfinal table class. No not there. It's an automatic initial load thing. 
+
+7-3 and, set placeholders in each serlist? So a m ore complex loop within a loop?
+
+Major adjustment because whenever I delete an exam, or question, or recreate, or whatever, that
+affects the Outermasteranswers table cause those have to change as well. 
+And only after this part is fixed properly can I deal with deleting exams, re-creating exams, and
+all of that. 
+
+So for 7-3 Friday, at click Create an Exam set those placeholdersd,  set those placeholders in 
+Outermasteranswers every time an exam is created, and maybe (test it) set 10 serlist placeholders as well
+meaning each serlist has 10 nulls? sequentially, and then fix the Factory page by
+setting the profscorrect answers in each such exam which is in the inner. 
+
+// 7-3 problem is what if I have 10 nulls in a serlist but only, say, 8 populated questions?
+Will that just be equal evaluated and return false??
+
+
+
+
+When I deleted exam 2 it did not delete it. 
+so the profscorrect answers were set to null, but not
+the display exam thing? Did I propverly change that display table when exam is deleted?
+
+And I can recreate exam 2 that was deleted, but not exam 1 that also was deleted. 
+
+7-5******  I think I found it. When I create the question for the second exam I get a rowcount of 2
+and that takes place in the factory
+
+DANGER DANGER - WHEN I create an exam and a question populated, then
+and the 
+delete it I end up with 4 nulls, not 1, in the masterprofscorrects 
+
+
+
+7-5 NEXT BIG PROJECT. 
+RECREATE A DELETED EXAM AND MAKE THOSE CHANGES IN THE PROFSMASTERLIST.
+Wow WOW WOW !!! IT WORKED RECREATING AN EXAM, BUT NEXT DOES IT allow me to create a question,
+and how does it modify, if at all, the profscorect answers??? That's the hard part.
+OOPS - Recreate throws n an extra row in OUTER_MASTER_ANSWERS_TABLE_1 
+
+Problem is when i recreate one exam I endup
+with too many nulls in profscorrect:
+[[true, false, false, false, false], null, null, null, [], [], [], [], [], []]
+but part of the problem could be that I'm not deleting the masterprofscorrect
+table when I delete all the other rows, or more likely, ... something when I 
+deleted originally?
+
+
+
+
+DANGER HOW IN THE WORLD DID I END UP WITH THREE ROWS? OUTER_MASTER_ANSWERS_TABLE_1
+
+When I recreate I have:
+[[null]] display outerMasterListOfMastersSER from display before create vdfx455t
+[null] outerMasterListOfMastersSER.get(0) kocri0e4895409
+
+
+// A different problem 7-5 is that tables 2,3 and foiur get say 2 rows but table 1
+only has the one. So maybe my first column index is set imroperly to say
+selectedExcamIndex + 1 instead of just 1? This has to be fixed, but go slow, 
+one change per table at a time and check. 
+
+DANGER DANGER 7-5 AND NOW I CAN'T EVEN BRING UP ANYTHING IN NUMBER DISPLAY.
+so it works when I got rid of the very last }else{ but what if I delete an
+exam? Let's find out. 
+
+// So I just reverted back to the earlier code cause I was messing 
+everything up and it is good enough for now. Num display just doesn't
+show the exam I deleted, just a black space, but I messaged them to
+just click the exam and check the questions display thing. 
+
+
+
+
+// DANGER DANGER -  When I created a second exam, after the created first exam
+was deleted, it threw a warning message exception? because the row count
+in the OUTER_MASTER_ANSWERS_TABLE_1 was 2 when it should never be more than 1.
+So something is causing me to do an insert instead of an update. Look
+in the Factory where I get that 'Ooops! row count  should never be grreater than 1 zc324 In Factory' message
+It probably has something to do with creating that second exam? Delete hard all 
+exams and start over and create 2 exams and see it that triggers the same problem. 
+
+But look in the Factory. I'm getting that rowcount of 2 before I set it following
+the exam 2 creation so maybe it has to do with deleting the first exam which 
+sets all those outerMasterCorrectAnswers to null which I did last night, 
+that is where I inserted instead of updated?
+So start with 'Delete an Exam' and follow that through track it ...
+So I did that and got through the new examWasDeleted() method, but nothing seems
+out of the ordinary. So maybe start with System.out.println()s and 
+track down that second rowcount. 
+
+// Next round of unit testing 6-18
+
+
+
+// 7-5-26 Sunday ANOTHER THING TO DEAL WITH: When I delete an exam and click
+number of exams/quest button I get "Exam with questions has not been created" but that
+is a bit misleading because I want to notify that it must be created.
+That it was deleted and to be used must be recreated by clicking
+'Re-create Deleted Exam'. 
+
+Nother 7-5 problem - So I need to recreate an exam, but also when I delete an
+exam when clicking Number exam it will probably be inaccurate display,
+so if I create two exams and delete 1, what will it show? It will still
+count the deleted exam as being one exam. 
+
+So, 7-5 maybe when I delete an exam I need to test it for null
+and when numb questions is displayed inform that it was deleted
+and must be created?
+
+
+
+// FIXED, THE DELETE PART, NOT THE RECREATE PART.Next 7-4 how to delete an ecam and recreate it and have the profscorrect change accordingly?
+But when I delete an exam I am not doing anything to delete it from the profsmastercorrect. So
+must do that. So at bottom of delete exam pull up the profscorrect master and see what is in there
+and if there are still questions it was not deleted, and must do that next. 
+
+7-4 FIXED, THE DELETE PART, NOT THE RECREATE PARTbut how does deleting an exam or question affect all things including Master of Profs correct answers?
+This is crucial over in builder. 
+
+//FIXED.  FIXED, THE DELETE PART, NOT THE RECREATE PART7-4 NOPE, DELETING THE EXAM DID NOT DELETE THE PROFS ANSWERS AND ALL OF THAT SHOULD HAVE BEEN SET
+BACK TO NULL. 
+
+
+
+// FIXED. 7-4 new problem creating a 4th question throws Index 3 out of bounds for length 3 near rsf3vedyd6
+
+7-4 another massive problem creating 4 questions, on question 4 it throws
+Value too long for column "LISTOFQUESTIONS JAVA_OBJECT(10000)": "CAST(X'aced0005737200136
+a6176612e7574696c2e41727261794c6973747
+881d21d99c7619d030... (1000000000)"; SQL statement:
+
+// FIXED BY SETTING TO INDEX 0 IN FACTORY INSTEAD OF selectedIndex7-4  problem is when adding a second additional question throws 
+an Index 1 out of bounds for length 1 [[true, false, false, false, false]] soruc8e57
+in the Factory. I'm trying to add ne more list of booleans to the ser list. 
+So maybe selectedExamIndex instead of selectedIndex?
+Or do I need to set the serlist to 10 null placeholders? Like the outer
+was set, it. [[[true, false, false, false, false]], [[]], [[]], [[]], [[]], [[]], [[]], [[]], [[]], [[]]]6-23 4A
+Which means I need to backtrack to setting the original placeholders? Back with the
+first Create an Exam? 
+No, instead I used index 0 to set the question in the bool-list because each exam has
+only one list. AND IT WORKED nOpe no, indexout of bounds when taking exam in tester. 
+
+
+I think fixed ... 7-6 The Problem !!!!!!!!!!!!111
+So if I do a deep cleanout it woks fine for ex1 with 2 quesitons but
+if I delete exams from tester it throws that exception in Finish
+
+/Add to Readmetester and todo tester:
+// I got a big problem with adding an additional question cause it does not
+show up in upDateFinalGradedStudentExams
+
+But it shows up in the question dispay pane
+and after I take the wxam with 2 questions it says in review the ecxam has not
+been taken yet. 
+
+It's as though when I create an additional question it is not adding something
+to the outer table 5
+
+HOLD IT. UpdateFinalStudentExams DEALS WITH THE Finish button, not creating the additional question
+so start with Finish instead?
+
+Fixed DANGER  Must modify this below readme because if I create a second question for 
+exam 1 and in tester try to review it it pulls up the bogus null/2 cause I think
+it is pulling up a second serlist that is:
+[main.java.QuestionFactory$1@523fa660, null] listOfQuestionsSER kfkgit857
+Danger, that didn't gfix it. When I deleted the exq1 in Tester and took
+the exam q with 2 questions it says the exam never was taken and throws
+[[]] outerMasterListofMastersSER also important mklkprktobm906
+Exception in thread "AWT-EventQueue-0" java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 0
+Which I just discovered is in upDateFinalGradedStudentExams() of UpdateFinalStudentExams class
+
+
+IMPORTANT: When you test your exams in Tester it is essential that you test the same exam. 
+For instance, if Exam 1 has one question and you test it in the Tester, and then
+you return to the Builder and add an additional question to that Exam 1, and switching
+over to the Tester you take that same Exam 1 again it will crash the program. Why?
+Because during the review process Java averages the scores (stored in each object) for 
+the latest two exams. But you are essentially comparing apples to oranges, a 
+listOfQuestionsSER list containing one QuestionSuper object, with another containing 
+two, and you can't average null. Accordingly, if you add additional question[s] to an 
+exam you must delete the oldest taken-exam over in Tester before you take the exam again because 
+you only want to compare oranges. 
+
+
+
+
+// POSSIBLE SOLUTION TO BIG PROBLEM OF 2 ROWS IN MASTERPROSCORRECT TABLE WHEN THERE
+SHOULD ONLY BE ONE ROW when I create a second exam,  
+namely, my exam 2 will also be null so it triggers an insert also just like exam 1
+Problem is in the InsertInitialOuterNestedPlaceholders class loadInitialOuterNested() method 
+So do some kind of an if test
+
+
+
+AND this rowcount should be 1 - 2 rowcount from OUTER_MASTER_ANSWERS_TABLE_1
+
+
+
+DANGER DANGER 7-5 IT IS HAPPENING AGAIN. When I delete exam 1, then create exam 2
+and the populagte the question, when I create it I get the Factory
+warning Ooops! row count  should never be grreater than 1 zc324 In Factory
+fand I have a rowcount of 2
+2 rowcount from OUTER_MASTER_ANSWERS_TABLE_1 sxjdywnbsjdf
+UPDATE 4539
+2 Number of rowsEffected245as
+Maybe I'm doing an insert when I delete that exam?
+But near oeuc98794e094 I'm pulling up the new master list for exam 2 and it is null dummy !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+
+FIXED 7-12 And the same goes for an Update Question attempt. And if
+that deleted question is null ... 
+
+FIXED 7-12 But question: If I delete a question why can't I recreate it with either the
+Create a Question or Update a Question? Does it make a difference? If it 
+does not matter change the README TO reflect it. 
+
+FIXED 7-8 Major rethink of this mess. First, I deleted all exams in tester and now
+my number display throws Index 0 out of bounds for length 0, which it will always do.
+Should I use the Outer in the displayExams table instead?
+
+7-6 dang it profscorrect never set the 2d exam's 
+
+FIXED, PRETTY SURE - // DANGER DANGER 7-7 back to same problem, can't click num display cause
+it throws indexout ofbounds at hfnvf65 somewhere.
+0 masterOfCreatedExamsDisplayed.size() hfnvf65
+But I did a lot of changes yesterday 7-6 where I 
+updated the outermaster when I deleted an exam in Tester, 
+which must have deleted everything in displayexams class table. Right?
+Look in the UpdateFinalStudentExams  class and
+the deleteGradedRowInReview method in DBTesterUtility class and maybe
+comment yesterday's changes and if that works maybe do an
+if in the delete method or another that doesn't wipe out 
+the display outer? 
+
+/// 7-6 NEXT ISSUE, don't I have to set that new inner that had the
+exams deleted in tester back in the outer and into the 5th table?????
+
+
+FIXED - // Found the problem 7-6 I can take exam with 2 questions two times and all is well
+but when I delete the exams completely in Tester it throws that
+[] dor8
+loei5949389d3n
+Exception in thread "AWT-EventQueue-0" java.lang.IndexOutOfBoundsException: Index 0 out of bounds for length 
+when I try to take that exam 1 again. I get a 'you passed with grade' message, but when 
+I exit the message it freezes and the exception is thrown in UpdateFinalStudentExams class,
+upDateFinalGradedStudentExams. But there, the listOfQuestionsSER has those two objects.
+Maybe this is it? [[[main.java.QuestionFactory$1@79f75d6e, main.java.QuestionFactory$1@13631162]]] outerMasterListofMastersSER BBBBCCC  prints []
+meaning when I deleted the exams in tester when reviewed they never deleted those exams
+from the outerMasterListofMastersSER, because those should be null!!! 
+
+// I think 7-6 thst this fixed the problem in UpdateFinalStudentExams class because
+I forgot to set that inner back in the outer and back in the table. 
+// ####################################################################################		
+			// But is this innerMasterListOfQuestionsSER added to the outer, then to the table??
+			// 7-6 Yoyu BIG DUMMY - Yes, I forgot to do that so I do that now
+			outerMasterListofMastersSER.set(selectedExamIndex, innerMasterListOfQuestionsSER); 
+
+
+// DONE 7-11 DANGER DANGER FIX THIS NEXT - If I try to create a question from
+scratch but click Update instead it throws:
+[[main.java.QuestionFactory$1@2232b639]]] outerMasterListOfMastersSER gyeyeyey4565
+Exception in thread "AWT-EventQueue-0" java.lang.IndexOutOfBoundsException: Index 1 out of bounds for length 1
+So need to catch this and message them to use the Create a Question instead. 
+Not a problem any more. It already throws up that message. 
+But what if I delete a question and create from scratch? it works good with message can't do it. 
+	if(that question is not null) click update instead. message. 
+
+This part is FIXED 7-12 Danger - Still a problem 7-12 7-11 problem that when I change a created question that exists it now
+lets me click create a question when it should be an Update because I commented
+out that code because it was throwing everything off. Fix this with 
+an if(serlist question is not null then you have to do an update, not a
+create from scratch. 
+
+
+But does creating a question change the rowcounts? Test next.
+
+FIXED - 7-11 DANGER DANGER DANGER.Big problem. I created additional questions in Exam 2 but 
+they don't show up in the display num or questions which is not normal. So I'm thinking
+they are not getting set somewhere .... 
+
+FIXED - but if I create an additional question, it doesn't display empty or anything anywhere, but
+if If then create the actual question and click away and back it displays. So I did 
+something wrong in the recent past. I think the problem is when I add an additional question
+because it doesn't display num or question changes. 
+
+FIXED - // this step is missing insertOuterDisplayTable(ArrayList<ArrayList<ArrayList<QuestionSupe
+when adding addional questions I need to set it in the DisplayExamsAndQuestions table. 
+And this was done initially with the initial placeholder load in the big loadInitialOuterNested() method
+of the InsertInitialOuterNestedPlaceholders class. But somehow this step isn't made
+when adding addional questions, which makes no sense because it worked before. What other method
+in the DisplayExams... would I use to add it????????????????????????????
+FOUND IT, THE NEXT METHOD DOWN IN DisplayExams ... setUpdateOuterDisplay() and for some
+crazy reason I commented out the call to this method at the bottom of setUpdateOuterMasterListofMastersSER()
+in the InsertInitialOuterNestedPlaceholders class. 
+
+
+
+FIXED 7-6 Back to square 1 for 7-6 Monday when I create the second exam I get two rows in 
+the OUTER_MASTER_ANSWERS_TABLE_1 so that is the problem. 
+
+DONE AND FIXED 7-6 ALSO, WHEN i DELETE ROWS  UNDER YELLOW, DELETE ALL ROWS IN TABLES 2, 3 AND 4 because
+if there are say 10 rows it would require clicking 30 times and mess things all up. 
+So do that next maybe ... 
+
+
+FIXED. 7-6. i JUST DID AN IF IN insertPlaceholders() with insert or updateMAJOR DANGER DANGER 
+DANGER. - DO THIS NEXT !!! But now my outerprofscorrect has 2 rows instead of just the one. 
+and my rowcounts have doubled from 2 to four in the 2d, 3rd and fourth tables. 
+Which means there is an insert instead of something, or a loop? And this is in the placeholde stage
+so compare the first on table 17 whichis correct with the others. look for the id numger column thingy. 
+AND this rowcount should be 1 - 2 rowcount from OUTER_MASTER_ANSWERS_TABLE_1
+
+
+DONE AND FIXED Solution, the reason I delete all rows for table 17 and only the selected row in the other 3 tables
+is because the algorythms are completely different. the table 17 deletes every row, so copy that
+colde from the other tables to the first if you want to delete one row at a time. !!!!
+But the othe problem is that if there are tweo exams and deleting the first table deletes both,
+in the other 3 tables you have to select ex 2, oh, I guess that makes sense. 
+
+fixed DANGER DANGER DANGER 7-1 ALL MESSED UP. 
+I'M CREATING EXAMS OUT OF ORDER AND IT IS A MESS. 
+
+FixedI think I fixed it, not me but God, cause I'm not smart enough,
+but I just did a simple if up top of Create an Exam. 
+
+fixed. It should be simple to check. If the selectedExamIndex is too big, bigger
+than the outer size plus + 1 they can't do it. 
+
+
+FIXED BY NOT ALLOWING THEM TO GET OUT OF SEQUENCE. Can 7-1 I create an exam out of 
+order, 3 before 2? What is inserted in at 2? An automatic null?
+This could be a problem. Nope, it throws an Index 2 out of bounds for length 2
+Done - Which means when they try to create one out of sequence they get blocked with a message. 
+If selectedExamIndex > outerMasterListOfMastersSER.size()
+
+JOptionPane.showMessageDialog(null, "Remember, you must first select an exam \n"
+							+ "sequentially (first, Exam 1, then Exam 2 etc.)");
+							
+							
+
+Another BIG problem 6-22 what if the instructor deletes a question making it null and
+does not want that many questions? You are forcing him to stick a question in there.
+Do I do a remove and shift the indexes? Then I can't place state in the first question. 
+
+FAQ notice, once you create a question it must be used. Can't delete it and leave it null.
+This is a problem.
+
+// DONE - All of the create tables need try with resources!!
+
+// DONE - BIG PROBlEM 6-27. Once a question is created it must be used. If you delete a question
+and set it back to null you must recreate it again for it to work, so add this
+to the readme. 
+Null throws nullpointer over in the tester. And the instructor completey deleting that index row is not feasible cause it
+messes all the other indexes up. 
+DONE - 7-1 Danger - so must inform the creator that once a question is created it  must be used. !!!!! 
+
+// DANGER DANGER - 6-16 in the new intouch version class InsertInitialOuterNestedPlaceholders is all messed up. 
+// DANGER. UNIT TEST deleting an exam and make sure it is properly
+// propagated down the chain. and see what num butt and question but display
+// when an exam or question is deleted. !!!!!!!!!!!!!
+
+// Fixed. i thought i did  this 6-18-26 NEXT for 5-12
+// So if I already have a question populated, then delete it, and then
+// repopulate it I can click either Create an Question or Delete a Question,
+// and Create a Question does the same thing, which makes sense because I'm calling 
+// those original create question methods. So maybe when clicking Create an Question
+// pull up something from the anon and if it exists, direct them to click Update Question instead. 
+
+// I THINK I FIXED ALL OF THIS. - PROBLEM - When I delete a question it sets it to null, but when I
+// create a new question there or update the old it throws a null pointer. 
+// so maybe when I create a new question there it INSERTS it in the next
+slot and leaves me with that old unll still there?
+// I bet the problem is that when I call Create Question it INSERTS when I
+// want to re-create that question, whereas Update Question does the 
+// UPDATE OF THAT NULL value. So need to message with AN if(that question
+in the serlist is null you must update this question instead.)
+
+// but Iwhether original or a deleted question it will be null and I
+can't send anyone to update a null because the update uses that null to set the
+fields which it can't cause of nullpointers. so, I need to be able to delete
+a question,  making it null, and create a question there where it is null. 
+and only update a created question. 
+But in the upate question, instead of pyulling a tripleouter out of the 
+Display table, which is too remote, or is it too remote? maybe not. If that
+is where the serlist resides to test it for null
+
+ Say what? Okay, it is fixed and they are warned
+but how to get the prof's master of correct answers in the first question again???
+
+// DANGER DANGER DANGER Also big problem 6-21, what happens to all for the data
+that was inserted into question 1 which is now deleted? like the
+profsmasterofcorrect answers?????????????????? OUCH. 
+
+// FIXED I THINK. after I recreate question 3 it's not getting added to the serlist, but if that is
+true why dfoes it show up when I click the question in the second jlist?
+MASSIVE PROBLEM. 6-21 I think it has to do with adding additional questions after a
+question is deleted? An insert instead of an update?????? So start from scratch and track it down
+using the preview correct answers stuff.
+
+// DONE - Don't forget, Must also make same changes to preview answers as in preview correct answers, 
+// but make sure the preview correct answers is fixed all the way. 
+
+// fixed i think. problem when I delete question 3 and try to preview correct answers it throws a null pointer
+// so need to message that also. if(question 3 is null) message displayed. 
+
+// FIXED. . Danger !!! When creating another question for that deleted null it worked, but set the second
+		// anon profscorrect to null but it should have left that alone.
+		[[true, false, false, false, false], null] masterListOfProfsCorrectAnswers good, it works mbnghbnh78
+		Problem is in the factory 
+
+// FIXED A BIG PROBLEM 6-22 in factory changing adding the profs correct ansers to the 
+mastercorrect list to setting it in the slot, and that it works. 
+CAVEAt - But must make the changes not only when deleting a question but also when updating!!!!!
+
+//  DONE - I need several trywithresources in the DisplayExams class!!!!!
+FIXED. cAN'T TAKE AN EXAM IF A QUESTION IS NULL. Potential problem. When grading can I compare a null of profscorrects? Or
+or am I even prohibited from taking that exam if there is a null question which I think so. 
+And am back to forcing them to always use a question once it is created??? Serious dilemma here. 
+
+//  6-23 DANGER DANGER WHEN YOU DELETE ALL THE ROWS DON'T FORGET TO DELETE THAT 
+NEW DISPLAY_EXAMS_QUESTIONS_TABLE_1  ROW ALSO WHICH IS HIDDEN IN THE 
+3RD BUTTON DOWN CALLED SetInitialGradedExams. the button above that gives
+you the row count, and the top button creates the table.
+And, when you fix Eclipse you need three new buttons for this.
+
+//DONE AND FIXED.  MAJOR OVERHAUL 6-22 - I need to place another outer object in the display table that holds
+each exam's masterListOfProfsCorrectAnswers instead of storing that in each object which
+will not work because if all questions are deleted, which is a possibility, all of
+the masterListOfProfsCorrectAnswers vanish. And then what. 
+So I must create another class with methods that put and get that new 
+outerMasterProfsCorrectAnswers. Which means that whenever I create a question, or
+update it or delete it I must put and get this triple-nested outermasterans object. 
+
+ // Class OuterMasterCorrectAnswers has methods that set and get 
+// a triple-nested outerMasterProfsCorrectAnswers that holds each 
+// exam's masterListOfProfsCorrectAnswers. This is the object retrieved
+// and set whenever one creates, updates or deletes a question. And,
+// over in Tester this is what is retrieved when exams are evaluated
+// whether immediately or once at the end of the exam. 
+
+// I bet the problem is that the examLabelsJlist1 wAS being sgtored in 
+that 3rd column of the DISPLAY_EXAMS_QUESTIONS_TABLE_1 that I hijacked to put 
+my new outerMasterCorrectAnswersProfs into NO I'M WRONG, IT HAS
+ITS OWN TABLE. 
+
+FIXED I THINK WHEN I DID A WHOLE NEW GET SELECTION THING SWITCH . 6-24 ******* It might have something to 
+do with that thing I fixed with the previouislySelected variable
+in the actionListener at the top. Nope, it never changed when I updated it from all false to 
+false at 3
+The 6-24 problem is when I update I skip the factory where the outer is got and set 
+in the OUTER_MASTER_ANSWERS_TABLE_1. 
+SOLUTION: do an if, if the current previouslySelectedCommand != the selectedCommand pulled
+out of the anon object, then run the big case that gets the profs
+
+
+// DONE - Next - Move over to Tester and update the evaluate page section to
+// conform to the OUTER_MASTER_ANSWERS_TABLE_1 table
+
+// ***** 6-23 Must do a major ReadMe update to reflect changes to 1) Update page, 
+2) complete revamp of masterListOfProfsCorrectAnswers thing and the new table,
+3) the factory major changes that use the OUTER_MASTER_ANSWERS_TABLE_1,
+4) The DeleteQuestions class that uses the new OUTER_MASTER_ANSWERS_TABLE_1 now, 
+
+// NERXT 6-23 FIX THE UPDATE QUESTION BUTTON NOW THAT THE coutermastercorrectanswers has
+// its own table OUTER_MASTER_ANSWERS_TABLE_1. 
+
+OUCH. I NEED TO UPDATE THE BUTTON SELECTION AND THE coutermastercorrectanswers STUFF !!!!!
+none of that is even in the update section. 
+
+danger danger when 6-23 I recrerate a question I'm getting an insert, not an update, with
+the outerMasterCorrectAnswers which I thought I fixed!!!
+
+But why does my outer have an extra master?
+2A cv654df
+[[true, false, false, false, false], [false, true, false, false, false], []] masterListOfProfsCorrectAnswers jsbch462e4
+
+
+FIXED I THINK 6-27 DANGER DANGER. 6-23 NOW EVENTHOIUGH i DELETED QUESTIONS AND ADDED QUESTIONS THERE SHOULD
+ONLY BE THREE IN THE outerMasterCorrectAnswersProfs BUT THERE ARE SIX. SO I'M GETTING INSERTS
+TWICE INSTEAD OF UPDATES WHEN i CREATE A QUESTION AGAIN. 
+// BIG PROBLEM 6-24. I updated question 3 with no button selected, took the test and it worked
+fine, but then updated it with selecting button 3, took the test in gradeonce mode and it says
+I failed. 2/3. So was it not updated properly? Or in grade once am I bringing up the 
+correct outerMasterCorrectAnswersProfs from the new table OUTER_MASTER_ANSWERS_TABLE_1 ?
+Try it with immediate eval first to narrow the problem down. Nope, it failed with
+immediate eval also. So print out the third question from the OUTER_MASTER_ANSWERS_TABLE_1 and
+see if it was updated properly from all false to false on number 3  selection. 
+Maybe go to evaluate section and do a System.out.println() there to test it. 
+
+//DONE - 6-25 DON'T FORGET TO CHANGE THE PREVIEW ANSWERS CODE TO MATCH THE
+PREVIEW CORRECT ANSWERS CODE, DO THAT NEXT
+
+FIXED I THINK 6-27 DANGER DANGER. 6-23 NOW EVENTHOIUGH i DELETED QUESTIONS AND ADDED QUESTIONS THERE SHOULD
+ONLY BE THREE IN THE outerMasterCorrectAnswersProfs BUT THERE ARE SIX. SO I'M GETTING INSERTS
+TWICE INSTEAD OF UPDATES WHEN i CREATE A QUESTION AGAIN. 
+// BIG PROBLEM 6-24. I updated question 3 with no button selected, took the test and it worked
+fine, but then updated it with selecting button 3, took the test in gradeonce mode and it says
+I failed. 2/3. So was it not updated properly? Or in grade once am I bringing up the 
+correct outerMasterCorrectAnswersProfs from the new table OUTER_MASTER_ANSWERS_TABLE_1 ?
+Try it with immediate eval first to narrow the problem down. Nope, it failed with
+immediate eval also. So print out the third question from the OUTER_MASTER_ANSWERS_TABLE_1 and
+see if it was updated properly from all false to false on number 3  selection. 
+Maybe go to evaluate section and do a System.out.println() there to test it. 
+
+//DONE - 6-25 DON'T FORGET TO CHANGE THE PREVIEW ANSWERS CODE TO MATCH THE
+PREVIEW CORRECT ANSWERS CODE, DO THAT NEXT
+
+DANGER DANGER DANGER DANGER - I GOT 6-19 THIS WEIRD EXCEPTION THAT THE VALUE WAS TOO LONG FOR THE OUTERTRIPLE IN THE TABLE
+which had two anon objects and 3 null values which makes no sense but could be a problem if
+too many questions are added??? Must therefore increase column size to beyond 10000 it says ....
+// Fixed? This cleared up all on its own. Eclipse glitch?
+
+// FIXED I THINK, CLEARED UP ALL ON ITS OWN. another new problem 6-22 if I delete all rows at the core, including label table rows
+// then all of my labels throw nullpointers when I click number dfisplay
+but if I create one exam it fixes it all. Fix this also wackamole... 
+But why didn't it do this before?
+
+// fixed or it fixed itself - many many exceptions re examLabelsJlist1 what the heck?
+
+
+// Next, add additional questions to deleted questions and figure out why so many extra
+questions are being added !!! which was the original problem 6-19
+
+// MAJOR DANGER After 6-21 I re-create question 1 I can't preview answers or correct answers 
+DUE TO CLASS CAST EXCEPTION
+
+// (Yes, you were right about this.) I think the solution is I'm still using 
+masterOfCreatedExamsDisplayed = displayExamsAndQuestions.getInitMasterCreatedExamsDisplayed();
+instead of the new outer. 
+
+// Oiuch the serlist is not gettng set in the innermaster of the STUDENTS_OUTERNESTED_TABLE4 whicdh is
+bizarre and really weird. That should get set with placeholders when I do a create exam. 
+
+// If I click delete question in builder without selecting a question it throws a nullpointer
+over in the DeleteQuestion class so fix that now
+
+
+
+
+Fixed. DANGER DANGER 6-21 If I delete questions 1 and 3 I need to make certain they line 1603
+can't re-create 3 before 1. 1 has to go first. Class cast exception. java.util.ArrayList cannot be cast to class main.java.QuestionSuper
+
+// FIXED 6-21 danger if I try to add an additional question but click create a question instead
+// it throws jindex otu of bounds. I need a warning that first I have to add the 
+additional question before I can create it. Say what? this makes no sense. It is backwards.  
+
+
+// DONE AND FIXED. I FORCE THEM TO CREATE Q 1 FIRST
+DANGER DANGER 6-19 - IF THEY CREATE THE SECOND OR THIRD QUESTION FIRST HOW CAN
+	// THE PROFSMASTEROFCORRECT ANSWERS BE SET IN THE FIRST OBJECT IF IT DOES NOT EXIT?
+	// THEREFORE MUST FORCE THE CREATION OF QUESTION 1 AS THE FIRST ONE; DO A SIZE IF?
+	// THAT WON'T HELP BECAUSE THAT FIRST SLOT WILL BE NULL, BETTER TO TEST 1 FOR NULL INSTEAD
+
+// redo the readme re the delete, update question stuff
+I just drastically changed.
+
+// FIXED 6-21 - Seems to work fine now. NEXT PROBLEM 6-19 THE 3RD ADDITIONAL QUESTION 
+IS NOT GETTING SET AS A PLACEHOLDER?
+but is that is true why does num display show 3d question?
+
+
+// SOMEHOW IT FIXED ITSELF, GO FIGURE 6-20 Another builder problem. if I empty everything and click the number display it throws
+// an indexoutofbounds
+
+If I'm pulling the outer from the InsertInitialOuterNestedPlaceholders then all I have in there
+will be null so I can't get() anything in there, right?
+
+DONE AND FIXED 6-20DANGER 6-21 ANOTHER PROBLEM, IF I CLICK CREATE exam and then click create additional questions
+nothing happens, which is good, but I need a message that you need to create the exam first. 
+
+
+DONE I THINK AND FIXED 6-20 I am in the setUpdateOuterMasterListofMastersSER() of 
+the InsertInitialOuterNestedPlaceholders class
+// 6-19 i THINK I forgot to set this new outer into the display table
+		// this is new 6-19. 
+		DisplayExamsAndQuestions displayExamsAndQuestions = new DisplayExamsAndQuestions();
+		displayExamsAndQuestions.setUpdateOuterDisplay(outerMasterListOfMastersSER);
+// AND YIPPIE, ADDING IT IS WHAT I FORGOT AND WHEN I ADDED IT IT WORKED AND 
+NOW FOR NOW I WAS ABLE TO ADD ONE ADDITIONAL QUESTION WHICH GOT INTO THE 
+DISPLAY TABLE, BUT NOW I NEED TO CREATE QUESTIONS FOR IT. 6-19
+
+//WHAT WE CAN'T DO IS REMOVE THE INITIAL PLACEHOLDERS AND I DON'T KNOW IF
+// THAT IS NECESSARY OR DESIRED, OR HOW THAT WOULD WORK, ESPECIALLY AFTER QUESTIONS HAVE BEEN
+// POPULATED. THEN IT IS A REAL PROBLEM, BUT NOT SO MUCH BEFORE. THINK ABOUT IT. 
+
+5-3-26 - TODO - re the ADMIN DELETE BUTTONNS, DO I WANT TO DELETE ALL ROWS AT ONCE OR SET IT UP TO DELETE A SPECIFIC
+// ROW WHICH WOULD SHIFT THE ROW INDEXES ETC. MAYBE SAFEST TO DELETE ALL ROWS AS THEY ARE IN TABLES 2-5 
+// Okay, this is still a problem. If I click 'Delete Row' it sets it to null, and doesn't actually delete the row which
+// is a good thing. To delete the row I need to manually, at the bottom of the app, delete each individual row, but
+// the problem then is that the first delete is hardcoded to the first row (WHERE id = 1) and the rest are
+// simply (WHERE id = ) which deletes every row. I don't want either, so I need to make a loop like I did 
+// somewhere else with delete which creates a new SQL string with a number according to the row that you want to delete, 
+// that is, it concats a number to the WHERE CLAUSE, SO FIND THAT OTHER CODE AND USE IT.// 
+// 3-24 TUE MUST AUTOMATE DELETING ROWS, BUT HOW MANY? BECAUSE THE SECOND TO LAST STORES A 
+// MASTERLIST AND THE LAST TABLE STORES THE OUTER/INNER THING. dO i WANT TO DELETE THOSE
+// AS WELL ALL IN ONE FELL SWOOP? nO, NOT THE LAST OUTERINNERNESTED BECAUSE IT IS FINE AS 
+// IS HARDCODED TO THE ONE ROW, THE FIRST ROW, BECAUSE THERE IS ONLY ONE SUCH OBJECT IN ONE ROW. 
+// Say what?? SAME PROBLEM AS ABOVE - MON 3-24 MON FIX THE DELETEROWS BUTTONS (am i talking about
+// the Delete Exam button or those buttons under the AdministratorOnly bar? 
+// which now delete say 3 rows with one click. 
+
+// Re setting those initial and additional questions, where can I store those if I don't 
+// have an anon object yet??? Stumped. Do I need to store them???
+// IS THIS STILL TRUE? TRACK DOWN WHERE THESE METHODS ARE USED
+
+// 5-3 HUGELY IMPORTANT. New (or use the existing numbers display button) button that checks the 2nd table serlist to see if any 
+// questions are null for the Builder prof, without waiting for the student to Begin Exam. 
+// I might have fixed this with the "Questions In Selected Exam" button. But isn't this part of the display numbers fiasco?
+
+// 5-3 - That is why the profs need to do all of this beforehand in a wordprocessor and get 
+// it just right the first time through. No switching questions in and out. aCTUALLY, THAT'S NOT
+// A PROBLEM IF THEY CAN POPULATE QUESTIONS OUT OF ORDER, AND DELETE OUT OF ORDER, ETC., which I think they now can. 
+
+// Set the traverse order here in builder and in Tester
+
+// Limit number of character input etc. Use code from previous project.
+
+// Read the book and clean up your tables' getters and setters. ie., only need to get or set the
+// serlist, and not all of those other things like nulls and strings and names??
+// Not sure about this 5-9
+
+// 5-9 RE LastUtilityInBuilder, Ugh, I will need to allow for additional questions as well, oh my , that is terrible?
+		
+// Clean up all those latest classes and everywhere and make sure they
+// are added to OrganizeClassesAndMethods readme, and the Tester READ_ME
+		
+// 5-3 and after number display buttoncode read the book re tables and 
+
+// todo - There might be one or two more tables I did not drop, just in case.
+
+// Input validation for names, creator, etc.
+
+// Decide which Administrator (and other) buttons stay in Builder.
+
+
+
+
+INSTEAD,
+// I JUST LOOPED THE SERLIST in the Begin button stage AND POPPED UP A MESSAGE RE NULL QUESTION NOT BEING ALLOWED over in tester
+// but i forgot to clear all radiobutton selections , maybe builderGroup.clearSelection?
+		//but i don't want the student to evaluate or anything if the question is null/gibberish
+
+//  5-14 Explain in the readme that i can't figure out how to place those
+// radiobuttons precisely in the preview pane so commented them out instead, for now. 
+
+// If a question is deleted (null) what happens  before the final profs list is loaded? 
+// Double check. Or is that something the prof must check on his own pressing
+// that button re questions and exams? Did I do a loop test in the final profs list 2nd table to make sure? 
+
+
+DD CreateComboLabelsTable TO README - THIS IS A TESTER THING
+ADD CreateExamLabelsJListTable TO README
+ADD ExamComboLabels CLASS AND METHODS TO README
+ADD LoadInitComboLabels class and methods to Readme
+
+
+// Add to the readme, that there are two admin buttons at the very bottom 
+// that delete that master object on row one of the DISPLAY_EXAMS_QUESTIONS_TABLE_1
+// don't really need both. Clicking the second one dispays the new rowcount in that dangling textfield.
+
+//  5-17 BUT DO ALL THESE OBJECTS BELOW NEED TO BE AUTOCLOSEABLE AND WRAPPED IN A TWR?
+//  5-17 BIG QUESTION. DANGER DANGER. 	I'M WRAPPING DB CONNECTIONS IN ALL METHODS OF CLASSES THAT
+// ACCESS A DB, BUT MUST THAT CLASS ITSELF BE WRAPPED IN A TRYWITHRESOURCES????? No because
+by the time it returns there is nothing to close, you dummy.
+
+// FOR sat 5-16-26
+//WRAP EVERY RESOURCE that touvhes a db IN A TRY-WITH-RESOURCES
+// and implement autoclosable on classes etc. 
+
+// Danger - 5-16-26 Sat - Spencer Flat - I'm not inserting exam 2 (or 3 etc) in the first table. Table 2 might have 
+// 2 rows, but table 1 only one. FIX THIS - 
+
+
+// I think I found the problem. It's Java, need to update it because 
+// I can't even build a runnable jar in IntelliJ as Java says an exception
+// occured and my norton firewall won't allow the update, and when I disabled that 
+// the download was forever so need a faster connection to download latest jvm and
+// the latest eclipse/windowbuilder. 
+
+// so on 5-25 go back and clean up the latest intouch version. 
+
+// 5-25 I'm in the start from scratch java project in touch BrainBuilder5
+// and nothing was accessible because I had a module-info file which cleared
+// everything up when I deleted it. (not really) 
+
+
+// Begin THUR 4-23 Happy birthday, mom. 
+
+// NEXT DO THIS 5-9.
+
+
+// ###############################
+
+for display questions project, look in the InsertProfsFinalExamsTesterTable because I think I'm going to
+send a tripleouternested from there to DISPLAY_EXAMS_QUESTIONS_TABLE_1 instead of passing a master inner
+in there from the InsertInitialStudentsFinalGraded class via var displayExamsAndQuestions = new DisplayExamsAndQuestions();
+		displayExamsAndQuestions.setUpdateAdditionalQuestions(selectedExamIndex, listOfQuestionsSER); in
+		// the serialAdditionQ method thing.
+
+// I'm thinking 6-15 maybe create an outer and inner when creating the questions
+		// and send it to setUpdateAdditionalQuestions() of class DisplayExamsAndQuestions into 
+		// DISPLAY_EXAMS_QUESTIONS_TABLE_1 of class. I can get a masterOfCreatedExamsDisplayed using the
+		// getInitMasterCreatedExamsDisplayed() of same class, but probably not because I'm going to
+		// switch to using a triple-nested outer instead. 
+
+// Getting warmer. adding one additional question to exam 1 did not add it in the outerMasterListOfMastersSER
+so the problem might be with adding the additional question. !!!!! so track it from there. 
+
+// DANGER DANGER 6-15 THIS IS WRONG. i SHOULD BE STORING A outerMasterListOfMastersSER IN THE TABLE,
+	// NOT THE masterOfCreatedExamsDisplayed, AND THEN I can count the number of exams and questions
+	// therein so much easier. So maybe when the ....
+	// so create a new triplenested outerMasterListOfMastersSER to stick in the DISPLAY_EXAMS_QUESTIONS_TABLE_1
+	// of the DisplayExamsAndQuestions class... 
+	
+	
+// MAJOR DANGER NEED TO 6-14 MAKE CERTAIN THAT ONLY ONE ROW EXISTS IN 
+THE TRIPLE OUTER REVIEW TABLE. 
+
+
+HUGE MONSTER PROBLEM 6-15 When I added another question to exam 1 it wiped
+out exam 2 as though it did not exist. 
+Problem is I'm using ArrayList<ArrayList<QuestionSuper>> masterOfCreatedExamsDisplayed; to
+count number of exams created, not number of exams taken. I need to use the 
+ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER; to see how many
+masterOfCreatedExamsDisplayed are inside it. But where is it??? 
+
+// but you have to update the masterOfCreatedExamsDisplayed and update the 
+outerMasterListOfMastersSER with the masterOfCreatedExamsDisplayed 
+
+// *** so in InsertInitialStudentsFinalGraded class serialAdditionalListOfQuestionsSER() first 
+// get an outer: insertInitialOuterNestedPlaceholders.getOuterMasterListOfMastersSER()
+and then pull out the masterOfCreatedExamsDisplayed that is indexed to the right exam, and
+then UPDATE it with the new serlist with additional questions, and then UPDATE THE 
+outerMasterListOfMastersSER with the new masterOfCreatedExamsDisplayed inner at the right index,
+and then set the outer back in the STUDENTS_OUTERNESTED_TABLE4 with UPDATE. It doesn't go in the 
+DISPLAY_EXAMS_QUESTIONS_TABLE_1 which is where another version of the outer goes AFTER THE ACTUAL
+QUESTIONS HAVE BEEN CREATED OR ARE EMPTY. wHICH IS THE SECOND next PROJECT.  
+
+COMPLETEE DISASTER IN loadInitialOuterNested() WITH 3 HARDCODED OPTIONS. 
+BINGO  BINGO 
+6-15 so the problem now is that with exam 2 in InsertInitialOuterNestedPlaceholders class
+when I load up the exam 2, in loadInitialOuterNested() it INSERTS if outer is null, and
+if not null it SETS OR UPDATES BY CALLING setUpdateOuterMasterListofMastersSER(selectedExamIndex, masterListOfQuestionsSER,
+					outerMasterListOfMastersSER); in the same class. But the outer is not null cause
+it has exam 1 so it doesn't INSERT another exam but updates Exam 1
+But how to fix it? 
+
+// so do the num first. find out why additional questions aren't being
+added to outerMasterListOfMastersSER placeholders thing. And remember that 
+the questions display button can't use it so must add the masterOfCreatedExamsDisplayed
+to another outerMasterListOfMastersSER and stick that in the the DISPLAY_EXAMS_QUESTIONS_TABLE_1
+	// of the DisplayExamsAndQuestions class... 
+	
+	tHE SERLIST WITH ADDITIONAL  QUESTIONS MUST BE UPDATED OR SET IN THE masterListOfQuestionsSER
+	AND IT IS THE  masterListOfQuestionsSER that gets passed to the last table and updated
+	in the outerMasterListOfMastersSER
+
+
+// at the bottom of loadInitialOuterNested()
+// I might be able 6-16 to get rid of this. This should only be called
+			// when adding additional questions, not when initially loading.
+			setUpdateOuterMasterListofMastersSER(selectedExamIndex, masterListOfQuestionsSER,
+					outerMasterListOfMastersSER);
+		}
+
+// 6-17 DANGER DANGER	my second exam created is not showing up in the outer when
+// I click the display question buttons and elsewhere. so maybe the master is being updated
+// and not a new one inserted?  It is reflected as 2 in the finalgradedouter object, but not
+// in the outer saved to the display table.
+// that outer gets put in the display table in the class InsertInitialOuterNestedPlaceholders 
+// at the bottom of the loadInitialOuterNested builder. But if I create a second exam will that override
+// the outer in the display table and wipe out all of exam 1 stuff?
+
+
+// DONE - 6-4-26 THUR. but why isn't the 5th outernested table set to null? Because you aren't in the tester but
+// building the exams, dummy. 
+// So nevermind the below,  because each such method in
+// dbUtility updates the table row to null, and there are only 4 such tables, 
+// so forget what I wrote down here. 
+// I stand corrected. dbUtility has those 4 as separate methods like updateExamToNull1stTbl() !!!!
+// DANGER. 6-4-26 i CAN'T FIND IT NOW. WHAT HAPPENED??Big  refactoring project in (wrong, must be 
+// another class) dbUtility. 
+// iT'S GONE BUT builderDBTesterUtility.deleteRows(selectedExamIndex); DOES EXACTLY THAT SO
+// I MUST HAVE BEEN LOOKING AT AN OLD CLASS, MAYBE IN BADCLASSES FOLDER, BUT THIS WORKS NOW. 
+//I have 4 (of 10) hardcoded methods that set 
+// the row in the TESTER_EXAMS_LIST_4 to null, when there should be just one
+// method cause I'm using the selectedExamIndex. 
+
+// FIXED. 5-25 - I HAD TO LINK TO THE DB JAR IN THE BUILD PATH.
+// I'm in a mess now. java.sql.SQLException: No suitable driver found for jdbc:h2:~/test
+// even though I copied the h2 folder over and the driver jar is in there !!!
+
+// DONE - 5-13 I thought it was fixed but it's not. I deleted a question, so it's null, and then
+// recrerTED IT AND CLICKED cREATE eXAM AND IT LET ME WHEN IT SHOULD HAVE
+// DISDPLAYED A WARNING TO USE THE UPDATE Q INSTEAD. WHAT GIVES? maybe I forgot
+// to update the masterOfCreatedExamsDisplayed object in the DISPLAY_EXAMS_QUESTIONS_TABLE_1 ?
+// Trace the Delete Question button and see if the table is updated. That's probably the problem.
+
+// FIXED. 5-14. I REMOVED THOSE BUTTONS IN THE PREVIEW. I'M GETTING NULL WITH MY RADIOBUTTON PREVIEW SO FIX THAT.
+
+// DONE AND FIXED - I would need to show a list of all questions, say 10,
+// including those in between that are removed and now null. FIGURE THIS OUT BUT IT WILL BE REQUIRED
+// BUT IF THEY DON'T WANT THIS THING, WHY BOTHER??
+// Once questions are added to an exam you can't remove any of them. 5-3 NOT NECESSARILY. BEFORE ANY
+// QUESTIONS HAVE BEEN POPULATED IT SHOULD BE POSSIBLE TO UPDATE WITH THE REDUCED NUMBER OF EMPTY QUESTIONS,
+// BUT THAT WOULD BE A MAJOR HEADACHE. aND OF COURSE YOU CAN DELETE A QUESTION WHICH JUST SETS IT TO NULL
+// AND CAN BE RECREATED/POPULATED.
+
+// DONE AND FIXED - 5-9-26 HUGE PROBLEM IS SUBTRACTING QUESTIONS WHICH WOULD MESS WITH INDEXES AND ALL OF THAT. fOR
+// NOW DON'T LET THEM SUBTRACT, BUT ONLY ADD QUESTIONS? bUT DON'T I HAVE A REMOVE QUESTION 
+// BUTTON ALREADY? OUCH, OUCH, OUCH!!! 5-3-26 - ACTUALLY, YOU DO HAVE A DELETE QUESTION BUTTON AND THAT
+//SEEMS TO WORK FINE. 
+
+// Maybe it's safest to set these anyway? Where would I use it? in my numbers display, THIS MIGHT BE HOW INSTEAD CAN SOLVE 
+// THOSE VEXING PROBLEMS WHEN ADDING OR DELETING QUESTIONS. THIS WAY I CAN KEEP A RUNNING TALLEY OF EACH 
+// EXAM'S QUESTIONS. !!!!!! aND STORE THOSE Initial and Additional values in the FIRST ANON OBJECT !!!!!
+// not necessary now as I simply use the masterOfCreatedExamsDisplayed object in 
+// the DISPLAY_EXAMS_QUESTIONS_TABLE_1, so DONE
+
+// NO, THIS CAN'T BE DONE BECAUSE THE ANON HASN'T BEEN CREATED YET
+// CAVEAT, BUT HOW TO STORE THEM IN THE FIRST ANON OBJECT BEFORE THAT HAS EVEN BEEN CREATED? Where to store those values???
+// YES, DO THIS FOR CERTAIN.  ###################################################################################
+//BUT NOT SURE WHERE AND HOW I USE IT. Next, in Builder, set the initialNumberOfQuestions in a new method in QuestionSuper
+// and provide a getter. 
+
+// Also for additionalQuestions variable, see QuestionSuper
+// NOT NECESSARY NOW CAUSE I HAVE THE 2 NEW NUMBERS/EXAMS BUTTONS THAT
+// DISPLAYS THAT INFORMATION. Then, provide a textField that displays this number above the questions.
+
+// DONE AND FIXED 5-9-26DIFFICULT PROBLEM: But after adding the intial number of questions they need to be able to add or SUBTRACT more questions.
+
+//  I THINK DONE AND FIXED. 5-9 aBOUT THAT BUTTON RE THE SERLIST EMPTY QUESTIONS, THAT CAN'T BE CLICKED UNTIL THE FIRST QUESTION IS CREATED, SO
+// OR IS THIS TRUE? sEEMSD LIKE ONCE EXAM IS CREATED THEN THERE IS A serLIST THAT IS ALL NULL/EMPTYS WHICH IS
+// WHAT THE 2ND jlIST PULLS UP WHEN PROF GETS READY TO POPULATE. SO USE THAT SERLIST IN THAT EMPTY/NULL LOOP POPUP MESSAGE.
+
+//5-9 - DONE I THINK - So I definately need methods in QuestionSuper re initial, additional, and total questions
+// so I can control what initial/additional questions can be added (and subtracted?) 
+// Not necessarily as I fixed the numbers/questions buttons
+
+// DONE 5-9 - I THOUGHT I DONE THIS ONE AS WELL BUT DOUBLE-CHECK - Make sure the Update button (in Builder) etc is up to date and complete - unit test
+
+// DONE - BUT UPDATE WHAT??? the question? Probably. Make sure the Update button (in Builder) etc is up to date and complete - unit test 
+
+// DONE - ******* 5-3 - PROBABLY NEED TO do the number display buttoncode next as it's pretty big, actually 2 new buttons. 
+
+// DONE AND FIXED I THINK. 5-3-26 NEXT THE NUMBERS FIASCO
+// WHY USE THE LoadInitialDisplayQA CLASS AND THE DISPLAY_EXAMS_QUESTIONS_TABLE_1 AND 
+// THE masterOfCreatedExamsDisplayed OBJECT IF I CAN JUST USE THE outerMasterListOfMastersSER OBJECT 
+// IN THE STUDENTS_OUTERNESTED_TABLE4? NOPE, CAN'T USE THAT BUT CAN USE THE 
+
+// DONE AND IT WORKED 5-8 FRIDAY BIG PROJECTY RE DISPLAY - When creating the exam with placeholders, in the
+// 4th class/table initial load, call a new method in the DisplayExamsAndQuestions class which
+// passes the selectedExamIndex and serlist placeholder in and pull up a masterlist of serlists from the DISPLAY_EXAMS_QUESTIONS_TABLE_1
+// and if null then create one and add ten nulls that will hold the 10 exams (one serlist per) and then
+// set/update it with the passed-in serlist at the specified selectedExamIndex and set it in the 1st row
+// always. But can I always insert at the same row? Or does it always go to the next row? And, can I update
+// the first row that doesn't exist yet? Maybe if count of table == 1, then use update, else use insert? No,
+// from what I read in h2 commands insert inserts a row and update updates an existing row, so do an if/else.
+// So do a count of rows and an if/else of the sql statement to use, CAVEAT - but that requires two separate
+// schemes entirely, one for insert and one for update. 
+
+// DONE AND IT WORKED 5-8 FRIDAY Then once the 10 null master is inserted you can pass in the fresh serlist from the profsfinal db into
+// a new method that first gets the masterlist with 10 nulls, then set that serlist as per selectedExamIndex
+// in the appropriate slot, then write that new masterlist with update to the DISPLAY_EXAMS_QUESTIONS_TABLE_1. And
+// that's the master that ShowQuestionsPerExam methods use to loop through the serlist and preview.
+
+// DONE To build that 10-null masterlist use existing code somewhere in a loader placeholder? 
+// Use PrimeExamsQuestionsDisplay class with masterOfCreatedExamsDisplayed as the master
+// ***** But build 2 new methods, one for insert placeholder and one for update serlist into
+// the master
+
+
+
+// NOPE, CAN'T DO. clean those tables up and the calls ie. get rid of the superfluous.
+
+// DONE - FIX THE DELETE QUESTION BUTTON AND MAKE SURE IT WORKS, AND UPDATE THE listOfQuestionsSER
+// and use it to (I REMOVED THIS FIELD CAUSE NEEDED ROOM) reset the textFieldSelExVal display next to num button (which I might have removed, and yes  I did.)
+
+DONE I THINK. 5-1-26 BUT DID I DO THIS? DOUBLE-CHECK
+loadInitialMasterList.loadMasterList() uses Update, not Insert
+// Each of these next5 4 classes need new methods to update, not insert
+insertProfsFinalExamsTesterTable.setOriginalProfExams() uses Insert (bad)
+insertInitialGradedExPlaceholders.loadInitialFinalGraded() uses Insert
+insertInitialStudentsFinalGraded.setStudentsFinalGradedExams() uses Insert
+insertInitialOuterNestedPlaceholders.loadInitialOuterNested() uses insert // danger - the outernested object
+// always goes in the first row (1) cause only one student !!!
+
+// 5-3 DONE AND FIXED. DELETED QUESTIONS/NULL GET SET IN THE SERLIST AND DOWN THROUGH ALL 4 TABLES BUT NOT 
+// THE OUTERTRIPLENESTED OF COURSE. And if I set to null that null row must be propagated down the chain to the end? YERS, DONE.
+// Or just to the second table? 
+// But this delete exam set null part deals only with the creation process and
+// should have no bearing on tests taken. So need to delete exam
+// all the way, but just to the second table. 
+
+// PRETTY SURE DONE AND FIXED. So when taking an exam that has been deleted must validate
+// that it exists and the student isn't pulling up a null from the second table.
+
+// Unit test - DONE. Make sure when creating questions to find out if you can do q 2 before q 1 and that
+// q 2 is in the second index, not the first. very important (YES YOU CAN). But I'm pretty sure you can do that. And
+// that I have done that before. Try that with Exam 3 tomorrow Sat 5-2 which I have not populated with questions yet. 
+
+// DONE In the second JList change the loop fromm 3 to 10
+
+// FIXED. But they can't leave those deleted questions at null with nothing really in them cause . !!! true for the final 
+//product. Try it in tester and find out.
+
+// DONE - DON'T ALLOW NULL OR EMPTY QUESTIONS TO BE TESTED in the exam
+							// But this validation test won't work until the updated listOfQuestionsSER with
+							// the deleted question is set in all three other tables!! 
+							// So next, update the second table and see if that works.
+							for (int j = 0; j < listOfQuestionsSER.size(); j++) {
+								if (listOfQuestionsSER.get(j) == null) {
+									JOptionPane.showConfirmDialog(null, "Question number " + (j + 1) + " is empty",
+											"Empty Question", JOptionPane.OK_CANCEL_OPTION);
+								}
+							}
+
+// DONE AND FIXED - Try testing the serlist with a null question in a loop and warning BEFORE LAUNCH TO THE SECOND TABLES
+// and try that in the DeleteQuestions class +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+
+// DONE - 5-2 now that I am updating all four tables, I'm just guessing tables 3 and 4 were updated and
+// I'm not entirely certain. I'd have to desierialize those serlists to find out, maybe later? Although
+// it says it updated 1 row in both tables so I'm guessing it worked.
+
+// DONE - I updated the second table, which is good, and it worked and the student now Begins the newest exam where
+// the question has been deleted with a message, which is directed more to the professor to fix this and 
+// stick adnother question in there. But it's still throwing an exception so must bail out of that Begin Exam. 
+
+// FIXED - AFTER DELETING A QUESTION I FORGOT TO UPDATE ALL OTHER TABLES DOWN THE LINE, especially the second table !!!
+
+// DONE - FIXED. In Tester I SIMPLY ADDED A LOOP THAT LOOPS THROUGH THE SERLIST
+// AND IF THERE IS A NULL QUESTION POPS UP A MESSAGE AND EXITS
+// THE BEGIN BUTTON. So I tried an exam with null or nothing and it just pulled up that nothing gibberish (no nullpointer etc.) 
+// but the weird part was that clicking evalute gave me correct answer so I forgot to set the selection to nothing
+// when I deleted, right?
+
+// DONE AND FIXED - 5-2 DANGER DANGER, DELETING A QUESTION DOESN'T DELETE THAT QUESTION FROM THE SECOND TABLE SO THAT
+// ABSOLUTELY MUST BE SET IN SECOND TABLE with an update to null, or first update the 17 table 
+// and then the second table in order to catch that deletion, otherwise nothing changes for the student.
+// The problem starts with the DeleteQuestions class.  DONE. IT CALLS ALL OTHER TABLES AND
+// UPDATES THOSE (NOT THE OUTERNERSTEDTRIPLE. I FORGOT TO UPDATE ALL OTHER TABLES DOWN THE 
+// LINE, especially the second table !!! So I can't even test the null question until all tables
+// reflect that new deleted status. But after 17 table is updated, make all the calls to the other 
+// tables in one place with no chaining at bottom of methods etc. So find those methods that update those
+// tables next .....
+
+
+// FIXED. BIG DEAL - UNIT TEST - Make sure the Delete Question button works (IT DOES) , and that the indexes don't shuffle? 
+// (INDEXES DON'T SHUFFLE, JUST NULL AND CAN RECREATE THAT QUESTION) But if deleted 
+// leaves a null at the index, how to prevent nullpointers? (Not a proboem)BUT IF THOSE ANONS ARE ADDED IN THE FACTORY, AND NOT SET, THEN IT 
+// WILL NOT WORK. But I can add them out of order, why not delete them???(You can delete them out of order)
+// Try it. See what happens when you delete (It works good). The problem is that if you set a "deleted" question to null instead of removing it then
+// that risks null questions and nullpointers and all of that? Is this true?(Not true)  So check to see what actually happens. 
+// Note that it uses a DeleteQuestions class which I had forgotten about. 
+// deleteQuestions.deleteQuestion(selectedExamIndex, selectedIndex, listOfQuestionsSER);
+// Okay, I'm setting it to null with this deleteQuestion method. Hmmm. How does it affect
+// the builder when the nulled question is clicked in the second JList?? UNIT TEST
+
+// DONE - Actualy I'm just making deleting the first table rows like all the otherse, that is,
+// delete all the rows because deleting particular rows would really mess things up, 
+// so warn them that those buttons delete ALL THE ROWS !!!
+//  BIG DEAL 5-1-26 - NOT SURE WHAT ALL OF THIS MEANS BUT IT LOOKS IMPORTANT SO DEAL WITH IT, LATER.
+//  4-26 deleteRows() in dbUtility class is all messed up 
+// But deleting an exam as in innerMasterListOfQuestionsSER in the outernested should set null, not delete, so
+// as to preserve the index order, but that is a Builder issue, not Tester, so go there
+// but once null is set don't let anyone call it and throw a null pointer, and it must
+// allow for subseqeuent creation of another exam structure and populating questions etc. !!!!!
+
+// DONE 5-1 - Relocate the Exam Labels button from the first/top spot?
+
+// DONE AND FIXED 5-1 , NOT EXACTLY THE SAME AS THE ADDITIONALQUESTIONS BUTTON
+// You are right, this is a problem, but just copy the similar code from 
+// the add additional questions section because hitting Enter should
+// also just return null which should bring up a message like the other.
+// Same with Okay and Cancel, except that Okay returns a "" String, and Cancel returns nullpointer,
+// and simply hitting Enter also returns a "" String.  
+//After clicking Create an Exam you can't just click Enter cause it won't pop up the
+// message like with clicking ok, so add a dialog message to whatever happens when you just click Enter.
+//which is kind of important cause that's what people do all of the time.
+// That's right it throws a NumberFormatException so need to program hitting Enter so
+// it forces it to quit and not run anything, or message to enter a number (not more than ___)
+
+// NOT A PROBLEM IF YOU THINK ABOUT IT. Prohibit entering any data without first going through both jlists !!!! Meaning
+// I think, can't just click a question without the exam first. Bug. Not really a
+// problem because you can't even see the questions listed until you select the exam
+// from the first JList.
+
+// DONE - If I click on question 2 but only have created one question it throws indexoutofbounds exc.
+
+// DONE - Also, make it so they can only click Create an Exam for ie. Exam 1 just one time, and if
+// they try to do it again like I did, they get a popup that "This exam already exists"
+
+// FIXED AND DONE - %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+// NOTHER BIG PROBLEM WED 3-25, ONCE YOU CREATE AN EXAM YOU CAN'T CREATE ANOTHER EXAM IN ORDER
+// TO ADD QUESTIONS, which is what I was doing, dummy!. mUST USE THE ADDITIONAL QUESTION BUTTON, so the
+// SOLUTION IS to not let them create another EXAM 1 after it has been created once
+// and you can do that with an if that tests if it has already been created, BUT HOW ???????????
+// %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+// FIXED I BELIEVE, except for the masterOfCreatedExamsDisplayed part. TRY IT. 
+// MAYBE NOT DONE BECAUSE I GET MESSAGED IF THE EXAM HAS NOT BEEN CREATED, 
+// BUT DON'T KNOW WHAT HAPPENS IF EXAM CREATED BUT QUESTION HAS NOT. SO
+// UNIT TEST THIS. , I THINK FRIDAY 3-27-26 - If I click on a Question which hasn't been 
+// created I get an indexoutofbounds exc. So
+// I need an if with dialog message that checks how many questions have been created, probably checking
+// masterOfCreatedExamsDisplayed to compare less than etc. Say what? 
+
+// MAYBE NOT NECESSARY, MOVE BELOW. SAY WHAT? STILL CONFUSED. important. No, this can't be right. Doesn't LoadInitialMasterList deal with
+// the placeholder which gets sent down the line, and InsertInitialStudentsFinalGraded deals with 
+// the second to last table that calls the outernested bbiggie? FRI 4-3 IMPORTANT!!  Create the masterListOfQuestionsSER = new ArrayList<ArrayList<QuestionSuper>>(); in 
+// the LoadInitialMasterList class (save to table 17) instead of the InsertInitialStudentsFinalGraded class and pass 
+// that (which that?)down the line, pretty sure. This allows me to tell which exams exist and can therefore
+// delete them easier? I think so. 
+
+// DONE, I THINK. CHECK THE README LISTS - DANGER DANGER DANGER - make two lists of all these classes!!!!1
+//  YOU HAD BETTER FIGURE THIS ONE OUT. YOU NEED TO CLARIFY WHICH CLASSES LOAD THE 
+// PLACEHOLDERS, AND WHICH CLASSES LOAD THE EXAMS CREATED AND TAKEN AND EVENTUALLY
+// SAVED TO THE OUTER-TRIPLE-NESTED
+// So make a list of the placeholder classes
+// and then another list that creates exams, saves them to profsfinal, and those classes the
+// student uses to take profsfinal, take the exam, and grade it and finally stuff in outer-triple-nested.
+
+// FIXED ON 4-30 - IN THE additional questions button, numberOfAdditionalQuestions = Integer.parseInt(numOfQuestions); THROWS NUMBERFORMATEXC
+// IF NULL SO CAN'T JUST CLICK IT AND MUST CHECK FOR NULL WITH IF - 
+
+// DONE - Make a list of the additional questions chain of classes
+
+// NEXT HEADACHE 4-254-26
+// DONE -  AND, TRY CREATING Exam 2 to see if it works!!
+
+// FIXED I'M QUITE CERTAIN BUT UINIT TEST IT LATER. So, 4-27, here is the problem as I see it. When I delete/updateNull Exam 1 it leaves me with 
+// that row in table 17 but the serlist value is null. And I think tables 2 - 4 are the same and still have
+// that row. But if I want to put another exam in that null row I can't click Create an Exam because
+// that adds a second row down the line with placeholders, and the factory throws indexoutofbounds.
+// So I need another button that lets me update that existing first row without adding another.
+// I would basically be setting/updating that null with a different serlist, right?
+
+// OH  MAN .....
+// DONE AND FIXED I THINK 4-27 MON - need a new button that creates a new exam (serlist) but not a new row.
+// the button captures number of questions
+// A listOfQuestionsSER is created and populated with that many nulls which are placeholders
+// then that newly created listOfQuestionsSER with null placeholders is set/updated in the 17 table column
+// and then a message says a new exam 1 structure was created,
+// and then I should be able to create my questions. So should I
+// create a new class? It's tempting. 
+
+//  DONE I'M PRETTY SURE BUT UNIT TEST IT. - OUCH 4-27 - Huge problem. I was able to delete/update null but can't create another exam at that
+// spot cause in factory the serlist is null so can't set anything in there, so now what?
+// sO THE EXAM HAS ALR3EADY BEEN CREATED, BUT CAN I POPULATE A QUESTION?? Nope. nullpointer in the factory
+// Maybe test if serlist is null, then if it is add a thing to it ...
+
+// DONE - FIXED - for 4-24 Friday, I think I got the initial and additional questions thing fixed 
+// but double-check and run it through its paces. TRY NOT ENTERING ANYTHING (NULL)
+// IN THE ADDITIONAL QUESTIONS POP-UP AND SEE IF THAT ALSO WORKS. YIPEE!! SO FAR
+
+// FIXED - NOTHER HUGE PROBLEM
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// FIXED - BUT DANGER, DANGER, WHEN I add additional questions the first table still shows only 1 row, but
+// all subsequent rows show 2 rows, which means I'm adding or inserting, not setting. 
+
+// I think DONE AND MY REASON MAKES SENSE?  4-28 danger danger (I'm in the second t0 last additionalquestion method) I don't think I even need 
+// this masterListOfQuestionsSER and neither the listOfQuestionsSER nor the
+		// masterListOfQuestionsSER even need to be passed into the last method for the outer because it 
+		// already has that empty innerMasterListOfLists that will be filled when exams are graded and final, right?
+
+// FIXED - DROVE ME CRAZY CAUSE IT DOESN'T MAKE SENSE AND CANCEL RETURNS NULL IF NOTHHING ENTERED
+// AND SOMEHOW OKAY RETURNS "" AND NOT NULL WHEN NOTHING IS ENTERED SO 
+// SOLUTION WAS TO TEST IF IT IS NULL AND IF NULL DON'T PARSE AND THAT WORKED LIKE THE FOLLOWING:
+if (numOfQuestions != null) {
+						numberOfAdditionalQuestions = Integer.parseInt(numOfQuestions);
+					}
+DONE - Next - 4-28 - if I click add a second question but have the first question selected, or even
+ // if not selected it throws an Index 0 out of bounds for length 0 exception, so set a warning message? Actually ... when 
+ // clicking Okay but not entering a number a message appears warning a number must be entered within a range. So, 
+ // what exactly is the problem? Did I fix this but n ot the Cancel part with the NumberFormatException: re null?
+ // Yes, this also is a problem when I click Cancel it always throws java.lang.NumberFormatException: Cannot parse null string
+ // and so why is it trying to format null with Cancel??
+
+// DON'T - 4-28 TUE NEXT BIG PROJECT MIGHT BE TO CALL THE INITIAL PLACEHOLDER CLASSES HERE
+// nO, DON'T - INSTEAD OF CHAINED AT THE BOTTOM OF EACH SUCH METHOD, RIGHT? So look at each
+// such method and see if that can be done re passing the appropriate and necessary arguments.
+// but maybe only automate the first 
+
+// NO, DON'T, CHANGED MY MIND. and do the same for the addadditionalquestions methods for the original placeholders
+
+
+// // 4-28 No, never mind, there is too much code that needs to stay in those methods,
+// especially the first one so leave it as is - referring to combining all the addadditonalquestions calls 
+// in the addadditonalquestions button. There is too  much convoluted code for the first one, so leave as is.
+
+//  DONE - TUE 4-28 - Next big project then is to add additional questions TO THE recreate exam part (ugh)
+// jUST CLICK THE EXISTING ADD ADDITIONAL QUESTIONS BUTTON
+
+// THUR 4-23 CLICKING additional questions button IF NOT EXAM SELECTED THROWS NULL POINTER, FIX WITH IF
+
+
+//DONE - FIXED  Duplicate? - ALSO, DON'T FORGET THAT I get a nullpointer if I click a question before it is created, even
+// if I select an exam first. Need to prevent that with an if and dialog message
+
+
+
+
+--------------- from Create an Exam with many exceptions and not good							
+	var insertInitialOuterNestedPlaceholders = new InsertInitialOuterNestedPlaceholders();
+				try {
+					outerMasterListOfMastersSER = insertInitialOuterNestedPlaceholders.getOuterMasterListOfMastersSER();
+				} catch (ClassNotFoundException | IOException | SQLException e1) {
+
+					e1.printStackTrace();
+				}
+				NoSelection: BreakOnlyOneExam: NotSequential: if (selectedExamIndex == null) {
+					// Always show this message
+					JOptionPane.showMessageDialog(null, "Remember, you must first select an exam \n"
+							+ "sequentially (first, Exam 1, then Exam 2 etc.)");
+					break NoSelection;
+				} else if (outerMasterListOfMastersSER != null && 
+						selectedExamIndex > outerMasterListOfMastersSER.size()){					
+
+					JOptionPane.showMessageDialog(null, "Select an exam to be created sequentially \n"
+												+ "(first, Exam 1, then Exam 2 etc.) \n"
+												+ "Once your exams are created you may delete them"
+												+ "and re-create them in any order");
+					break NotSequential;
+					
+					
+				} else if (selectedExamIndex != null) {
+						for (int i = 1; i <= 10; i++) {
+							if ((outerMasterListOfMastersSER != null)
+									&& outerMasterListOfMastersSER.size() > selectedExamIndex && // this fixed it. What?
+									(outerMasterListOfMastersSER.get(selectedExamIndex) != null)
+									&& (selectedExamIndex == i - 1)) {
+								JOptionPane.showMessageDialog(null,
+										"You may only create an exam one time. \n"
+												+ "To add additional questions to this created \n"
+												+ "exam click 'Add Additional Questions'.");
+								break BreakOnlyOneExam;
+							}
+						}
+						// This doesn't make sense
+					} else if (outerMasterListOfMastersSER == null || outerMasterListOfMastersSER.size() > 0) {
+						numOfQuestions = JOptionPane
+								.showInputDialog("Enter the number of questions for this exam - Max 10");
+						
+						else if ("".equals(numOfQuestions)) {
+							JOptionPane.showMessageDialog(null, "You must enter a number (Max 10) corresponding to"
+									+ " the number of questions you desire");
+						} else if (numOfQuestions != null) {
+							initialNumberOfQuestions = Integer.parseInt(numOfQuestions);
+							var loadInitialMasterList = new LoadInitialMasterList();
+							try {
+								listOfQuestionsSER = loadInitialMasterList.loadMasterList(selectedExamIndex,
+										initialNumberOfQuestions, selectedValue, listOfQuestionsSER, 0);
+							} catch (SQLException | IOException | ClassNotFoundException e1) {
+								e1.printStackTrace();
+							}
+							var dbaseUtility = new dbUtility();
+							try {
+								System.out.println(dbaseUtility.rowCountEQDisplay() + " rowCountEQDisplay xczxasz ");
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}
+							var dbUtility = new dbUtility();
+							try {
+								Integer countingRows = dbUtility.getRowCount();
+								textFieldRowCount.setText(countingRows.toString());
+							} catch (ClassNotFoundException | IOException | SQLException e1) {
+								e1.printStackTrace();
+							}
+							var builderDBTesterUtility = new BuilderDBTesterUtility();
+							try {
+								Integer countingRows = builderDBTesterUtility.getRowCount();
+								textFieldProfNumRows.setText(countingRows.toString());
+								Integer countingGradedRows = builderDBTesterUtility.getGradedRowCount();
+								textFieldGradedNumRows.setText(countingGradedRows.toString());
+								textFieldStudentNumberRows
+										.setText(builderDBTesterUtility.getRowCountStudentsFinalGraded().toString());
+								textFieldOuterRowCount
+										.setText(builderDBTesterUtility.getRowCountOuterNested().toString());
+							} catch (ClassNotFoundException | IOException | SQLException e1) {
+								e1.printStackTrace();
+								
+							}
+						}
+					}//if
+				}
+			}						
+
+
+
+

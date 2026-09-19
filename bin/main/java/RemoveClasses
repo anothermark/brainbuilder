@@ -1,0 +1,73 @@
+Remove classes
+
+
+DANGER WARNING. I'M ACTUALLY USING THE RemoveClassesBuilder version instead
+of this one. 
+
+// List of classes not used and to be removed in package and Explorer directories
+// Or better yet, make this contain those classes retained and used, but double-check each one, and
+// never delete but move somewhere and back them up. Danger danger.
+
+// MAKE A LIST OF ALL TABLES USED, UP TO DATE!!! 
+
+Packages:
+
+BrainBuilder4:
+KEEP THESE:
+BrainBuilder3
+BuilderDBTesterUtility esp. STUDENTS_OUTERNESTED_TABLE4 and Students_Graded_Exams_Table2 and 
+	FINAL_GRADED_EXAMS_2 and TESTER_EXAMS_LIST_4 and FINAL_GRADED_EXAMS_2 
+CreateBuilderExamsTable1 builds the BUILDER_EXAMS_LISTS_17 table
+dbUtility (I think) (gets row count, deletes rows) especially for BUILDER_EXAMS_LISTS_17
+GetListFromDB especially re BUILDER_EXAMS_LISTS_17
+GetProfListFromDB esp. TESTER_EXAMS_LIST_4
+GetRowData esp. EXAMLISTS4 but where is this used? Confused.
+InsertInitialGradedExPlaceholders esp. FINAL_GRADED_EXAMS_2
+InsertInitialOuterNestedPlaceholders esp. STUDENTS_OUTERNESTED_TABLE4
+InsertInitialStudentsFinalGraded esp. Students_Graded_Exams_Table2, but what is Students_Graded_Exams_Table1 near the bottom?
+InsertlistOfQuestionsSERtoDB (where is this used?) esp. BUILDER_EXAMS_LISTS_17 
+InsertProfsFinalExamsTesterTable esp. TESTER_EXAMS_LIST_3 but don't use populateInitialRowsTester(),
+	but instead use setOriginalProfExams() esp. TESTER_EXAMS_LIST_4
+QuestionFactory (Big Time class)dbTest
+QuestionSuper needs a lot of work still, heart of app
+UpdateProfsFinalList ESP. TESTER_EXAMS_LIST_4
+
+
+
+REMOVE THESE:
+dbTest
+SaveEx1QuestionsSERtoDB
+
+
+
+
+
+DON'T KNOW YET IF THESE STAY OR GO:
+CreateExamListTable builds EXAMLISTS4
+CreateExTableOrigFinished builds TESTER_EXAMS_LIST_4
+CreateGradedFinalTable_2 builds FINAL_GRADED_EXAMS_2
+CreateStudentsGradedExamsTable builds Students_Graded_Exams_Table2
+CreateStudentsOuterNestedTable builds STUDENTS_OUTERNESTED_TABLE4
+CreateTable builds NAMES14 (probably not used)
+CreateTable2 builds NAMES1 (probably not used)
+LoadInitialMasterList esp. BUILDER_EXAMS_LISTS_17
+PopulateTableRows esp. NAMES14 table (probably not used) 
+PopulateTableRows2 esp. NAMES1 table (probably not used)
+RetrieveRowData esp. NAMES14 table
+RetrieveRowData2 esp. NAMES1
+
+
+
+
+
+
+
+
+
+BrainTester4:
+
+
+
+
+
+

@@ -1,0 +1,8 @@
+This stand-alone BrainBuilder (Builder) application works in conjunction with the BrainTester (Tester) app.
+The Builder creates exam questions and answers in essentially multiple-choice format, which can also be used for
+true/false questions, and a student takes these exams in the Tester. The Tester is not merely a test-taking program you might find in a university environment, but much more - an enhanced study and learning tool, something that is intended to be used 
+repeatedly to better learn a particular subject and improve one's knowledge base in that field. Repetition
+is the key. Unlike a regular multiple-choice testing program which simply evaluates a student's knowledge of a particular 
+subject and merely returns a grade, this program previews each graded question and (should) provide a wealth of feedback 
+information explaining why a particular answer is wrong or right.
+

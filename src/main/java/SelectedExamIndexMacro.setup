@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<setup:Macro
+    xmi:version="2.0"
+    xmlns:xmi="http://www.omg.org/XMI"
+    xmlns:setup="http://www.eclipse.org/oomph/setup/1.0"
+    name="selectedexamindex"
+    label="selectedExamIndex">
+  <description>The selectedExamIndex macro provides cool stuff.</description>
+</setup:Macro>

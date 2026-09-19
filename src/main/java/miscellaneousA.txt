@@ -1,0 +1,14 @@
+java -jar firstRunJarTesting1.jar
+
+firstRunJarTesting1
+
+org.locationtech.jts.geom.Geometry
+
+jakarta.servlet.httpHttpServlet can't find class file
+
+javax.servlet.http.HttpServlet
+PS C:\Users\mark\IdeaProjects\JuneOne2\out\artifacts\JuneOne2_jar> java JuneOne2.jar
+
+jakarta.servlet-api-6.2.0-M2.jar
+
+I have two related java projects in eclipse with each having a main class, but only one can be exported as a runnable jar and work

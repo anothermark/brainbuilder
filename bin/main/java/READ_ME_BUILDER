@@ -1,0 +1,704 @@
+
+Licenses: 
+Copyright: MKS (2025 - 2026)
+
+Brain Builder READ_ME_BUILDER File. Classes, tables, methods, and instructions on their use and deployment.
+This Java 11 Swing app was designed and created in the open-source Eclipse IDE using WindowBuilder
+and employs an H2 Database shared with the Brain Tester app. The database is located in the Users 
+directory (Windows), not the working directory. Also, a common convention in both applications
+is to name a class reference variable the same as the class but with a lower-case first letter, such as: 
+DisplayExamsAndQuestions displayExamsAndQuestions = new DisplayExamsAndQuestions();
+displayExamsAndQuestions.getOuterExamsDisplayed();
+
+
+Table of Contents:
+	OVERVIEW - The Big Picture
+	THE GRAPHICAL USER INTERFACE (GUI)
+	WHICH TABLES ARE IN THE DATABASE?
+	CLASSES THAT CREATE H2 DATABASE TABLES
+	SHOW DATABASE TABLES CURRENTLY USED
+	CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS
+	CREATING AN EXAM STRUCTURE 
+	ADDING ADDITIONAL QUESTIONS
+	DELETING AN EXAM STRUCTURE (Setting values to null)
+	RE-CREATING A DELETED EXAM
+	DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (empty) QUESTIONS CREATED
+	POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question)
+	RELEVANT CLASSES WITH RESPECT TO "Create Exam Question", WHEREBY QUESTIONS ARE POPULATED WITH DATA 
+	METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly)
+	UPDATING QUESTION AND ANSWER FIELDS AFTER CREATION
+	DISPLAY QUESTIONS IN THE SELECTED EXAM
+	DELETING YOUR QUESTIONS
+	UTILITY CLASSES FOR DELETING TABLE ROWS, RETRIEVING TABLE ROW COUNT & listOfQuestionsSER
+	BUILDER FAQ - CHANGING THE BUILDER FAQ TEXT
+	HOW TO MODIFY AND CUSTOMIZE EXAM TITLES/LABELS IN THE 'All Available Exams' JLIST
+	WHY NO UML CHART?  
+	MISCELLANEOUS
+	TODO LIST OF THINGS TO DO
+	*ADMINISTRATOR ONLY BELOW THIS LINE ISSUES
+
+
+OVERVIEW - The Big Picture ---------------------------------------------------------
+
+	This single-user stand-alone BrainBuilder (Builder) application works in conjunction with the BrainTester (Tester) app.
+	The Builder creates exam questions and answers in essentially multiple-choice or true/false format, and a student takes 
+	these exams in the Tester. The Tester is not merely a test-taking program you might find in 
+	a university environment, but much more - an enhanced study and learning tool, something that is intended to be used 
+	repeatedly to better learn a particular subject and improve one's knowledge base in that field. Repetition
+	is the key. Unlike a regular multiple-choice testing program which simply evaluates a student's knowledge of a particular 
+	subject and merely returns a grade, this program reviews each graded question and (should) provide a wealth of feedback 
+	information explaining why a particular answer is wrong or right. 
+	
+	Builder and Tester use Swing, a GUI toolkit for Java, and the embedded H2 database. Approximately 37 classes are used
+	in Builder (src.main.java), and ten (10) database tables. The main super class QuestionSuper houses methods 
+	and state related to each exam's questions and answers. Anonymous (anon) subclasses of QuestionSuper are used
+	extensively. 	
+	
+	ArrayLists are relied upon to a great degree in these programs. The primary list is referenced by the variable listOfQuestionsSER 
+	which both apps use often. It contains an exam's anon questions - an ArrayList of QuestionSuper 
+	anonymous objects. A 'question' in this regard refers to or 'contains' such things as 
+	exam title, question topic, the actual question with suggested answers, and after the question 
+	is evaluated or graded, correct answers with detailed explanations regarding each option. 
+	
+	A listOfQuestionsSER might be contained within a master list of listOfQuestionsSERs. And that master list might
+	in turn be contained within another outer list of such lists. And it is primarily these list objects, depending on the
+	situation, which are written to an H2 database table (serialized) and read back (deserialized). To illustrate, once 
+	a student has finished a graded exam the graded listOfQuestionsSER questions are added to a master list. Each such 
+	master list represents one particular exam and contains one or multiple listOfQuestionsSERs. A student may take the
+	same exam multiple times and they are added (inserted) sequentially to the master list. That master list in turn is added
+	to the outer list, a list of inner master list exams. That one outer list is thus triple-nested which
+	makes it convenient to retrieve exams, display their contents and review one's answers, all from one object. 
+	
+	You begin by creating an exam structure (Create an Exam) which initially populates four (4) tables with an ArrayList 
+	(listOfQuestionsSER) holding null values that will eventually be populated with anonymous QuestionSuper objects.
+	At this initial stage a triple-nested ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER is inserted into
+	a 5th table. This outerMasterListOfMastersSER holds 10 (for now) ArrayList<ArrayList<QuestionSuper>> masterListOfQuestionsSER objects, 
+	each such nested ArrayList representing one exam. And each such exam will hold multiple final graded exams 
+	as an ArrayList<QuestionSuper> listOfQuestionsSER, a list of the QuestionSuper objects. Initially the outerMasterListOfMastersSER
+	contains only 10 masterListOfQuestionsSER exams which in turn contain nothing but serve only as placeholders for
+	future final graded listOfQuestionsSER exams.
+	
+	Finally, when the first exam is created (Exam 1) a similar outerMasterListOfMastersSER containing 
+	10 masterListOfQuestionsSER lists, which contain exactly one, and only one, listOfQuestionsSER is inserted in the 
+	DISPLAY_EXAMS_QUESTIONS_TABLE_1, explained in further detail below. These listOfQuestionsSER lists each begin 
+	with 10 null placeholders which will eventually be replaced with created questions. 
+	
+	
+	Sometimes a list object, such as a triple-nested outerMasterListOfMastersSER, is set only - and every time - in 
+	the first row of a table that should only contain that one row. When working with these tables beware of 
+	using SQL's 'INSERT', and removing particular rows, because that shifts indexes of other entries up or down 
+	as the case may be and is entirely unworkable. Bugs caused by inappropriate use of SQL's INSERT versus UPDATE 
+	commands were common in development. Inserting (adding a row) when you should be updating (replacing an object 
+	in a row) will throw everything off. You want consistent rows for objects that stay where they were created 
+	so you can rely on the indexes. 
+		 
+	When a question is populated/created the GUI's field values that you type or copy and paste in are captured and 
+	assigned to an array which is passed to the QuestionFactory class. The factory in turn sets those array values 
+	into an anonymous question, which is added to a listOfQuestionsSER, which is then passed to the 
+	InsertlistOfQuestionsSERtoDB class which sets it in the first of four (4) cascading tables, the BUILDER_EXAMS_LISTS_17 table. 
+	What is meant by cascading here is that at the bottom of the relevant method there is a call to the next method 
+	where the listOfQuestionsSER is inserted or updated in the next table. One method calls the next method which inserts or 
+	updates the next table, of which there are four. It is important to note that the listOfQuestionsSER lists inserted/updated
+	in the first four tables are NOT placed in the 5th table, the STUDENTS_OUTERNESTED_TABLE4 table. Only after the student
+	has taken the exam is it placed in this 5th table. 	
+	 
+	From the first table, the instructor's final product of created questions (listOfQuestionsSER) is sent to the next - second - profs final 
+	table, TESTER_EXAMS_LIST_4. The student, then, in the Tester app retrieves this exam from this second table and 
+	takes the test and, after evaluation, it is sent via method calls 
+	to the FINAL_GRADED_EXAMS_2 table, and then Students_Graded_Exams_Table2. Again, that final graded exam eventually ends up 
+	in the fifth (5th) triple-nested outerMasterListOfMastersSER list in the STUDENTS_OUTERNESTED_TABLE4, which is used to preview questions 
+	and answers, etc., a vital step in this learning process.   
+ 
+ THE GRAPHICAL USER INTERFACE (GUI) ---------------------------------------------
+
+	Much of the GUI is self-explanatory on its face. BrainBuilder3 (with main()) is the primary class with over 3,300 lines
+	of source code, far too much to explain in detail here. Most of the code is contained within the
+	class constructor. In the Design view of WindowBuilder, simply double-click a button, for instance, and
+	it will take you to an actionPerformed() method wherein you can begin to track the logic. For example, 
+	'Number of Created Exams/Questions' retrieves an outerMasterListOfMastersSER list object through the 
+	DisplayExamsAndQuestions class and uses it to get a listOfQuestionsSER and displays how many
+	exams have been created, and how many available questions per such exam exist. That information
+	is then displayed in the preview pane. The contents of BrainBuilder3 will be covered in more detail as 
+	it relates to the below sections.
+
+
+CLASSES THAT CREATE H2 DATABASE TABLES --------------------------------------------------------
+
+These TEN (10) classes create tables used in the exam building and student testing phases, all of which are 
+	created in Builder via buttons in the first column located in the yellow ADMINISTRATOR ONLY BELOW THIS LINE section.
+	How many tables are in the database? Run BrainBuilder3, click 'ShowTables' near the bottom center of your 
+	screen and numerous db tables will appear in the preview pane. The displayAllTables() method is called 
+	in the DbTableUtility class. The developer-created tables used here are listed at the bottom 
+	of this preview, beginning with BUILDER_EXAMS_LISTS_17. 
+		
+	To create a new table use the buttons in the 1st column (beginning with CreateOrigTable) under the 
+	section entitled 'Administrator Only Below This (yellow) Line'. Simply give your new table a new
+	version number in the method code (if necessary), ie., from TESTER_EXAMS_LIST_4 to TESTER_EXAMS_LIST_5. It's 
+	rather straight forward and painless.
+	
+	These two applications gradually evolved, piece-by-piece, which helps explain ten (10) individual
+	tables. In hindsight, looking at the final product, these tables probably could, and should, be 
+	combined in one or two tables. 
+	
+CLASS: CreateBuilderExamsTable1 - BUILDER_EXAMS_LISTS_17  table 
+CLASS: CreateExTableOrigFinished - TESTER_EXAMS_LIST_4 (prof's final)
+CLASS: CreateGradedFinalTable_2 - FINAL_GRADED_EXAMS_2
+CLASS: CreateStudentsGradedExamsTable - Students_Graded_Exams_Table2
+CLASS: CreateStudentsOuterNestedTable - STUDENTS_OUTERNESTED_TABLE4
+CLASS: CreateOuterMasterAnswers_Table1 - OUTER_MASTER_ANSWERS_TABLE_1 - Contains the Crown Jewels, the instructor's correct answers.
+
+CLASS: CreateDisplayExamsQuestionsTable - DISPLAY_EXAMS_QUESTIONS_TABLE_1 - For displaying number of exams and questions
+		in the Preview Pane, and other things.
+CLASS: CreateComboLabelsTable - EXAMS_COMBO_LABELS_1 - Used in modifying the JComboBox selectable exams in/from  
+		the Tester, not the Builder app.
+CLASS: CreateExamLabelsJListTable - EXAMS_JLIST_LABELS - Used in the creation/modification of exam labels in the 
+		first JList, ie., Exam 1. 
+CLASS: CreateEvaluationTable - CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 - stores one 
+		ArrayList<ArrayList<Boolean>> gradeOnceListOfListsSER;	
+
+
+FIVE (5) CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS ---------------------------------------------
+	As explained in the above overview, when creating an exam, an exam structure with initial questions 
+	is first created using placeholders in a cascading fashion. 
+	
+
+1) CLASS: LoadInitialMasterList class - BUILDER_EXAMS_LISTS_17 table
+METHOD: loadMasterList() creates listOfQuestionsSER placeholder, writes it to the db, also calls chained 
+		insertProfsFinalExamsTesterTable.setOriginalProfExams() at bottom of method
+		and passes in (null) listOfQuestionsSER placeholder.
+METHOD: serializeListOfQuestionsSER() INSERTS listOfQuestionsSER into BUILDER_EXAMS_LISTS_17		
+METHOD: serialAdditionalListOfQuestionsSER() UPDATES the BUILDER_EXAMS_LISTS_17 table when adding additional questions.
+METHOD: deSerializeListOfQuestionsSER() returns a listOfQuestionsSER from BUILDER_EXAMS_LISTS_17
+
+
+2) CLASS: InsertProfsFinalExamsTesterTable class - TESTER_EXAMS_LIST_4 table
+		Inserts the prof's final exam/questions into the second table TESTER_EXAMS_LIST_4, from where the 
+		student retrieves it when beginning the test.
+METHOD: setOriginalProfExams() INSERTS listOfQuestionsSER in the TESTER_EXAMS_LIST_4 table, and also calls 
+		'chained' insertInitialGradedExPlaceholders.loadInitialFinalGraded() at bottom.
+METHOD: serialAdditionalListOfQuestionsSER() UPDATES the TESTER_EXAMS_LIST_4 table when adding additional questions.
+
+
+3) CLASS: InsertInitialGradedExPlaceholders class - FINAL_GRADED_EXAMS_2 table 
+		INSERTS listOfQuestionsSER into FINAL_GRADED_EXAMS_2 table using loadInitialFinalGraded() 
+		while the student is taking the exam. 
+METHOD: loadInitialFinalGraded() serializes and sets listOfQuestionsSER into FINAL_GRADED_EXAMS_2 table, and 
+		also at the bottom of the method calls insertInitialStudentsFinalGraded.setStudentsFinalGradedExams.
+METHOD: serialAdditionalListOfQuestionsSER() UPDATES FINAL_GRADED_EXAMS_2 table when additional questions are added.
+		Chained insertInitialStudentsFinalGraded.setStudentsFinalGradedExams() is called at the bottom
+		of both methods.
+
+4) CLASS: InsertInitialStudentsFinalGraded - Students_Graded_Exams_Table2
+METHOD: setStudentsFinalGradedExams() INSERTS a listOfQuestionsSER into Students_Graded_Exams_Table2.
+METHOD: setUpdateOuterMasterListofMastersSER() UPDATES a listOfQuestionsSER into Students_Graded_Exams_Table2.
+
+5) CLASS: InsertInitialOuterNestedPlaceholders - STUDENTS_OUTERNESTED_TABLE4. Is important and the final resting place 
+		for a student's graded exams. ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER
+		is serialized and saved. It consists of three ArrayLists which are nested within each other. An outer, an inner, and
+		the listOfQuestionsSER. This object allows the student to retrieve graded exams and review them. Each  
+		innerMasterListOfLists index represents an exam, which can be taken multiple times by the student. The most recent
+		exam is displayed in the horizontal review table in Tester. 
+METHOD: insertInitialOuter() - 	INSERTS outerMasterListOfMastersSER INTO STUDENTS_OUTERNESTED_TABLE4.	 
+METHOD: loadInitialOuterNested() - If necessary adds innerMasterListOfLists to outerMasterListOfMastersSER object, 
+		and INSERTS outerMasterListOfMastersSER into STUDENTS_OUTERNESTED_TABLE4. 
+METHOD: getOuterMasterListOfMastersSER() - returns outerMasterListofMastersSER object from STUDENTS_OUTERNESTED_TABLE4.
+METHOD: serialAdditionalListOfQuestionsSER() - adds additional questions and UPDATES STUDENTS_OUTERNESTED_TABLE4, the 
+		first row, always.
+METHOD: setUpdateOuterMasterListofMastersSER() - also serializes and UPDATES STUDENTS_OUTERNESTED_TABLE4 with the triple-nested
+		outer object, although it appears to duplicate serialAdditionalListOfQuestionsSER(); am not sure where it is called from. Must track that down. 
+
+METHOD FLOW (Generally called near the bottom of each method): Loads the first four tables with initial listOfQuestionsSER list objects.
+loadInitialMasterList.loadMasterList(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, 0);
+insertProfsFinalExamsTesterTable.setOriginalProfExams(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER);
+insertInitialGradedExPlaceholders.loadInitialFinalGraded(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER);
+insertInitialStudentsFinalGraded.setStudentsFinalGradedExams(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER);
+
+Inserts the outerMasterListOfMastersSER into STUDENTS_OUTERNESTED_TABLE4 from button "Create an Exam":
+insertInitialOuterNestedPlaceholders.loadInitialOuterNested(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, masterListOfQuestionsSER);
+
+Inserts an outerMasterListOfMastersSER into DISPLAY_EXAMS_QUESTIONS_TABLE_1 from button "Create an Exam":
+displayExamsAndQuestions.insertOuterDisplayTable(outerMasterListOfMastersSER);
+	
+	
+CREATING AN EXAM STRUCTURE ---------------------------------------------- 
+
+	Select an exam from the 'All Available Exams' JList sequentially (first Exam 1, then Exam 2, etc.). Then, 
+	click "Create An Exam" to create an exam structure. Creating an exam structure does three things. First, it 
+	initially populates four (4) tables with one or more ArrayLists (listOfQuestionsSER) holding null values 
+	that will eventually be populated with created anonymous QuestionSuper objects. Second, it inserts an 
+	outerMasterListOfMastersSER into the 5th table, STUDENTS_OUTERNESTED_TABLE4 where final graded exams 
+	are stored. This outer initially holds ten (10) ArrayList<ArrayList<QuestionSuper>> masterListOfQuestionsSER 
+	objects only (one per exam). And third, an outerMasterListOfMastersSER is inserted into DISPLAY_EXAMS_QUESTIONS_TABLE_1, 
+	with 10 (or fewer) null values instead of 10 masterListOfQuestionsSER objects like in the STUDENTS_OUTERNESTED_TABLE4. 
+	
+	When you first create an exam you will be asked for the number of questions you wish to begin with. If you choose, 
+	say, one, then the first null will be a masterListOfQuestionsSER containing a listOfQuestionsSER of null values, 
+	depending on the number of questions you chose. For each question added to a masterListOfQuestionsSER exam, an initial 
+	listOfQuestionsSER is added - with a null value per question. Remember, in this DISPLAY_EXAMS_QUESTIONS_TABLE_1, 
+	accessed through the DisplayExamsAndQuestions class, each exam (masterListOfQuestionsSER) only contains 
+	one listOfQuestionsSER, never more. 	
+	
+CLASS: InsertInitialOuterNestedPlaceholders - See the entry above in the 
+	section FIVE CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS.
+CLASS: LoadInitialMasterList -  See the entry above in the 
+	section FIVE CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS.
+	
+ 
+ADDING ADDITIONAL QUESTIONS ---------------------------------------------------
+
+	To add additional questions to the exam structure, select the exam from the 'All Available Exams' JList 
+	and click "Add Additional Questions to this Exam" and follow the prompt to indicate the number of questions.
+	
+	The selectedExamIndex and numberOfAdditionalQuestions are passed to the loadMasterList(0 method of
+	LoadInitialMasterList class where the listOfQuestionsSER is assembled:
+	listOfQuestionsSER = loadInitialMasterList.loadMasterList(selectedExamIndex,
+									initialNumberOfQuestions, selectedValue, listOfQuestionsSER,
+									numberOfAdditionalQuestions); 
+	Then, the new listOfQuestionsSER with additional null values added, is sent down the line  
+	beginning with the serialAdditionalListOfQuestionsSER() method of the LoadInitialMasterList class where
+	the new listOfQuestionsSER is added to the first 4 tables and the DISPLAY_EXAMS_QUESTIONS_TABLE_1, as
+	described similarly above with the initial placholder loading process.
+
+CLASS: LoadInitialMasterList - BUILDER_EXAMS_LISTS_17
+METHOD: deSerializeListOfQuestionsSER() returns a listOfQuestionsSER from BUILDER_EXAMS_LISTS_17
+
+METHOD FLOW: this might be wrong due to refactoring
+loadInitialMasterList2.deSerializeListOfQuestionsSER(selectedExamIndex);
+loadInitialMasterList.loadMasterList(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, numberOfAdditionalQuestions);
+serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
+insertProfsFinalExamsTesterTable.serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
+insertInitialGradedExPlaceholders.serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
+insertInitialStudentsFinalGraded.setUpdateOuterMasterListofMastersSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
+
+DELETING AN EXAM STRUCTURE (Setting values to null) -----------------------------------------------
+
+	To reiterate, clicking 'Delete An Exam' does not remove the exams from tables, but rather, sets their values to
+	the null placeholder status quo. If they were removed entirely other exams would be impacted and indexes
+	would shift accordingly. This way you may re-create, say Exam 1, in the same Exam 1 'slot', so to speak. 
+	
+	Note that deleting an exam 'structure' deletes any questions you might have created. After deleting the 
+	exam, select it, then click 'Questions in Selected Exam' and those questions should say 'empty'.
+
+CLASS: dbUtility - Four (4) relevant methods that update the first four tables. 
+METHOD: updateExamToNull1stTbl() - BUILDER_EXAMS_LISTS_17 table
+METHOD: updateExamToNull2ndTbl() - TESTER_EXAMS_LIST_4 table
+METHOD: updateExamToNull3rdTbl() - FINAL_GRADED_EXAMS_2 table
+METHOD: updateExamToNull4thTbl() - Students_Graded_Exams_Table2
+
+
+DELETING AN EXAM STRUCTURE (Removing it from tables) ---------------------------------------------------------
+
+	In the event you wish to remove exams completely from your tables, and set the 
+	row count to 0, use the buttons in the 5th column (beginning with DeleteOrigRows) under the 
+	section entitled 'Administrator Only Below This (yellow) Line'. Be careful using these 
+	options as the changes are permanent. Remember to select an exam first. The row count is displayed in the 4th column to the 
+	left of the delete buttons. The 3rd column buttons also display the adjoining row count.
+	 
+	Quite often during development it's important to clear the decks and start from scratch. 
+	In particular, if you modify the QuestionSuper class, for instance, by adding a new method,
+	you will generate SerialVersionUID class incompatibility exceptions. Fixing this requires 
+	cleaning out the tables, and building your exams and questions again from scratch using the new 
+	QuestionSuper class. Hopefully those earlier exams have been backed-up properly to make the re-creation transition 
+	as painless as possible.
+
+RE-CREATING A DELETED EXAM -----------------------------------------------------------------------
+
+	If you 'Delete an Exam' (returning it to a null status) and wish to re-create that exam in 
+	the same 'slot', say, 'Exam 1', click 'Create an Exam' where you will be prompted
+	for the number of questions (currently max 10) you wish to include. You are basically 
+	just creating another exam like before. 
+	
+	
+DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (potential/available) QUESTIONS CREATED -------------------------------------
+
+	For the time being only ten (10) exams can be created. Sometimes it can be confusing keeping track of 
+	which exams have been created, and the number of available questions in each exam. 
+	Clicking 'Number of Created Exams/Questions' helps in this regard and will display this information in the preview pane.
+			
+	With respect to the 'Number of Created Exams/Questions' button section, which contains the logic for displaying 
+	the number of exams and available, un-populated questions, Java simply loops through an ArrayList<ArrayList<ArrayList<QuestionSuper>>> 
+	outerMasterListOfMastersSER which is stored in the STUDENTS_OUTERNESTED_TABLE4. Looping through this outer, searching for non-null 
+	values tells us how many different exam structures (like Exam 1) have been created. 
+	
+	And during the loop a corresponding ArrayList<ArrayList<QuestionSuper>> 
+	masterOfCreatedExamsDispSlayed is retrieved from the outer (representing, say, Exam 1), and at the first index (0) the one and 
+	only listOfQuestionsSER's size informs us how many anon QuestionSuper question objects are available per exam. 
+	This data are concatenated and assigned to variable ExQStr. And ExQStr is finally displayed in the preview pane. 
+	So the outer tells us which masterOfCreatedExamsDispSlayed exam structures have been created, and the nested 
+	masterOfCreatedExamsDispSlayed's single listOfQuestionsSER's tells us how many questions reside in each exam.
+	In other words, a masterOfCreatedExamsDispSlayed represents and exam (Exam 1) and its listOfQuestionsSER list holds anon question objects.
+		
+	Specifically, in the 'Number of Created Exams/Questions' button section, an outerMasterListOfMastersSER is returned by
+	calling getOuterExamsDisplayed() from class DisplayExamsAndQuestions:
+	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed();:	
+		
+	If the outerMasterListOfMastersSER is not null a for-loop spins through this outer and gets
+	a masterOfCreatedExamsDisplayed (each representing a specific type of exam), and this 
+	masterOfCreatedExamsDisplayed gets its listOfQuestionsSER, a list of anonymous QuestionSuper objects:
+	listOfQuestionsSER = masterOfCreatedExamsDisplayed.get(0).
+	
+	In the preview pane header captions the exam number and the number of available questions in the 
+	listOfQuestionsSER is displayed.  
+	
+	Displaying the 'Questions in Selected Exam' in the preview pane is a bit more involved as explained
+	in the below section DISPLAY QUESTIONS IN THE SELECTED EXAM.
+
+
+POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question ) -----------------------------------
+
+	
+	How to populate each question and answer field (and more) with data after the exam structure has been
+	created and the number of questions specified, and create the final version of 
+	those questions and answers, and save them to the appropriate table[s], which the student will retrieve 
+	in the BrainTester app (Tester) when beginning an exam. Each exam in this current version
+	is limited to ten (10) questions. The first question created should always be question number 1. 
+		
+	Once a question is created initially, or added later, that question must still be used in the final exam. If
+	you delete it, at some point it must be re-created in that 'slot' or at that list index. An exam cannot
+	be taken in the Tester if any questions are null. See the section DELETING YOUR QUESTIONS for further information. 
+	
+	WARNING!! Never type your questions and answers directly into the data fields. Always type Q&As into
+	a word processor or similar program, then copy and paste that information into the appropriate fields. 
+	The Builder app is temperamental and all of your hard work may be lost. Also, database redundancy is 
+	essential, and due to the significant amount of data involved, backing up everything (the database) on a separate 
+	hard drive will greatly help prevent catastrophic loss and much work rebuilding the exams. 
+	
+	Fill in all fields to the extent possible; original questions and correct answers and detailed 
+	explanations if desired. Furthermore, REMEMBER to select one radio button to indicate which answer is 
+	the correct answer; failure to select a button means that all answers are 'false'. The radio buttons 
+	as designed, for now, are grouped in such a way that only one answer can be selected. If the student 
+	selects no answers all are evaluated as false, a fail. 
+	
+	GRADING THE EXAM IN TESTER IS AS FOLLOW. When the instructor creates a question and selects the correct 
+	answer, that choice is set in an ArrayList<Boolean> profsRadioButtonSelections as true. 
+	That Boolean list is stored in table OUTER_MASTER_ANSWERS_TABLE_1 via class OuterMasterCorrectAnswers.  
+	Initially, for each question, all five Boolean values in the list are initialized to false. The 
+	correct answer, when selected, is set to true. The student in the Tester also makes a radio button selection stored in a 
+	similar ArrayList<Boolean> (radioButtonSelections). When the question is evaluated and graded these two 
+	lists (profsRadioButtonSelections and radioButtonSelections) are compared for equality. If the lists are equal 
+	it is a pass, but if not, a fail. Initially or eventually the correct and incorrect answers are displayed, 
+	preferably with detailed answer explanations. 
+	
+	After the fields have been populated and a button selection made, and when the question's creator is 
+	ready and clicks the "Create Exam Question" button, the fields' String data is assigned
+	to the 'questionArray' String array. The instructor's profsRadioButtonSelections list is also 
+	created with the appropriate selection (a false converted to true). Both the String array 
+	containing all of the input data, and ArrayList<Boolean> (and, ie., selectedExamIndex and 
+	previouslySelectedCommand) are then forwarded to the QuestionFactory class via a call to the 
+	setQuestionArray() method. 
+	
+	In the factory, anonymous QuestionSuper objects are created ('questionSub' - anonymous subclasses of QuestionSuper), 
+	and values from the transfered array are set in those objects, the profsRadioButtonSelections list 
+	is set or added to a triple-nested ArrayList<ArrayList<ArrayList<Boolean>>> outerMasterCorrectAnswersProfs 
+	which in turn is INSERTED in the OUTER_MASTER_ANSWERS_TABLE_1 table via method 
+	insertOuterMasterAnswers() of class OuterMasterCorrectAnswers, or UPDATED using the 
+	setUpdateOuterMasterAnswers() method of the same class. After these calls the data is automatically
+	displayed in the textPanePreview section. 
+
+RELEVANT CLASSES WITH RESPECT TO "Create Exam Question", WHEREBY QUESTIONS ARE POPULATED WITH DATA ----------
+
+CLASS: QuestionSuper - Central to the Builder and Tester apps, this super or parent class contains 
+	over seventy (70) getter and setter methods (some of which aren't being used and need to be removed). 
+	Too numerous to list, these methods set and get such things as title, topic, question, possible answers, 
+	correct answers, time of creation, test taken, pass/fail messages, percent grades, previouslySelectedCommand,
+	masterListOfProfsCorrectAnswers, and much more.
+
+CLASS: QuestionFactory - Important class whereby anonymous subclasses of the QuestionSuper superclass are instantiated
+	and initialized with data from the array, a list of the prof's correct answers, etc., and added to the listOfQuestionsSER 
+	ArrayList, an extremely important and often-used variable reference to an ArrayList of anonymous QuestionSuper objects 
+	throughout both the Builder and Tester applications. 
+
+	In the QuestionFactory the profsRadioButtonSelections list of correct answers is set in 
+	the masterListOfProfsCorrectAnswers which is a list of all the exam's profsRadioButtonSelections, 
+	and which is set in an anonymous questionSub object that in turn is set in the listOfQuestionsSER. 
+	
+	The listOfQuestionsSER now 'contains' those anonymous QuestionSuper subclasses, and it's this listOfQuestionsSER which is
+	finally sent to the InsertlistOfQuestionsSERtoDB class via the updateRows() method for addition to the BUILDER_EXAMS_LISTS_17
+	table, the first in a series of four (4) tables used in the process of building, testing and reviewing exams. The 
+	listOfQuestionsSER is not added to the 5th STUDENTS_OUTERNESTED_TABLE4 table which is reserved for a student's final
+	graded exam. However, it is inserted into the DISPLAY_EXAMS_QUESTIONS_TABLE_1 via the 
+	DisplayExamsAndQuestions class (a very important step). The call is located at the bottom of the 
+	upDateStudents_Graded_Exams_Table2() method of the UpdateProfsFinalList class.
+	
+METHOD: setQuestionArray() - With six (6) parameters this method takes a questionArray, selectedIndex, 
+	selectedValueQ, selectedExamIndex, profsRadioButtonSelections list, and a previouslySelectedCommand String. It
+	is called from the "Create Exam Question" button.
+	
+CLASS: OuterMasterCorrectAnswers - OUTER_MASTER_ANSWERS_TABLE_1
+METHOD: getOuterMasterCorrectAns() - Retrieve outerMasterCorrectAnswersProfs from OUTER_MASTER_ANSWERS_TABLE_1.
+METHOD: insertOuterMasterAnswers() - INSERT outerMasterCorrectAnswersProfs into OUTER_MASTER_ANSWERS_TABLE_1.
+METHOD: setUpdateOuterMasterAnswers() - UPDATE OUTER_MASTER_ANSWERS_TABLE_1 with outerMasterCorrectAnswersProfs.
+METHOD: getRowCountOuterAnswers() - OUTER_MASTER_ANSWERS_TABLE_1.
+METHOD: deleteRows() - OUTER_MASTER_ANSWERS_TABLE_1.
+
+CLASS: InsertlistOfQuestionsSERtoDB is where the listOfQuestionsSER is serialized and set/updated 
+	in the BUILDER_EXAMS_LISTS_17 table using the selectedExamIndex to identify the proper row. 
+	It is called at the bottom of the QuestionFactory's setQuestionArray() method.
+METHOD: updateRows() updates the first BUILDER_EXAMS_LISTS_17 table, and lastly updates the second TESTER_EXAMS_LIST_4 
+	table (the profs final) with the latest listOfQuestionsSER, calling upDateProfsListInTester() 
+	method in the UpdateProfsFinalList class.
+
+CLASS: UpdateProfsFinalList updates the second TESTER_EXAMS_LIST_4 table with the latest listOfQuestionsSER list; 
+	The second, third and fourth tables are updated whereby upDateProfsListInTester() UPDATES and calls
+	upDateFINAL_GRADED_EXAMS_2() which UPDATES and calls upDateStudents_Graded_Exams_Table2, which lastly
+	creates an instance of the ShowQuestionsPerExam class and UPDATES the setMasterListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER); 
+METHOD: upDateProfsListInTester() updates TESTER_EXAMS_LIST_4 (also called profsfinal table). 
+METHOD: upDateFINAL_GRADED_EXAMS_2() updates the FINAL_GRADED_EXAMS_2 table.
+METHOD: upDateStudents_Graded_Exams_Table2() updates the upDateStudents_Graded_Exams_Table2 table.
+
+CLASS: ShowQuestionsPerExam - Methods that display a question's title or whether empty, 
+METHOD: showExamQuestions() - Gets a masterOfCreatedExamsDisplayed and uses it to display a question's title, or empty.
+METHOD: getMasterListOfQuestionsSER() - Returns a masterListOfQuestionsSER from Students_Graded_Exams_Table2.
+METHOD: setMasterListOfQuestionsSER() - UPDATES listOfQuestionsSER  masterListOfQuestionsSER in the Students_Graded_Exams_Table2.
+
+METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly)
+questionFactory.setQuestionArray(questionArray, selectedIndex, selectedValueQ, selectedExamIndex, profsRadioButtonSelections, previouslySelectedCommand);
+outerMasterCorrectAnswers.insertOuterMasterAnswers(outerMasterCorrectAnswersProfs)
+outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs)
+insertlistOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER);	(updates BUILDER_EXAMS_LISTS_17)
+updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER); (updates TESTER_EXAMS_LIST_4; student gets exam from here)
+upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
+upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER);
+displayExamsAndQuestions.getTheBigGradedOuter(selectedExamIndex, listOfQuestionsSER);
+
+
+UPDATING QUESTION AND ANSWER FIELDS AFTER CREATION  -----------------------------------------------
+
+	After you have created (populated with data) your questions you will want to review them and possibly make changes and
+	update them. First, select an exam from the left-most 'All Available Exams' list which will display  
+	each exam's questions in the 'Individual Exams with Questions' panel to the right. Select a question and
+	the question's data will be displayed. Click 'Preview Answers' or 'Preview Correct Answers' to display 
+	that information in a more-readable format in the large preview pane, if desired. Then simply copy your changes
+	from your text editor and paste that in the appropriate field (or insert changes directly into the field) 
+	and click 'Update Question'.
+	
+	This retrieves the listOfQuestionsSER from the outerMasterListOfMastersSER in the DISPLAY_EXAMS_QUESTIONS_TABLE_1 
+	table via the getOuterExamsDisplayed() method of the DisplayExamsAndQuestions class:
+	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed().
+	listOfQuestionsSER = outerMasterListOfMastersSER.get(selectedExamIndex).get(selectedExamIndex).
+	
+	And this listOfQuestionsSER list of QuestionSuper objects is used to capture all, and updated, data in your text fields,
+	set it in the respective question objects, and display that data. Updating might involve changing the
+	previously selected radio button. As such, whatever selection exists, whether the original or a
+	different selection, that profsRadioButtonSelections is captured, set in the outerMasterCorrectAnswersProfs
+	which was retrieved from the OUTER_MASTER_ANSWERS_TABLE_1 table. That new outerMasterCorrectAnswersProfs is
+	UPDATED in the OUTER_MASTER_ANSWERS_TABLE_1. Now that new selection is displayed in the Builder preview,
+	and when the student takes the exam: 
+	
+	masterListOfProfsCorrectAnswers = outerMasterCorrectAnswersProfs.get(selectedExamIndex);							
+	masterListOfProfsCorrectAnswers.set(selectedIndex, profsRadioButtonSelections);									
+	outerMasterCorrectAnswersProfs.set(selectedExamIndex, masterListOfProfsCorrectAnswers);	
+	outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs);
+												
+	And like the original question creation process, after the QuestionFactory stage, Java 
+	sends the new listOfQuestionsSER down the line again via 
+	updateListOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER). 
+		
+
+CLASS: DisplayExamsAndQuestions
+CLASS: InsertlistOfQuestionsSERtoDB ... etc.
+CLASS: UpdateProfsFinalList from where the following are called:
+	a) updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER);		
+	b) updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
+	c) updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER);
+	d) displayExamsAndQuestions.getTheBigGradedOuter(selectedExamIndex, listOfQuestionsSER); (UPDATES DISPLAY_EXAMS_QUESTIONS_TABLE_1
+	   with an outerMasterListOfMastersSER.)
+
+
+DELETING YOUR QUESTIONS ---------------------------------------------------------------------
+
+	As always, first, select your exam which will present you with the questions in that exam. Then,
+	after serious, hand-wringing reflection hold your breath and click 'Delete Question'. Now exhale. 
+	As a preliminary matter, deleting a question merely sets it to null thereby preserving the index order
+	of all remaining questions, which is very important. Consequently, at some point you must re-create that 
+	deleted question in order to make the exam work because an empty/null question throws a nullpointer exception
+	in the Tester when the student takes the exam; which is another reason to always take your exam
+	for a test run over in the Tester app., preferably multiple times. 
+	
+	Remember to always retain that deleted information in your text editor in the event you feel the need 
+	to re-populate that, or another, question with same. Or, because the app crashes and you lose 
+	all of your hard work. Method deleteQuestion() of Class DeleteQuestions 
+	is called, setting the list at the selectedIndex to null, whereupon it serializes that newly 
+	modified listOfQuestionsSER and saves (UPDATES) it to table BUILDER_EXAMS_LISTS_17, etc., down the line. 
+	After deletion you are notified that the question is now null. And because it is null, if you want to re-create
+	it you cannot use the 'Update Question' button because there is nothing to update. You must
+	use 'Create Exam Question' instead. 
+	
+	Of course deleting a question modifies the previously selected radio buttons. The profsRadioButtonSelections 
+	must be set to null, which means you must UPDATE the outerMasterCorrectAnswersProfs in 
+	the OUTER_MASTER_ANSWERS_TABLE_1 table. Questions are deleted in the deleteQuestion() method 
+	of the DeleteQuestions class. And it is in this deleteQuestion() method that the profsRadioButtonSelections
+	is set to null by retrieving the OuterMasterCorrectAnswers, getting the appropriate inner 
+	masterListOfProfsCorrectAnswers, and setting the specific index to null: 
+	
+	OuterMasterCorrectAnswers outerMasterCorrectAnswers = new OuterMasterCorrectAnswers();
+	outerMasterCorrectAnswersProfs = outerMasterCorrectAnswers.getOuterMasterCorrectAns();
+	masterListOfProfsCorrectAnswers = outerMasterCorrectAnswersProfs.get(selectedExamIndex);
+	masterListOfProfsCorrectAnswers.set(selectedIndex, null);
+	
+	After the master is set back into the outer, the outer is updated in table OUTER_MASTER_ANSWERS_TABLE_1:
+	outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs);
+
+CLASS: DeleteQuestions does just that - BUILDER_EXAMS_LISTS_17 table ...
+METHOD: Calling deleteQuestion() on the listOfQuestionsSER list sets the old question in the listOfQuestionsSER
+	to  null via an update to the BUILDER_EXAMS_LISTS_17 table, and on down the line. From the bottom of 
+	deleteQuestion() saveListOfQuestionsSER() is called which UPDATEs the BUILDER_EXAMS_LISTS_17 table. 
+METHOD: saveListOfQuestionsSER() updates BUILDER_EXAMS_LISTS_17. It also calls these (3) methods
+	a) updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER);		
+	b) updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
+	c) updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER);
+METHOD: getUpdatedListOfQuestionsSER() returns a copy of that newly modified listOfQuestionsSER list 
+	from BUILDER_EXAMS_LISTS_17.
+	
+
+DISPLAY QUESTIONS IN THE SELECTED EXAM------------------------------------------------------
+
+	Once these (empty/null) question fields have been populated with information via the 
+	'Create Exam Question' button, select an exam and click 'Questions In Selected Exam' 
+	which will display each question's title and topic, or if empty because the question has not
+	been created yet, the word 'empty'. For additional information about each question, just 
+	click the question in the second JList for a comprehensive 	preview of each such 
+	QuestionSuper object's data. 
+
+	Displaying these question details also involves using an outerMasterListOfMastersSER, 
+	but this one resides in table DISPLAY_EXAMS_QUESTIONS_TABLE_1. Recall that when 
+	creating the exam initially an outerMasterListOfMastersSER, containing a 
+	masterListOfQuestionsSER, which contains one listOfQuestionsSER, is inserted in this table. 
+	
+	And now that an exam has been created one may display a list of the questions in that exam.
+	First, an outer is returned from table DISPLAY_EXAMS_QUESTIONS_TABLE_1:
+	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed().
+	This outer is then sent to method showExamQuestionsFromOuter() of the ShowQuestionsPerExam
+	class where the masterListOfQuestionsSER is extracted, then the listOfQuestionsSER from 
+	which the relevant information such as title, topic, or "empty" is concatenated and
+	returned for display as an anonStr String variable.
+		
+	anonStr = showQuestionsPerExam.showExamQuestionsFromOuter(selectedExamIndex,
+								outerMasterListOfMastersSER);
+		
+		
+	When you click on 'Create Exam Question' you can retrieve an outerMasterListOfMastersSER
+	from the DISPLAY_EXAMS_QUESTIONS_TABLE_1 table that contains buried therein the questions 
+	you will use to display in the textPanePreview preview pane. 
+	
+	anonStr = showQuestionsPerExam.showExamQuestionsFromOuter(selectedExamIndex,
+	outerMasterListOfMastersSER);
+	textPanePreview.setText(anonStr);
+
+CLASS: ShowQuestionsPerExam - DISPLAY_EXAMS_QUESTIONS_TABLE_1 .
+METHOD: showExamQuestions();
+METHOD: getMasterListOfQuestionsSER
+METHOD: setMasterListOfQuestionsSER();
+
+FIVE (5) UTILITY CLASSES FOR DELETING TABLE ROWS, RETRIEVING TABLE ROW COUNTS & listOfQuestionsSER ------------------------------
+
+CLASS: dbUtility - Primarily deletes table rows, retrieves row counts, 
+		and updates tables. And yes, I know the first letter should be capitalized.
+METHOD: getRowCount() from BUILDER_EXAMS_LISTS_17 table.
+METHOD: updateExamToNull1stTbl() updates BUILDER_EXAMS_LISTS_17 table.
+METHOD: updateExamToNull2ndTbl() updates TESTER_EXAMS_LIST_4 table.
+METHOD: updateExamToNull3rdTbl() updates FINAL_GRADED_EXAMS_2 table.
+METHOD: updateExamToNull4thTbl() updates Students_Graded_Exams_Table2.
+METHOD: deleteRows() deletes from BUILDER_EXAMS_LISTS_17 table.
+METHOD: deleteEQDisplayRow() deletes from the first row in DISPLAY_EXAMS_QUESTIONS_TABLE_1.
+METHOD: rowCountEQDisplay() returns the number of rows (0 or 1) in DISPLAY_EXAMS_QUESTIONS_TABLE_1.
+METHOD: deleteExamRowsMasterDisplayed() deletes/removes exams from masterOfCreatedExamsDisplayed 
+	and updates DISPLAY_EXAMS_QUESTIONS_TABLE_1. (buggy)
+	
+CLASS: BuilderDBTesterUtility - Primarily deletes table rows and retrieves row counts.
+METHOD: getRowCount() from TESTER_EXAMS_LIST_4 table.
+METHOD: getRowCountFinalGraded() from FINAL_GRADED_EXAMS_2 table.
+METHOD: deleteRows() in TESTER_EXAMS_LIST_4 table.
+METHOD: getGradedRowCount() from FINAL_GRADED_EXAMS_2 table, although it 
+		seems to duplicate getRowCountFinalGraded(), so which is used?
+METHOD: deleteGradedRows() from FINAL_GRADED_EXAMS_2 table.
+METHOD: getRowCountStudentsFinalGraded() from Students_Graded_Exams_Table2.
+METHOD: deleteStudentsFinalRows() in Students_Graded_Exams_Table2.
+METHOD: deleteOuterNestedRows() in STUDENTS_OUTERNESTED_TABLE4.
+METHOD: getRowCountOuterNested() from STUDENTS_OUTERNESTED_TABLE4.
+
+CLASS: DbTableUtility - shows which tables exist in the database, and
+		is used to delete those not used anymore, and other things ...
+METHOD: displayAllTables() - Displays all tables in the H2 database at jdbc:h2:~/test. 
+		Click 'Show Tables' to see in Preview.
+METHOD: deleteRemoveTable() - Disconnected for now. jdbc:h2:~/test
+
+CLASS: LastUtilityInBuilder - recreates a deleted exam which isn't actually
+	removed when deleted but set back to null. Important distinction.
+METHOD: recreateDeletedExam() - Calls insertlistOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER);
+
+CLASS: GetListFromDB - Gets a listOfQuestionsSER from the BUILDER_EXAMS_LISTS_17 table.
+METHOD: getRowData() called with a selectedExamIndex and retrieves from the 
+	BUILDER_EXAMS_LISTS_17 table a listOfQuestionsSER list.
+
+BUILDER FAQ -  CHANGING THE BUILDER FAQ TEXT ------------------------------------------------------------------
+
+	No doubt you will wish to modify text in the FAQ. That text is contained in class FAQText where formatted text is
+	assigned to String variables and returned to the object's call in the 'User FAQ' actionPerformed() method. The
+	process is rather simple and self-explanatory. 
+
+CLASS: FAQText
+METHOD: getFAQTextString() assigns String data to concatenated String variables and returns them/it to 
+	the 'User FAQ' actionPerformed() method for display in a scrollable JTextPane contained 
+	within a JOptionPane.showConfirmDialog() message. 
+
+HOW TO MODIFY AND CUSTOMIZE EXAM TITLES/LABELS IN THE 'All Available Exams' JLIST -------------------
+
+	Most likely the exam creator/instructor will want to customize the 'All Available Exams' list. The default settings
+	list exams as Exam 1, Exam 2, Exam 3, etc., and you might want to change that to something like
+	Exam 1 - Trinity. The following explains how to make these changes, and describes the relevant classes 
+	and methods related thereto.
+	
+	When the Builder app is first loaded in BrainBuilder3 it displays default settings of the 'All Available Exams' list exams 
+	such as Exam 1, Exam 2, Exam 3, etc. These String values are obtained from an instance of the LoadInitExamLabsJList class: 
+	examLabelsJlist1 = loadInitExamLabsJList.getExamLabelsJlist1();
+	exam1 = examLabelsJlist1.getExam1Str(); 
+	
+	You are going to want to change these captions to conform to your exams. And you do that by clicking 'Exam Labels' in 
+	the top-right of your screen. A JOptionPane dialog pops up displaying the current values and text fields that
+	you fill out with the new values. For instance, you might wish to change Exam 1 to Exam 1 - Soteriology. Type it in, click yes, 
+	and then, unfortunately, you will be told the program must close and you need to restart it to see those
+	modified exam labels - until I figure out how to dynamically make those changes on the fly. It has something
+	to do with a class loader, says Google. 	
+	
+	So, when the program is loaded an examLabelsJlist1 is returned by calling getExamLabelsJlist1() on an instance of
+	LoadInitExamLabsJList. Calling a getter such as getExam1Str() on examLabelsJlist1 returns a String that 
+	is added to the DefaultListModel, and automatically displayed in the first JList, such as Exam 1. And it is 
+	this global examLabelsJlist1 that is used when 'Exam Labels' is clicked and the dialog pops up. 
+	examLabelsJlist1.getExam1Str() populates the dialog with that same String in the same row that contains 
+	the text field you will fill out. What you enter in a text field is assigned to a String variable, that
+	new value is set in the examLabelsJlist1, ie., jTextField1.setText(examLabelsJlist1.getExam1Str());
+
+CLASS: ExamLabelsJlist1 - Class ExamLabelsJlist1 provides getters and setters for each exam label in 
+	the 'All Available Exams' JList. Used to allow creator to customize each exam label/caption  
+	such as 'Exam 1 - Apologetics 101'. 
+	METHODS: setExam1Str(), getExam1Str() etc.
+
+CLASS: LoadInitExamLabsJList - Modifies the exam labels JList.
+METHOD: loadJListExamLabs() - Serializes and inserts an initial instance of ExamLabelsJlist1 into EXAMS_JLIST_LABELS table.
+METHOD: setExamLabelsJlist1() - Serializes and updates an instance of ExamLabelsJlist1 in EXAMS_JLIST_LABELS table.
+METHOD: getExamLabelsJlist1() - De-serializes and returns an instance of ExamLabelsJlist1 in EXAMS_JLIST_LABELS table.
+METHOD: rowCountExamsLab() - Counts and returns the number of rows ( 0 or 1) in table EXAMS_JLIST_LABELS.
+METHOD: deleteExamsLablsRows() - Deletes, if available, the first and only row in EXAMS_JLIST_LABELS.
+
+
+WHY NO UML CHART?  -----------------------------------------------------------------------------------------------
+	
+	This Swing app was built in Eclipse using WindowBuilder. The main class is BrainBuilder3.java which displays the GUI, and 
+	roughly 3,300 lines of code are contained within the constructor. It's a one-way-street of sorts. From what I can 
+	tell, outside classes/objects can be accessed from within that constructor and used, but instances of those 
+	numerous classes cannot access, say, the text fields etc., within that BrainBuilder3 constructor; 
+	and I tried .... After all, how do you get inside the constructor while it is in the process of 
+	being constructed? Accordingly, a UML chart would consist of BrainBuilder3 at the top, with a 
+	spaghetti-string cluster of lines extending below connecting the many classes it utilizes, with 
+	interconnecting lines between the roughly 37 classes (not including the many 
+	anonymous QuestionSuper subclasses). But feel free to try. 
+
+MISCELLANEOUS ---------------------------------------------------------------------------------
+
+
+
+Not thread safe but as it is a one-person stand-alone app, probably not necessary.
+Not protected from injection attacks but also might not be necessary.
+Built for Java 11, although by now some features are Java 17. 
+

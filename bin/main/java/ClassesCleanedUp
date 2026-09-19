@@ -1,0 +1,58 @@
+
+
+Classes in Builder Cleaned Up
+
+TUE 4-7-26
+
+
+
+BrainBuilder3
+BuilderDBTesterUtilityInsertlistOfQuestionsSERtoDB
+CreateBuilderExamsTable1
+CreateDisplayExamsQuestionsTable
+CreateExamLabelsJListTable
+CreateExTableOrigFinished
+CreateGradedFinalTable_2
+CreateStudentsGradedExamsTable
+CreateStudentsOuterNestedTable
+dbUtility
+DeleteQuestions
+DisplayExamsAndQuestions
+ExamLabelsJlist1
+GetListFromDB
+GetProfListFromDB
+InsertInitialGradedExPlaceholders
+InsertInitialOuterNestedPlaceholders
+InsertInitialStudentsFinalGraded
+InsertlistOfQuestionsSERtoDB
+InsertProfsFinalExamsTesterTable
+LoadInitExamLabsJList
+LoadInitialDisplayQA (still dirty)
+LoadInitialMasterList
+PrimeExamsQuestionsDisplay
+QSuperUtility (?)
+QuestionFactory
+QuestionSuper
+UpdateProfsFinalList
+============================================
+
+
+
+
+
+
+
+
+
+
+
+
+DIRTY CLASSES (classes used to troubleshoot problems with comments/println stuff)
+LoadInitialDisplayQA
+
+
+
+
+
+
+

@@ -1,0 +1,12 @@
+The ExamComboLabelsTester class contains references to String variables which are displayed in the combo box,
+	such as the default value 'Exam 1'. Methods such as setExam1Str() and getExam1Str() manipulate that state.
+	Additionally, five (5) relevant methods located at the bottom of BrainTest3.java do the following: a) INSERT an
+	ExamComboLabelsTester instance into table EXAMS_COMBO_LABELS_1, b) UPDATE an instance in table EXAMS_COMBO_LABELS_1,
+	c) retrieves an instance from the same table, d) returns a row count from table EXAMS_COMBO_LABELS_1, and e) deletes
+	a row from the table. There is only one row in table EXAMS_COMBO_LABELS_1 which holds only one instance of
+	ExamComboLabelsTester in row 1.
+	
+	When BrainTest3.java is first loaded Java checks table EXAMS_COMBO_LABELS_1 to see if it contains an ExamComboLabelsTester
+	in the first row, and if not it creates one, INSERTS it in the first and only row, then gets (deserializes) a copy. The
+	returned ExamComboLabelsTester object gets those String values, assigns them to String variables, and assigns those variables (ie., exam1)
+	to the DefaultComboBoxModel<String>. Those String values are what appear in the combo box drop-down menu.

@@ -1,0 +1,156 @@
+
+BrainBuilder4StuffToDoList
+
+// Moving Done/fixed comments from top of BrainBuilder3.java to clean things up
+
+// DONE  Can I change the FAQ to use a pop-up s;lit pane with two panes and 
+// a JList like the Tester FAQ?
+
+// DONE, BUT ALWAYS A WORK IN PROGRESS
+// Lots of work in QuestionSuper weeding it and removing the many
+// methods and variables that are not used. READ ME TODO
+
+// DONE - I need a radiobutton for correct E 
+
+// DONE - add to the radiobutton selections another row to choose from, also in the Tester
+
+// DONE - REMOVE populateInitialRowsTester() FROM InsertProfsFinalExamsTesterTable CLASS
+
+// Done - NEXT THUR - When I click Exam Labels I need to display what already exists in the objects
+
+// DONE - All the delete tables need to be in loops. I did a few, but not all
+
+// DONE/FIXEDTHUR 4-2-26 CORALPINKS - PROBLEM NOW IS THAT 1) if I delete the initial load I can't pull up the
+// builder without refactoring the code. Then manually add the initial placeholder in the LoadInitExamLabsJList class.
+
+// DONE/FIXED  SUN 3-22 MY BIG problem with Create an Exam is that when I want to create another question
+// I'm clicking "Create an Exam" when i don't want another exam but add a question to the listOfQuestionsSER
+// which makes me look pretty dumb. 
+// So what i need is another button that says (Create Additional Questions for this Exam
+
+//  Say what?? SAT 3-28 - Position the shart here dialog next to the first JList. but must figure out
+// what my ir. frame is, the parent component
+
+// But I'm using DISPLAY_EXAMS_QUESTIONS_TABLE_1 table, not EXAMLABELSJLIST1.
+// dbUtility class uses the deleteEQDisplayRow() method to do just this, so DONE
+// I THINK DONE - In a utility you need to delete the ExamLabelsJlist1  row of the EXAMLABELSJLIST1 table, 
+// but right now I'm too lazy to do all of that. need to ser and deSer etc.
+
+// FIXED/DONE - same problem? If I click on Number of exams q etc and ther is none I get a null pointer
+// so I need to test if masterOfCreatedExamsDisplayed.size() is 0, so how to pull that up? With
+// another method to check its size??
+
+//  DONE/FIXED OH MY, FRI - I NEED TO DELETE ROWS/EXAMS FROM masterOfCreatedExamsDisplayed NOW. Deleting a 
+// row from the buttons below only delete rows in the BUILDER_EXAMS_LISTS_17 table. I need to 
+// delete rows/exams in the DISPLAY_EXAMS_QUESTIONS_TABLE_1 table. So should I add another
+// method to the dbUtility class??
+// I think done?? confused about this sentence. 
+// HOWEVER, YOU NEED TO RETURN THE SIZE AND IF IT IS 0 CANNOT DELETE IT CAUSE YOU WILL
+// GET  java.util.NoSuchElementException, SO if (size > 0) delete over at bottom of dbUtility class
+
+// DONE/FIXED, although the problem wasn't in the factory but the class the 
+// factory called. FRIDAY - BIG DEAL - MOVE THE CREATION OF THE masterOfCreatedExamsDisplayed OUT OF THE FACTORY
+// AND into the Create an Exam button section so I can check that info with 'Number of Created Exams/Questions', 
+// because as it stands now being in the factory I can't call that Number button until a
+// question has been actually filled and the anon created in the factory. Not good. 
+// SOLUTION - ALTHOUGH IT'S NOT IN THE FACTORY
+// BUT IN THE METHOD THE FACTORY Calls insertlistOfQuestionsSERtoDB.updateRows()
+
+// I FOUND IT. THE serLISTS ARE SET IN THE masterOfCreatedExamsDisplayed 
+// in the InsertlistOfQuestionsSERtoDB class, methods called from factory, SO IMPORTANT  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+// Duplicate - ALSO, DON'T FORGET THAT I get a nullpointer if I click a question before it is created, even
+// if I select an exam first. Need to prevent that with an if and dialog message
+
+// // Maybe done - mon because you added another question/answer row and radiobutton you need to add
+// another if category in both builder and tester when checking which selection is checked. But
+// I think I did this.
+
+// DONE, I THINK - Must be able to add more questions to initial list of exam, which means add the new number of questions
+// to the QuestionSuper variable. Note, can't subtract. Also, does it "add" to the list? Or set the questions
+// via index and set() or insert()? I think add(), but check. It's add, b ut 
+
+// also in QuestionSuper, put all variables in the same top-to-bottom order as the methods 
+// because now they are scattered and more difficult to locate. No, not necessary.
+
+// Do I need to save the start/end/time data that I'm capturing? Have I built those methods??
+// No, I don't think that's necessary.
+
+// move all files/classes etc that are not being used out of the packages, but don't delete them.
+// DONE - And make a list of all the classes etc I'm using and 
+
+// at factory, insert questions into list at random slots, and delete
+// or add at will. Instead of an array, use a list, loop and fill it with null ?? .
+// DONE, I THINK - after create, delete or update buttons pushed, must clear all text fields/ text areas
+
+// DONE - Make sure the Update Question button works. 
+
+//  IMPORTANT - THE FACTORY NEEDS TO BE FLESHED OUT WITH ALL OF THE FIELDS
+// WHICH REQUIRES THE ARRAY IN BRAINBUILDER TO BE FLESHED OUT ETC. Am I saying
+// I need to add to the array?
+
+// I think done, but double-check. WED 2-4-26 LAKE MEADE DANGER DANGER, 
+// THIS if (selectedValue.equals("Exam 1")) { HAS TO GO IN A LOOP !!!l. 400ish
+
+//  SAT 3-14 HUGE PROBLEM WITH DELETING. i HAVE TO USE A LOOP, NOT HARD CODE IT, BUT HOW?
+// I TRIED BEFORE AND IT DIDN'T WORK
+//   DONE - NEXT FOR 3-14 SAT WERNER, YOU HAVE TO AUTOMATICALLY UPDATE THE PROFS LIST
+
+//  DONE I THINK - NOTE 3-20 in Preview Correct Answers button clicking 4 and setting the selection doesn't work yet 
+// because I only have 3 questions built. And, if I click 4 it still shows me that 3 is clicked so 
+// I need to clear all selections
+
+// NOTE 3-20 clicking 4 doesn't work yet because I only have 3 questions built.
+// STUMPED. IF I'M PREVIEWING MORE QUESTIONS THAN THERE ARE (4 IF ONLY 3 QS EXIST) THEN
+// IT STILL PULLS UP THE LAST QUESTION DISPLAYED, IE. NUMBER 3 WITH the 3 button selected. But
+// I need to give them an empty screen
+
+// DONE I THINK - I probably need to have a button that deletes all rows in all tables, all at once. But danger
+// danger, that can be dangerous, even fatal!!! later
+
+// DONE - first, work on adding more questions on top of those initially set? Is that possible? Desirable?
+
+//  DONE - FRIDAY 3-13  After the exam structure for ie exam 1 is created, pop up a message that 
+//  Exam 1 was successfully created, now add questions to it by clicking the next button
+
+// DONE. FIXED. THE FIRST JLIST STUFF IN THE IF HAS TO GO IN A LOOP!! SEE BELOW
+// i USED ONE LOOP AND a variable i, and switched to selectedExamIndex
+
+// DONE - I THINK. Remember to clear selection over in Builder when creating a question. 
+
+// Big issue. BUT IF THERE IS ONLY ONE USER IN THIS STANDALONE, IS 
+// IT NECESSARY TO SET PRIMARY KEY AUTOMATICALLY INCREMENTED? No. I don't think so. so I 
+// automatically increment the studentsfinaltable primary key? But Idon't even use a primarykey for the student.
+// I think maybe I should in the final product and then just get that autoincremented primkey and use it to
+// set the changes or pull up to review etc. NO. For now, maybe just hard code it? so I would
+// have to set initial rows with null????
+
+// Not necessarily with a standalone with only one user/student. Big concurrency thread safety problem with 
+// students click finish and get exams stored in their
+// respective rows, so figure out auto-increment. Therefore, when getting each exam to review,
+// deserialize and use result set to get primary key and that controls from then on. But how??
+
+// Where do I auto-increment the primary key? Do I even need to if there is only one student per app?
+
+end 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
