@@ -17,9 +17,9 @@ import java.util.ArrayList;
 public class DbTableUtility {
 	ArrayList<String> allTableNames;
 
-	public ArrayList<String> displayAllTables() throws SQLException {
+	public ArrayList<String> displayAllTables() throws SQLException, ClassNotFoundException {
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "")) {
+		try (Connection conn = DatabaseConfig.getConnection()) {
 			DatabaseMetaData metaData = conn.getMetaData();			
 			String[] types = { "TABLE" };
 			allTableNames = new ArrayList<>();
@@ -37,10 +37,10 @@ public class DbTableUtility {
 		return allTableNames;
 	}
 
-	public void deleteRemoveTable() throws SQLException {
+	public void deleteRemoveTable() throws SQLException, ClassNotFoundException {
 		 String sqlDrop = "DROP TABLE IF EXISTS STUDENTS_OUTERNESTED_TABLE4"; 
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement()) {
 			stmt.executeUpdate(sqlDrop);// Does this work?	
 		} catch (SQLException e) {

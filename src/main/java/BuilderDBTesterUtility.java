@@ -18,7 +18,7 @@ public class BuilderDBTesterUtility implements Serializable {
 
 	public Integer getRowCount() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of getRowCount in BuilderDBTesterUtility class");		
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM TESTER_EXAMS_LIST_4")) {
 			while (rs.next()) {
@@ -33,7 +33,7 @@ public class BuilderDBTesterUtility implements Serializable {
 
 	public Integer getRowCountFinalGraded() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of getRowCountFinalGraded in BuilderDBTesterUtility class");	
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM FINAL_GRADED_EXAMS_2")) {
 			while (rs.next()) {
@@ -50,7 +50,7 @@ public class BuilderDBTesterUtility implements Serializable {
 		System.out.println("Top of deleteRows() in BuilderDBTesterUtility class");
 		// Deletes all rows at once
 		String sqlDeleteRowsR2 = " DELETE FROM TESTER_EXAMS_LIST_4 "; 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR2)) {
 			int affectedRows2T = stmt.executeUpdate();
 			System.out.println(affectedRows2T + " Number of affectedRows2T deleted");
@@ -63,7 +63,7 @@ public class BuilderDBTesterUtility implements Serializable {
 		 * idFoundLabel: for (int i = 1; i < 10; i++) { if ((idNumberInt) == i) {
 		 * sqlDeleteRowsR1 = sqlDeleteRowsR1 + idNumberStr; break idFoundLabel; }
 		 */
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR2)) {
 			int affectedRows = stmt.executeUpdate();
 			System.out.println(affectedRows + " Number of effectedRows deleted");
@@ -73,7 +73,7 @@ public class BuilderDBTesterUtility implements Serializable {
 
 	public Integer getGradedRowCount() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of getGradedRowCount() in BuilderDBTesterUtility class");
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM FINAL_GRADED_EXAMS_2")) {
 			while (rs.next()) {
@@ -90,13 +90,13 @@ public class BuilderDBTesterUtility implements Serializable {
 		System.out.println("Top of deleteGradedRows() in BuilderDBTesterUtility class");
 		// Deletes all rows at once
 		String sqlDeleteRowsR3 = " DELETE FROM FINAL_GRADED_EXAMS_2 "; 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR3)) {
 			int affectedRows3T = stmt.executeUpdate();
 			System.out.println(affectedRows3T + " Number of affectedRows3T deleted");
 		}
 		// Isn't this redundant?
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR3)) {
 			int affectedRowsR3 = stmt.executeUpdate();
 			System.out.println(affectedRowsR3 + " Number of effectedRowsR3 deleted");
@@ -119,7 +119,7 @@ public class BuilderDBTesterUtility implements Serializable {
 	
 	public Integer getRowCountStudentsFinalGraded() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println(" Top of getRowCountStudentsFinalGraded() in BuilderDBTesterUtitility class");	
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM Students_Graded_Exams_Table2")) {
 			while (rs.next()) {
@@ -137,13 +137,13 @@ public class BuilderDBTesterUtility implements Serializable {
 		System.out.println("Top of deleteStudentsFinalRows() in  BuilderDBTesterUtitility class");
 		// Deletes all rows at once
 		String sqlDeleteRowsR4 = " DELETE FROM Students_Graded_Exams_Table2 "; 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR4)) {
 			int affectedRows3T = stmt.executeUpdate();
 			System.out.println(affectedRows3T + " Number of affectedRows3T deleted");
 		}
 		// Redundant from previous code
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR4)) {
 
 			int affectedRowsR4 = stmt.executeUpdate();
@@ -170,7 +170,7 @@ public class BuilderDBTesterUtility implements Serializable {
 			throws IOException, SQLException, ClassNotFoundException {
 		
 		String sqlDeleteRowsR1 = " DELETE FROM STUDENTS_OUTERNESTED_TABLE4 WHERE id = 1";	
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR1)) {
 			int affectedRows = stmt.executeUpdate();
 			System.out.println(affectedRows + " Number of rows deleted in STUDENTS_OUTERNESTED_TABLE4 is ___");
@@ -181,7 +181,7 @@ public class BuilderDBTesterUtility implements Serializable {
 	// Again, where is sqlRSCount used? It says it is not
 	public Integer getRowCountOuterNested() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println(" Top of getRowCountOuterNested() from BuilderDBTesterUtitility class");	
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM STUDENTS_OUTERNESTED_TABLE4")) {
 			while (rs.next()) {

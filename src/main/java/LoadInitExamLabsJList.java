@@ -22,6 +22,7 @@ import java.sql.Statement;
 public class LoadInitExamLabsJList {
 	ExamLabelsJlist1 examLabelsJlist1;
 	ExamLabelsJlist1 deserializedObject;
+	Integer rowCountExamLabsInt;
 	Object stuckObject;
 
 	public void loadJListExamLabs() throws SQLException, IOException {
@@ -35,17 +36,20 @@ public class LoadInitExamLabsJList {
 
 		String insertSQL = "INSERT INTO EXAMS_JLIST_LABELS (id, EXAMLABELSJLIST1 ) VALUES(?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertSQL)) {
 
 			stmt2.setInt(1, 1);
 			stmt2.setObject(2, serializedObjectBytes);
 			int rowsEffected2 = stmt2.executeUpdate();
 			System.out.println(rowsEffected2 + " Number of rowsEffected2 ");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
-	public ExamLabelsJlist1 setExamLabelsJlist1(ExamLabelsJlist1 examLabelsJlist1) throws IOException, SQLException {
+	public void setExamLabelsJlist1(ExamLabelsJlist1 examLabelsJlist1) throws IOException, SQLException {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -55,7 +59,7 @@ public class LoadInitExamLabsJList {
 
 		String updateSQL = "UPDATE EXAMS_JLIST_LABELS  SET id = ?, EXAMLABELSJLIST1 =?  WHERE id=?";
 
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn = DatabaseConfig.getConnection();
 		PreparedStatement stmt = conn.prepareStatement(updateSQL)){
 
 		stmt.setInt(1, 1);
@@ -63,7 +67,10 @@ public class LoadInitExamLabsJList {
 		stmt.setInt(3, 1);
 		int rowsEffected2 = stmt.executeUpdate();
 		System.out.println(rowsEffected2 + " rowsEffected2 updating EXAMLABELSJLIST1");		
-		return examLabelsJlist1;
+		//return examLabelsJlist1;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 
@@ -71,7 +78,7 @@ public class LoadInitExamLabsJList {
 
 		String sqlRS = " SELECT id, EXAMLABELSJLIST1 FROM EXAMS_JLIST_LABELS ";
 
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn = DatabaseConfig.getConnection();
 		PreparedStatement stmt = conn.prepareStatement(sqlRS);
 		ResultSet rs = stmt.executeQuery()){
 		
@@ -95,26 +102,33 @@ public class LoadInitExamLabsJList {
 
 	public Integer rowCountExamsLab() throws SQLException {
 
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn = DatabaseConfig.getConnection();
 		Statement stmt = conn.createStatement();
 		ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM EXAMS_JLIST_LABELS")){
 		
 		rs.next();
 		System.out.println(rs.getInt(1) + " What rs.getInt(1) returns, ie the rowCountExamsLab()");
-		Integer rowCountExamLabsInt = rs.getInt(1);
+		rowCountExamLabsInt = rs.getInt(1);
 		System.out.println("This EXAMS_JLIST_LABELS table contains " + rowCountExamLabsInt + " rows");
+		//return rowCountExamLabsInt;
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
 		return rowCountExamLabsInt;
-		}		
 	}
 
 	// Method to delete that one row ?? Yes
 	public void deleteExamsLablsRows() throws SQLException {
 		String sqlDeleteRow1 = " DELETE FROM EXAMS_JLIST_LABELS WHERE id = 1";
 
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn = DatabaseConfig.getConnection();
 		PreparedStatement stmt = conn.prepareStatement(sqlDeleteRow1)){		
 		int affectedRows = stmt.executeUpdate();
 		System.out.println(affectedRows + " Number of affectedRows deleted");
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

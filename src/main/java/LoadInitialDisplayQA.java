@@ -31,7 +31,7 @@ public class LoadInitialDisplayQA {
 	ArrayList<ArrayList<QuestionSuper>> masterOfCreatedExamsDisplayed;
 	ArrayList<ArrayList<QuestionSuper>> masterListOfQuestionsSER;
 
-	public void loadInitMasterCreatedExamsDisplayed() throws SQLException, IOException {
+	public void loadInitMasterCreatedExamsDisplayed() throws SQLException, IOException, ClassNotFoundException {
 		if (masterOfCreatedExamsDisplayed == null) {
 			masterOfCreatedExamsDisplayed = new ArrayList<ArrayList<QuestionSuper>>();
 		} else {
@@ -48,7 +48,7 @@ public class LoadInitialDisplayQA {
 		String insertDisplaySQL = "INSERT INTO DISPLAY_EXAMS_QUESTIONS_TABLE_1 (id, EXAM_NUMBER, "
 				+ "LISTOFQUESTIONS, LISTOFEXAMLISTS ) VALUES(?, ?, ?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertDisplaySQL)) {
 
 			stmt2.setInt(1, 1);
@@ -69,7 +69,7 @@ public class LoadInitialDisplayQA {
 
 		String sqlRS = " SELECT id, LISTOFEXAMLISTS FROM DISPLAY_EXAMS_QUESTIONS_TABLE_1 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {
 
@@ -92,7 +92,7 @@ public class LoadInitialDisplayQA {
 	}
 
 	public void loadMasterListOfQuestionsSER(ArrayList<ArrayList<QuestionSuper>> masterListOfQuestionsSER)
-			throws SQLException, IOException {
+			throws SQLException, IOException, ClassNotFoundException {
 
 		if (masterListOfQuestionsSER == null) {
 			masterListOfQuestionsSER = new ArrayList<ArrayList<QuestionSuper>>();
@@ -113,7 +113,7 @@ public class LoadInitialDisplayQA {
 		String insertDisplaySQL = "INSERT INTO DISPLAY_EXAMS_QUESTIONS_TABLE_1 (id, EXAM_NUMBER, "
 				+ "LISTOFQUESTIONS, LISTOFEXAMLISTS ) VALUES(?, ?, ?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertDisplaySQL)) {
 
 			stmt2.setInt(1, 1);

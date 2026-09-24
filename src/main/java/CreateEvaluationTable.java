@@ -12,11 +12,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CreateEvaluationTable {
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 		String createTableSQL = "CREATE TABLE CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 (" + "id Integer NOT NULL,"
 				+ "INNER_MASTER_EVALUATED JAVA_OBJECT(10000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 			String myTableName = "CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1";
 

@@ -27,7 +27,7 @@ public class GetListFromDB {
 		
 		String sqlRS = " SELECT id, EXAM_NUMBER, LISTOFQUESTIONS, LISTOFEXAMLISTS FROM BUILDER_EXAMS_LISTS_17 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {
 			byte[] listOfQBytes = null;
@@ -49,6 +49,7 @@ public class GetListFromDB {
 				}
 			}
 		}
+		System.out.println(listOfQuestionsSER + "Trying out new connect helper class");
 		System.out.println("Bottom of GetListFromDB getRowData() method");
 		return listOfQuestionsSER;
 	}

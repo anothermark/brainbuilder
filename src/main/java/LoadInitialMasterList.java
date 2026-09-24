@@ -94,7 +94,7 @@ public class LoadInitialMasterList {
 	}
 
 	public void serializeListOfQuestionsSER(Integer selectedExamIndex, ArrayList<QuestionSuper> listOfQuestionsSER,
-			Integer initialNumberOfQuestions) throws IOException, SQLException {
+			Integer initialNumberOfQuestions) throws IOException, SQLException, ClassNotFoundException {
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
@@ -105,7 +105,7 @@ public class LoadInitialMasterList {
 		String insertSQL = "INSERT INTO BUILDER_EXAMS_LISTS_17 (id, EXAM_NUMBER, "
 				+ "LISTOFQUESTIONS, LISTOFEXAMLISTS ) VALUES(?, ?, ?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertSQL)) {
 			if (initialNumberOfQuestions > 0 && initialNumberOfQuestions <= 10) {
 				stmt2.setInt(1, selectedExamIndex + 1);
@@ -123,7 +123,7 @@ public class LoadInitialMasterList {
 
 	public void serialAdditionalListOfQuestionsSER(Integer selectedExamIndex,
 			ArrayList<QuestionSuper> listOfQuestionsSER, Integer numberOfAdditionalQuestions)
-			throws IOException, SQLException {
+			throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of serialAdditionalListOfQuestionsSER() method in the LoadInitialMasterList class");
 		System.out.println(listOfQuestionsSER + " listOfQuestionsSER fsfsfd");
 
@@ -136,7 +136,7 @@ public class LoadInitialMasterList {
 		String updateSQL = "UPDATE BUILDER_EXAMS_LISTS_17 SET id = ?, EXAM_NUMBER = ?, "
 				+ "LISTOFQUESTIONS = ?, LISTOFEXAMLISTS = ? WHERE id = ?";
 
-		try(Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn2 = DatabaseConfig.getConnection();
 		PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)){
 
 		stmt2.setInt(1, selectedExamIndex + 1);
@@ -164,7 +164,7 @@ public class LoadInitialMasterList {
 
 		String sqlRS = " SELECT id, EXAM_NUMBER, LISTOFQUESTIONS, LISTOFEXAMLISTS FROM BUILDER_EXAMS_LISTS_17 ";
 
-		try(Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn = DatabaseConfig.getConnection();
 		PreparedStatement stmt = conn.prepareStatement(sqlRS);
 		ResultSet rs = stmt.executeQuery()){
 		

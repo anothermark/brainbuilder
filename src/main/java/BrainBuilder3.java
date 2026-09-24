@@ -60,13 +60,20 @@ import javax.swing.text.StyledDocument;
 public class BrainBuilder3 extends JDialog {
 
 	private static final long serialVersionUID = -7590264413402486671L;
-	private static final String PREF_KEY = "show_message";
-	private static final Preferences prefs = Preferences.userNodeForPackage(BrainBuilder3.class);
+	
+	// Define a unique key for EACH pop-up message
+    private static final String PREF_KEY_EXAM_INTRO = "show_exam_intro_message";
+    private static final String PREF_KEY_WELCOME = "show_welcome_message"; 
+    private static final String PREF_KEY_DELETE_WARNING = "show_delete_warning";
+
+    private static final Preferences prefs = Preferences.userNodeForPackage(BrainBuilder3.class);
 
 	String listOfQuestionsStr;
 	String anonStr;
 	String numExamsDisplayed;
-	String numOfQuestions = null;
+	
+	String numOfQuestions;
+	
 	String selectedValue;
 	String selectedExamNumber;
 	String previouslySelectedCommand;
@@ -106,6 +113,7 @@ public class BrainBuilder3 extends JDialog {
 	ArrayList<ArrayList<ArrayList<Boolean>>> outerMasterCorrectAnswersProfs;
 	ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER_Disp;
 
+	Integer displayRowCountEQ;
 	Integer countingRows;
 	Integer selectedExamIndex;
 	Integer selectedIndex;
@@ -168,9 +176,11 @@ public class BrainBuilder3 extends JDialog {
 	 * @throws IOException
 	 * @throws SQLException
 	 * @throws BackingStoreException
+	 * @throws ClassNotFoundException 
 	 */
 
-	public static void main(String[] args) throws SQLException, IOException, BackingStoreException {
+	public static void main(String[] args) throws SQLException, IOException, BackingStoreException, ClassNotFoundException {
+		DatabaseConfig.initializeDatabaseIfMissing();
 		try {
 			BrainBuilder3 dialog = new BrainBuilder3();
 			dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -182,27 +192,40 @@ public class BrainBuilder3 extends JDialog {
 		// This restores my dialog message from "Don't show this message again" check
 		// box.
 		// Perhaps create a button to give the user a choice
-		Preferences.userNodeForPackage(BrainBuilder3.class).remove(PREF_KEY);
-		if (!prefs.getBoolean(PREF_KEY, true)) {
-			return;
-		}
+		
+		//Preferences.userNodeForPackage(BrainBuilder3.class).remove(PREF_KEY);
+		//if (!prefs.getBoolean(PREF_KEY, true)) {
+			//return;
+		//}
+		
+		// (Optional) Remove line below in production if you don't want to reset keys every launch
+        // prefs.remove(PREF_KEY_EXAM_INTRO); 
+		GetListFromDB getListFromDB = new GetListFromDB();
+		System.out.println(getListFromDB.getRowData(1) + "testing the new connection helper should return serlist");
 
-		JCheckBox checkBox2 = new JCheckBox("Don't show this message again");
-		Object[] message2 = {
-				"To create an exam structure you must first select an exam sequentially (ie. Exam 1, then Exam 2) \n"
-						+ "from the 'All Available Exams' list, and then click the Create An Exam button. \n"
-						+ "After this exam structure has been built, to populate with data, retrieve or update a question, \n"
-						+ "you must first select the exam from the 'All Available Exams' list, and then select \n"
-						+ "a question from the 'Individual Exams With Questions' list.",
-				checkBox2 };
+		 // ==========================================
+        // POP-UP 1: Exam Structure Intro
+        // ==========================================
+        // Only show if the user HAS NOT checked "Don't show this message again" (defaults to true)
+        if (prefs.getBoolean(PREF_KEY_EXAM_INTRO, true)) {
+            JCheckBox checkBoxExam = new JCheckBox("Don't show this message again"); 
+            Object[] messageExam = { 
+                "To create an exam structure you must first select an exam sequentially (ie. Exam 1, then Exam 2) \n" 
+                + "from the 'All Available Exams' list, and then click the Create An Exam button. \n" 
+                + "After this exam structure has been built, to populate with data, retrieve or update a question, \n" 
+                + "you must first select the exam from the 'All Available Exams' list, and then select \n" 
+                + "a question from the 'Individual Exams With Questions' list.", 
+                checkBoxExam 
+            };  
 
-		int result = JOptionPane.showConfirmDialog(null, message2, "Intro", JOptionPane.OK_CANCEL_OPTION,
-				JOptionPane.PLAIN_MESSAGE);
 
-		if (result == JOptionPane.OK_OPTION && checkBox2.isSelected()) {
-			prefs.putBoolean(PREF_KEY, false);
-			System.out.println("User checked don't show again");
-		}
+            int resultExam = JOptionPane.showConfirmDialog(null, messageExam, "Intro", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);  
+
+            if (resultExam == JOptionPane.OK_OPTION && checkBoxExam.isSelected()) { 
+                prefs.putBoolean(PREF_KEY_EXAM_INTRO, false); 
+                System.out.println("User checked don't show Exam Intro again"); 
+            }
+	}
 	}
 
 	/**
@@ -219,7 +242,7 @@ public class BrainBuilder3 extends JDialog {
 		getContentPane().setLayout(null);
 		Container contentPaneContainer = getContentPane();
 
-		var selectionSaver = new ActionListener() {
+		ActionListener selectionSaver = new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				previouslySelectedCommand = e.getActionCommand();
@@ -227,10 +250,10 @@ public class BrainBuilder3 extends JDialog {
 			}
 		};
 		builderGroup = new ButtonGroup();
-		var panel = new JPanel();
+		JPanel panel = new JPanel();
 		panel.setBorder(new TitledBorder(
 				new EtchedBorder(EtchedBorder.LOWERED, new Color(255, 255, 255), new Color(160, 160, 160)),
-				"The Charles Stanley Institute Brain-Builder Dashboard", TitledBorder.RIGHT, TitledBorder.TOP, null,
+				"The Brain-Builder Dashboard", TitledBorder.RIGHT, TitledBorder.TOP, null,
 				new Color(0, 0, 0)));
 		panel.setBounds(34, 18, 1128, 58);
 		getContentPane().add(panel);
@@ -474,8 +497,13 @@ public class BrainBuilder3 extends JDialog {
 								}
 								var dbaseUtility = new dbUtility();
 								try {
-									System.out
-											.println(dbaseUtility.rowCountEQDisplay() + " rowCountEQDisplay xczxasz ");
+									try {
+										System.out
+												.println(dbaseUtility.rowCountEQDisplay() + " rowCountEQDisplay xczxasz ");
+									} catch (ClassNotFoundException e1) {										
+									    JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+									    e1.printStackTrace(); 
+									}
 								} catch (SQLException e1) {
 									e1.printStackTrace();
 								}
@@ -550,7 +578,12 @@ public class BrainBuilder3 extends JDialog {
 								int displayRowCount = 0;
 								try {
 
-									displayRowCount = dataBaseUtility.rowCountEQDisplay();
+									try {
+										displayRowCount = dataBaseUtility.rowCountEQDisplay();
+									} catch (ClassNotFoundException e1) {
+										JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+									    e1.printStackTrace();
+									}
 								} catch (SQLException e1) {
 									e1.printStackTrace();
 								}
@@ -567,8 +600,13 @@ public class BrainBuilder3 extends JDialog {
 									try {
 										System.out.println(outerMasterListOfMastersSER_Disp + " pot09t04t9");
 										// Set the initial 10 nulls in the display outer table
-										displayExamsAndQuestions
-												.insertOuterDisplayTable(outerMasterListOfMastersSER_Disp);
+										try {
+											displayExamsAndQuestions
+													.insertOuterDisplayTable(outerMasterListOfMastersSER_Disp);
+										} catch (ClassNotFoundException e1) {
+											JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+										    e1.printStackTrace();
+										}
 
 									} catch (SQLException | IOException e1) {
 										// e1.printStackTrace();
@@ -1102,6 +1140,7 @@ public class BrainBuilder3 extends JDialog {
 					try {
 						counter = loadInitExamLabsJList.rowCountExamsLab();
 					} catch (SQLException e1) {
+						// TODO Auto-generated catch block
 						e1.printStackTrace();
 					}
 					textFieldExamLabelsCount.setText(counter.toString());
@@ -1113,7 +1152,12 @@ public class BrainBuilder3 extends JDialog {
 										+ "application until I figure out how to code this properly\n");
 						System.exit(0);
 						// Okay, so this simply runs main() again after System.exit(0);?
-						BrainBuilder3.main(exams);
+						try {
+							BrainBuilder3.main(exams);
+						} catch (ClassNotFoundException e1) {
+							// TODO Auto-generated catch block
+							e1.printStackTrace();
+						}
 					} catch (SQLException | IOException e1) {
 						e1.printStackTrace();
 					} catch (BackingStoreException e1) {
@@ -1164,6 +1208,29 @@ public class BrainBuilder3 extends JDialog {
 		btnQinExams.setFont(new Font("Tahoma", Font.PLAIN, 14));
 		btnQinExams.setBounds(498, 11, 275, 21);
 		panel.add(btnQinExams);
+		
+		JButton resetTipsButton = new JButton("Reset Tips");
+		// Add the action listener using a lambda expression (Replaces actionPerformed)
+		resetTipsButton.addActionListener(e -> {
+		    try {
+		        // Clear the exact preference key you created
+		        prefs.remove(PREF_KEY_EXAM_INTRO);
+		        
+		        // Save the changes to disk immediately
+		        prefs.flush(); 
+		        
+		        JOptionPane.showMessageDialog(this, 
+		            "Informational messages have been reset and will display again.", 
+		            "Success", 
+		            JOptionPane.INFORMATION_MESSAGE);
+		            
+		    } catch (BackingStoreException ex) {
+		        ex.printStackTrace();
+		    }
+		});
+		resetTipsButton.setFont(new Font("Tahoma", Font.PLAIN, 14));
+		resetTipsButton.setBounds(775, 11, 117, 20);
+		panel.add(resetTipsButton);
 
 		JScrollPane scrollQuestion = new JScrollPane();
 		scrollQuestion.setBounds(763, 105, 400, 50);
@@ -2607,7 +2674,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createBuilderExamsTable1 = new CreateBuilderExamsTable1();
 				try {
-					createBuilderExamsTable1.createTable();
+					try {
+						createBuilderExamsTable1.createTable();
+					} catch (ClassNotFoundException e1) {
+						e1.printStackTrace(); // Keep this for your own local logging
+					    JOptionPane.showMessageDialog(null, "An error occurred. Please try again.");
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -2716,7 +2788,12 @@ public class BrainBuilder3 extends JDialog {
 				// to create CreateOuterMasterAnswers_Table1
 				CreateOuterMasterAnswers_Table1 createOuterMasterAnswers_Table1 = new CreateOuterMasterAnswers_Table1();
 				try {
-					createOuterMasterAnswers_Table1.createTable();
+					try {
+						createOuterMasterAnswers_Table1.createTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -2766,7 +2843,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createExTableOrigFinished = new CreateExTableOrigFinished();
 				try {
-					createExTableOrigFinished.createTable();
+					try {
+						createExTableOrigFinished.createTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -2821,7 +2903,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createGradedFinalTable_2 = new CreateGradedFinalTable_2();
 				try {
-					createGradedFinalTable_2.createFinalGradedTable();
+					try {
+						createGradedFinalTable_2.createFinalGradedTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -2898,7 +2985,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createStudentsGradedExamsTable = new CreateStudentsGradedExamsTable();
 				try {
-					createStudentsGradedExamsTable.createFinalGradedTable();
+					try {
+						createStudentsGradedExamsTable.createFinalGradedTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -2913,7 +3005,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				CreateEvaluationTable createEvaluationTable = new CreateEvaluationTable();
 				try {
-					createEvaluationTable.createTable();
+					try {
+						createEvaluationTable.createTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -2981,7 +3078,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createStudentsOuterNestedTable = new CreateStudentsOuterNestedTable();
 				try {
-					createStudentsOuterNestedTable.createOuterNestedTable();
+					try {
+						createStudentsOuterNestedTable.createOuterNestedTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -3068,7 +3170,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createDisplayExamsQuestionsTable = new CreateDisplayExamsQuestionsTable();
 				try {
-					createDisplayExamsQuestionsTable.createTable();
+					try {
+						createDisplayExamsQuestionsTable.createTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -3099,12 +3206,23 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var dbUtilityRef = new dbUtility();
 				try {
-					dbUtilityRef.deleteEQDisplayRow();
+					try {
+						dbUtilityRef.deleteEQDisplayRow();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
 				try {
-					Integer displayRowCountEQ = dbUtilityRef.rowCountEQDisplay();
+					
+					try {
+						displayRowCountEQ = dbUtilityRef.rowCountEQDisplay();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 					textFieldDisplayEQCount.setText(displayRowCountEQ.toString());
 				} catch (SQLException e1) {
 					e1.printStackTrace();
@@ -3129,7 +3247,12 @@ public class BrainBuilder3 extends JDialog {
 					e1.printStackTrace();
 				}
 				try {
-					textFieldRowcountDisplayTable.setText(dBaseUtility.rowCountEQDisplay().toString());
+					try {
+						textFieldRowcountDisplayTable.setText(dBaseUtility.rowCountEQDisplay().toString());
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -3143,7 +3266,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createExamLabelsJListTable = new CreateExamLabelsJListTable();
 				try {
-					createExamLabelsJListTable.createTable();
+					try {
+						createExamLabelsJListTable.createTable();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -3231,7 +3359,12 @@ public class BrainBuilder3 extends JDialog {
 
 				var dbTableUtility = new DbTableUtility();
 				try {
-					allTableNames = dbTableUtility.displayAllTables();
+					try {
+						allTableNames = dbTableUtility.displayAllTables();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 					// Display allTableNames list in the preview pane
 					// Loop through allTableNames and insert in String
 					String latestTableNames = "Current Database Tables\n";
@@ -3272,7 +3405,12 @@ public class BrainBuilder3 extends JDialog {
 				var dataBUtility = new dbUtility();
 				Integer displayRowCount = 0;
 				try {
-					displayRowCount = dataBUtility.rowCountEQDisplay();
+					try {
+						displayRowCount = dataBUtility.rowCountEQDisplay();
+					} catch (ClassNotFoundException e1) {
+						JOptionPane.showMessageDialog(null, "A database error occurred. Please try again.");
+					    e1.printStackTrace();
+					}
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -3299,7 +3437,12 @@ public class BrainBuilder3 extends JDialog {
 			public void actionPerformed(ActionEvent e) {
 				var createComboLabelsTable = new CreateComboLabelsTable();
 				try {
-					createComboLabelsTable.createTable();
+					try {
+						createComboLabelsTable.createTable();
+					} catch (ClassNotFoundException e1) {						
+					    JOptionPane.showMessageDialog(null, "An error occurred. Please try again.");
+					    e1.printStackTrace(); 
+					}
 				} catch (SQLException e1) {
 
 					e1.printStackTrace();

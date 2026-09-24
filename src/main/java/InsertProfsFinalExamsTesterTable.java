@@ -43,7 +43,7 @@ public class InsertProfsFinalExamsTesterTable {
 			String insertSQL = "INSERT INTO TESTER_EXAMS_LIST_4 (id, EXAM_NUMBER, "
 					+ "STUDENTLASTNAME, LISTOFQUESTIONS, LISTOFGRADEDEXAMSLISTS ) VALUES(?, ?, ?, ?, ?)";
 
-			try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+			try (Connection conn = DatabaseConfig.getConnection();
 					PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
 
 				for (int k = 0; k < 10; k++) {
@@ -109,7 +109,7 @@ public class InsertProfsFinalExamsTesterTable {
 		String updateSQL = "UPDATE TESTER_EXAMS_LIST_4 SET id = ?, EXAM_NUMBER = ?, "
 				+ "LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ? WHERE id = ?";
 
-		try(Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn2 = DatabaseConfig.getConnection();
 		PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)){
 
 		stmt2.setInt(1, selectedExamIndex + 1);

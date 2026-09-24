@@ -13,11 +13,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CreateExamLabelsJListTable {
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 		String createTableSQL = "CREATE TABLE EXAMS_JLIST_LABELS (" + "id Integer NOT NULL," // Always 1
 				+ "EXAMLABELSJLIST1  Object " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 			String myTableName = "EXAMS_JLIST_LABELS";
 

@@ -76,7 +76,7 @@ public class DeleteQuestions {
 		String updateSQL = "UPDATE BUILDER_EXAMS_LISTS_17 SET id = ?, EXAM_NUMBER = ?, "
 				+ "LISTOFQUESTIONS = ?, LISTOFEXAMLISTS = ? WHERE id = ?";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 
 			stmt2.setInt(1, selectedExamIndex + 1);
@@ -105,7 +105,7 @@ public class DeleteQuestions {
 
 		String sqlRS = " SELECT id, EXAM_NUMBER, LISTOFQUESTIONS, LISTOFEXAMLISTS FROM BUILDER_EXAMS_LISTS_17 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {
 			byte[] listOfQBytes = null;

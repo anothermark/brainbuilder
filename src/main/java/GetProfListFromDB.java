@@ -27,7 +27,7 @@ public class GetProfListFromDB {
 
 		String sqlRS = " SELECT id, EXAM_NUMBER,  STUDENTLASTNAME, LISTOFQUESTIONS, LISTOFGRADEDEXAMSLISTS FROM TESTER_EXAMS_LIST_4 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {
 			byte[] listOfQBytes = null;

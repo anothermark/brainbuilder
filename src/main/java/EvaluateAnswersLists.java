@@ -28,7 +28,7 @@ public class EvaluateAnswersLists {
 
 		String sqlRS = " SELECT INNER_MASTER_EVALUATED FROM CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 WHERE id = 1";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {
 			System.out.println(" 8de8rkg");
@@ -52,7 +52,7 @@ public class EvaluateAnswersLists {
 	}
 
 	public void insertOuterMasterAnswers(ArrayList<ArrayList<Boolean>> innerMasterEvaluated)
-			throws IOException, SQLException {
+			throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of insertOuterMasterAnswers() of class EvaluateAnswersLists");
 
 		try (ByteArrayOutputStream baosMCD = new ByteArrayOutputStream();
@@ -63,7 +63,7 @@ public class EvaluateAnswersLists {
 			String insertDisplaySQL = "INSERT INTO CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 (id, "
 					+ "INNER_MASTER_EVALUATED) VALUES(?, ?)";
 
-			try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+			try (Connection conn2 = DatabaseConfig.getConnection();
 					PreparedStatement stmt2 = conn2.prepareStatement(insertDisplaySQL)) {
 
 				stmt2.setInt(1, 1); // Always set it in the first row only
@@ -86,7 +86,7 @@ public class EvaluateAnswersLists {
 
 			String updateSQL = "UPDATE CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 SET id = ?, INNER_MASTER_EVALUATED = ? WHERE id = ?";
 
-			try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+			try (Connection conn2 = DatabaseConfig.getConnection();
 					PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 
 				stmt2.setInt(1, 1);
@@ -104,7 +104,7 @@ public class EvaluateAnswersLists {
 	public int getRowCountEvaluated() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of getRowCountEvaluated() of class EvaluateAnswersLists");
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt
 						.executeQuery(" SELECT COUNT(*) AS rowcount FROM CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1")) {
@@ -122,7 +122,7 @@ public class EvaluateAnswersLists {
 		System.out.println("Top of deleteRowsEval() of class EvaluateAnswersLists");
 		String sqlDeleteRowsR2 = " DELETE FROM CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR2)) {
 			int affectedRows12345x = stmt.executeUpdate();
 			System.out.println(affectedRows12345x + " Number of affectedRows12345x deleted");

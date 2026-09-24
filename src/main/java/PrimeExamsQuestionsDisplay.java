@@ -68,7 +68,7 @@ public class PrimeExamsQuestionsDisplay {
 	}
 
 	public void insertMasterPlaceDisplayTable(ArrayList<ArrayList<QuestionSuper>> masterOfCreatedExamsDisplayed)
-			throws IOException, SQLException {
+			throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of insertMasterPlaceDisplayTable() method of class PrimeExamsQuestionsDisplay");
 
 		ByteArrayOutputStream baosMCD = new ByteArrayOutputStream();
@@ -80,7 +80,7 @@ public class PrimeExamsQuestionsDisplay {
 		String insertDisplaySQL = "INSERT INTO DISPLAY_EXAMS_QUESTIONS_TABLE_1 (id, EXAM_NUMBER, "
 				+ "LISTOFQUESTIONS, LISTOFEXAMLISTS ) VALUES(?, ?, ?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertDisplaySQL)) {
 
 			stmt2.setInt(1, 1); // Always set it in the first row only
@@ -97,7 +97,7 @@ public class PrimeExamsQuestionsDisplay {
 
 		// It's called above in loadSerListPlaceholders()
 	public void updateMasterPlaceDisplayTable(ArrayList<ArrayList<QuestionSuper>> masterOfCreatedExamsDisplayed)
-			throws IOException, SQLException {
+			throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of updateMasterPlaceDisplayTable() method of class PrimeExamsQuestionsDisplay");
 
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -109,7 +109,7 @@ public class PrimeExamsQuestionsDisplay {
 		String updateSQL = "UPDATE DISPLAY_EXAMS_QUESTIONS_TABLE_1 SET id = ?, EXAM_NUMBER = ?, LISTOFQUESTIONS = ?, "
 				+ "LISTOFEXAMLISTS = ? WHERE id = ?";
 
-		try(Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn2 = DatabaseConfig.getConnection();
 		PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)){
 
 		stmt2.setInt(1, 1);
@@ -143,7 +143,7 @@ public class PrimeExamsQuestionsDisplay {
 
 		String displayEQSQL = "UPDATE DISPLAY_EXAMS_QUESTIONS_TABLE_1  SET id = ?, EXAM_NUMBER =?, LISTOFQUESTIONS = ?, LISTOFEXAMLISTS = ?  WHERE id=?";
 
-		try(Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try(Connection conn2 = DatabaseConfig.getConnection();
 		PreparedStatement stmt2 = conn2.prepareStatement(displayEQSQL)){
 			
 		stmt2.setInt(1, 1);

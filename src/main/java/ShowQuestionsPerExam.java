@@ -102,7 +102,7 @@ public class ShowQuestionsPerExam {
 
 		String sqlRS = " SELECT * FROM Students_Graded_Exams_Table2";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {			
 			int count = 0;
@@ -129,7 +129,7 @@ public class ShowQuestionsPerExam {
 		// Called from bottom of upDateStudents_Graded_Exams_Table2() of the UpdateProfsFinalList class
 	// which sets these in the Students_Graded_Exams_Table2, but that makes no sense. 
 	public void setMasterListOfQuestionsSER(Integer selectedExamIndex, ArrayList<QuestionSuper> listOfQuestionsSER)
-			throws SQLException, IOException {
+			throws SQLException, IOException, ClassNotFoundException {
 		if (masterListOfQuestionsSER == null) {// this becomes the innernestedmaster in the final table
 			masterListOfQuestionsSER = new ArrayList<ArrayList<QuestionSuper>>();
 			System.out.println(listOfQuestionsSER + " listOfQuestionsSER vcfljou");
@@ -153,7 +153,7 @@ public class ShowQuestionsPerExam {
 
 		String updateSQL = "UPDATE Students_Graded_Exams_Table2  SET id = ?, STUDENTLASTNAME =?, STUDENTFIRSTNAME = ?, LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 			TheUpdateLoop: for (int i = 0; i < 10; i++) {

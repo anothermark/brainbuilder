@@ -11,13 +11,13 @@ import java.sql.SQLException;
 
 public class CreateExTableOrigFinished {
 
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 
 		String createTableSQLT = "CREATE TABLE TESTER_EXAMS_LIST_4 (" + "id Integer NOT NULL,"
 				+ "EXAM_NUMBER Integer NOT NULL," + "STUDENTLASTNAME VARCHAR(100),"
 				+ "LISTOFQUESTIONS JAVA_OBJECT(1000000000) ," + "LISTOFGRADEDEXAMSLISTS JAVA_OBJECT(1000000000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQLT)) {
 			String myTableName = "TESTER_EXAMS_LIST_4";
 

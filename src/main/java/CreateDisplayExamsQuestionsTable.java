@@ -10,12 +10,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CreateDisplayExamsQuestionsTable {
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 		String createTableSQL = "CREATE TABLE DISPLAY_EXAMS_QUESTIONS_TABLE_1 (" + "id Integer NOT NULL,"
 				+ "EXAM_NUMBER Integer NOT NULL," + "LISTOFQUESTIONS JAVA_OBJECT(1000000000) ,"
 				+ "LISTOFEXAMLISTS JAVA_OBJECT(1000000000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 			String myTableName = "DISPLAY_EXAMS_QUESTIONS_TABLE_1";
 

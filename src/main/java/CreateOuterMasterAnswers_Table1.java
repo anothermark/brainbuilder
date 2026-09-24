@@ -10,11 +10,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CreateOuterMasterAnswers_Table1 {
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 		String createTableSQL = "CREATE TABLE OUTER_MASTER_ANSWERS_TABLE_1 (" + "id Integer NOT NULL,"
 				+ "OUTER_MASTER_ANSWERS JAVA_OBJECT(10000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 			String myTableName = "OUTER_MASTER_ANSWERS_TABLE_1";
 

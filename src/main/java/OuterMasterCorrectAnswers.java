@@ -75,7 +75,7 @@ public class OuterMasterCorrectAnswers {
 
 		String sqlRS = " SELECT OUTER_MASTER_ANSWERS FROM OUTER_MASTER_ANSWERS_TABLE_1 WHERE id = 1";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {			
 			System.out.println("pdmf87");
@@ -99,7 +99,7 @@ public class OuterMasterCorrectAnswers {
 	}
 
 	public void insertOuterMasterAnswers(ArrayList<ArrayList<ArrayList<Boolean>>> outerMasterCorrectAnswersProfs)
-			throws IOException, SQLException {
+			throws IOException, SQLException, ClassNotFoundException {
 
 		try (ByteArrayOutputStream baosMCD = new ByteArrayOutputStream();
 				ObjectOutputStream oosMCD = new ObjectOutputStream(baosMCD)) {
@@ -108,7 +108,7 @@ public class OuterMasterCorrectAnswers {
 
 			String insertDisplaySQL = "INSERT INTO OUTER_MASTER_ANSWERS_TABLE_1 (id, OUTER_MASTER_ANSWERS) VALUES(?, ?)";
 
-			try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+			try (Connection conn2 = DatabaseConfig.getConnection();
 					PreparedStatement stmt2 = conn2.prepareStatement(insertDisplaySQL)) {
 
 				stmt2.setInt(1, 1); // Always set it in the first row only				
@@ -129,7 +129,7 @@ public class OuterMasterCorrectAnswers {
 
 			String updateSQL = "UPDATE OUTER_MASTER_ANSWERS_TABLE_1 SET id = ?, OUTER_MASTER_ANSWERS = ? WHERE id = ?";
 			
-			try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+			try (Connection conn2 = DatabaseConfig.getConnection();
 					PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 
 				stmt2.setInt(1, 1);
@@ -147,7 +147,7 @@ public class OuterMasterCorrectAnswers {
 	public int getRowCountOuterAnswers() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of getRowCountOuterAnswers() in OuterMasterCorrectAnswers class");		
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM OUTER_MASTER_ANSWERS_TABLE_1")) {
 
@@ -165,7 +165,7 @@ public class OuterMasterCorrectAnswers {
 		String sqlDeleteRowsR2 = " DELETE FROM OUTER_MASTER_ANSWERS_TABLE_1 "; // make it like the others and delete all
 																				// rows
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR2)) {
 			int affectedRows = stmt.executeUpdate();
 			System.out.println(affectedRows + " Number of affectedRows deleted");

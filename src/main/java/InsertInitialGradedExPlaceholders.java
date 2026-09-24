@@ -21,7 +21,7 @@ public class InsertInitialGradedExPlaceholders {
 	ArrayList<QuestionSuper> listOfQuestionsSER;
 
 	public void loadInitialFinalGraded(Integer selectedExamIndex, Integer initialNumberOfQuestions,
-			String selectedValue, ArrayList<QuestionSuper> listOfQuestionsSER) throws SQLException, IOException {
+			String selectedValue, ArrayList<QuestionSuper> listOfQuestionsSER) throws SQLException, IOException, ClassNotFoundException {
 		System.out.println("Top of loadInitialFinalGraded() method in class loadInitialFinalGraded");
 		System.out.println(listOfQuestionsSER + " listOfQuestionsSER fhfhf98hfh");
 
@@ -34,7 +34,7 @@ public class InsertInitialGradedExPlaceholders {
 		String insertSQL = "INSERT INTO FINAL_GRADED_EXAMS_2 (id, EXAM_NUMBER, STUDENTLASTNAME, "
 				+ "LISTOFQUESTIONS, LISTOFGRADEDEXAMSLISTS ) VALUES(?, ?, ?, ?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertSQL)) {
 
 			if (initialNumberOfQuestions <= 10) {
@@ -77,7 +77,7 @@ public class InsertInitialGradedExPlaceholders {
 		String updateSQL = "UPDATE FINAL_GRADED_EXAMS_2 SET id = ?, EXAM_NUMBER = ?, "
 				+ "LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ? WHERE id = ?";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 
 			stmt2.setInt(1, selectedExamIndex + 1);

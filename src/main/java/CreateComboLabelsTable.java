@@ -13,11 +13,11 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class CreateComboLabelsTable {
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 		String createTableSQL = "CREATE TABLE EXAMS_COMBO_LABELS_1 (" + "id Integer NOT NULL," // Always 1
 				+ "EXAMCOMBOLABELS  Object " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 
 			String myTableName = "EXAMS_COMBO_LABELS_1";

@@ -40,7 +40,7 @@ public class UpdateProfsFinalList implements AutoCloseable {
 
 		String updateSQL = "UPDATE TESTER_EXAMS_LIST_4  SET id = ?, EXAM_NUMBER =?, STUDENTLASTNAME = ?, LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 			TheUpdateLoop: for (int i = 0; i < 10; i++) {
 				if (i == (selectedExamIndex + 1)) {
@@ -78,7 +78,7 @@ public class UpdateProfsFinalList implements AutoCloseable {
 
 		String updateSQL = "UPDATE FINAL_GRADED_EXAMS_2  SET id = ?, EXAM_NUMBER =?, STUDENTLASTNAME = ?, LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 			TheUpdateLoop: for (int i = 0; i < 10; i++) {
@@ -115,7 +115,7 @@ public class UpdateProfsFinalList implements AutoCloseable {
 
 		String updateSQL = "UPDATE Students_Graded_Exams_Table2  SET id = ?, STUDENTLASTNAME =?, STUDENTFIRSTNAME = ?, LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 			TheUpdateLoop: for (int i = 0; i < 10; i++) {

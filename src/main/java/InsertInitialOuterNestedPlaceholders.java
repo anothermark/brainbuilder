@@ -52,7 +52,7 @@ public class InsertInitialOuterNestedPlaceholders {
 		String insertSQL = "INSERT INTO STUDENTS_OUTERNESTED_TABLE4 (id, STUDENTLASTNAME, STUDENTFIRSTNAME, "
 				+ "OUTERNESTEDMASTERS, LISTOFGRADEDEXAMSLISTS ) VALUES(?, ?, ?, ?, ?)";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(insertSQL)) {
 			System.out.println(outerMasterListofMastersSER + " md dklfcoeiteo");
 			stmt2.setInt(1, 1);
@@ -113,7 +113,7 @@ public class InsertInitialOuterNestedPlaceholders {
 				String insertSQL = "INSERT INTO STUDENTS_OUTERNESTED_TABLE4 (id, STUDENTLASTNAME, STUDENTFIRSTNAME, "
 						+ "OUTERNESTEDMASTERS, LISTOFGRADEDEXAMSLISTS ) VALUES(?, ?, ?, ?, ?)";
 
-				try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+				try (Connection conn2 = DatabaseConfig.getConnection();
 						PreparedStatement stmt2 = conn2.prepareStatement(insertSQL)) {
 
 					stmt2.setInt(1, 1);
@@ -148,7 +148,7 @@ public class InsertInitialOuterNestedPlaceholders {
 
 		String sqlRS = " SELECT id, STUDENTLASTNAME,  STUDENTFIRSTNAME, OUTERNESTEDMASTERS, LISTOFGRADEDEXAMSLISTS FROM STUDENTS_OUTERNESTED_TABLE4 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rSet = stmt.executeQuery()) {
 			byte[] listOfOuterMasterBytes = null;
@@ -197,7 +197,7 @@ public class InsertInitialOuterNestedPlaceholders {
 			String updateSQL = "UPDATE STUDENTS_OUTERNESTED_TABLE4 SET id = ?, STUDENTLASTNAME = ?, STUDENTFIRSTNAME = ?, "
 					+ "OUTERNESTEDMASTERS = ?, LISTOFGRADEDEXAMSLISTS = ? WHERE id = ?";
 
-			try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+			try (Connection conn2 = DatabaseConfig.getConnection();
 					PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 
 				stmt2.setInt(1, 1);
@@ -238,7 +238,7 @@ public class InsertInitialOuterNestedPlaceholders {
 		String updateSQL = "UPDATE STUDENTS_OUTERNESTED_TABLE4 SET id = ?, STUDENTLASTNAME = ?, STUDENTFIRSTNAME = ?, "
 				+ "OUTERNESTEDMASTERS = ?, LISTOFGRADEDEXAMSLISTS = ? WHERE id = ?";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 			stmt2.setInt(1, 1);
 			stmt2.setObject(2, "Last Name");

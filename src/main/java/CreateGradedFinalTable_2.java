@@ -13,13 +13,13 @@ import java.sql.SQLException;
 // INSERTED/UPDATED IN THIS TABLE, ONE ROW PER STUDENT WHICH HOLDS MASTERLIST OF LISTS OF EXAMS? I think.
 public class CreateGradedFinalTable_2 {
 
-	public void createFinalGradedTable() throws SQLException {
+	public void createFinalGradedTable() throws SQLException, ClassNotFoundException {
 
 		String createTableSQLT = "CREATE TABLE FINAL_GRADED_EXAMS_2 (" + "id Integer NOT NULL,"
 				+ "EXAM_NUMBER Integer NOT NULL," + "STUDENTLASTNAME VARCHAR(100),"
 				+ "LISTOFQUESTIONS JAVA_OBJECT(1000000000) ," + "LISTOFGRADEDEXAMSLISTS JAVA_OBJECT(1000000000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQLT)) {
 			String myTableName = "FINAL_GRADED_EXAMS_2";
 

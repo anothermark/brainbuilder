@@ -11,12 +11,12 @@ import java.sql.SQLException;
 
 public class CreateBuilderExamsTable1 {
 
-	public void createTable() throws SQLException {
+	public void createTable() throws SQLException, ClassNotFoundException {
 		String createTableSQL = "CREATE TABLE BUILDER_EXAMS_LISTS_17 (" + "id Integer NOT NULL,"
 				+ "EXAM_NUMBER Integer NOT NULL," + "LISTOFQUESTIONS JAVA_OBJECT(1000000000) ,"
 				+ "LISTOFEXAMLISTS JAVA_OBJECT(10000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQL)) {
 			String myTableName = "BUILDER_EXAMS_LISTS_17";
 

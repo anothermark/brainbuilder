@@ -34,7 +34,7 @@ public class InsertlistOfQuestionsSERtoDB implements Serializable {
 
 		String updateSQL = "UPDATE BUILDER_EXAMS_LISTS_17  SET id = ?, EXAM_NUMBER =?, LISTOFQUESTIONS = ?, LISTOFEXAMLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 			stmt.setInt(1, selectedExamIndex + 1); 
 			stmt.setInt(2, 424242);

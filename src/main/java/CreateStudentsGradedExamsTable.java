@@ -11,12 +11,12 @@ import java.sql.SQLException;
 
 public class CreateStudentsGradedExamsTable {
 
-	public void createFinalGradedTable() throws SQLException {
+	public void createFinalGradedTable() throws SQLException, ClassNotFoundException {
 		String createTableSQLT = "CREATE TABLE Students_Graded_Exams_Table2 (" + "id Integer NOT NULL,"
 				+ "STUDENTLASTNAME VARCHAR(100)," + "STUDENTFIRSTNAME VARCHAR(100),"
 				+ "LISTOFQUESTIONS JAVA_OBJECT(1000000000) ," + "LISTOFGRADEDEXAMSLISTS JAVA_OBJECT(1000000000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQLT)) {
 			String myTableName = "Students_Graded_Exams_Table2";
 

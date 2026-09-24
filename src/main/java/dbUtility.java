@@ -30,7 +30,7 @@ public class dbUtility implements Serializable {
 	public int getRowCount() throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of getRowCount() in dbUtility class");
 		
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM BUILDER_EXAMS_LISTS_17")) {
 
@@ -44,12 +44,12 @@ public class dbUtility implements Serializable {
 		}
 	}
 
-	public void updateExamToNull1stTbl(Integer selectedExamIndex) throws IOException, SQLException {
+	public void updateExamToNull1stTbl(Integer selectedExamIndex) throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of updateExamToNull1stTbl() method of the dbUtility class ");
 		String updateSQL = "UPDATE BUILDER_EXAMS_LISTS_17  SET id = ?, EXAM_NUMBER =?, "
 				+ "LISTOFQUESTIONS = ?, LISTOFEXAMLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 			stmt.setInt(1, selectedExamIndex + 1);
@@ -63,12 +63,12 @@ public class dbUtility implements Serializable {
 		System.out.println("Bottom of updateExamToNull1stTbl() method of the dbUtility class ");
 	}
 
-	public void updateExamToNull2ndTbl(Integer selectedExamIndex) throws IOException, SQLException {
+	public void updateExamToNull2ndTbl(Integer selectedExamIndex) throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of updateExamToNull2ndTbl() method of the dbUtility class ");
 		String updateSQL = "UPDATE TESTER_EXAMS_LIST_4  SET id = ?, EXAM_NUMBER =?, STUDENTLASTNAME = ?,"
 				+ "LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 			stmt.setInt(1, selectedExamIndex + 1);
 			stmt.setInt(2, 0);
@@ -83,13 +83,13 @@ public class dbUtility implements Serializable {
 	}
 
 	// For the third FINAL_GRADED_EXAMS_2 table
-	public void updateExamToNull3rdTbl(Integer selectedExamIndex) throws IOException, SQLException {
+	public void updateExamToNull3rdTbl(Integer selectedExamIndex) throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of updateExamToNull3rdTbl() method of the dbUtility class ");
 
 		String updateSQL = "UPDATE FINAL_GRADED_EXAMS_2  SET id = ?, EXAM_NUMBER =?, STUDENTLASTNAME = ?,"
 				+ "LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 			stmt.setInt(1, selectedExamIndex + 1);
@@ -106,13 +106,13 @@ public class dbUtility implements Serializable {
 	}
 
 	// Fourth Students_Graded_Exams_Table2
-	public void updateExamToNull4thTbl(Integer selectedExamIndex) throws IOException, SQLException {
+	public void updateExamToNull4thTbl(Integer selectedExamIndex) throws IOException, SQLException, ClassNotFoundException {
 		System.out.println("Top of updateExamToNull4thTbl() method of the dbUtility class ");
 
 		String updateSQL = "UPDATE Students_Graded_Exams_Table2  SET id = ?, STUDENTLASTNAME = ?, STUDENTFIRSTNAME = ? ,"
 				+ "LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ?  WHERE id=?";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(updateSQL)) {
 
 			stmt.setInt(1, selectedExamIndex + 1);
@@ -134,7 +134,7 @@ public class dbUtility implements Serializable {
 
 		String sqlDeleteRowsR2 = " DELETE FROM BUILDER_EXAMS_LISTS_17 "; // make it like the others and delete all rows
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRowsR2)) {
 			int affectedRows = stmt.executeUpdate();
 			System.out.println(affectedRows + " Number of affectedRows deleted");
@@ -144,11 +144,11 @@ public class dbUtility implements Serializable {
 
 	// EQDisplay stands for exams and questions, the number of which are displayed
 	// in the preview pane
-	public void deleteEQDisplayRow() throws SQLException {
+	public void deleteEQDisplayRow() throws SQLException, ClassNotFoundException {
 		System.out.println("Top of deleteEQDisplayRow() in dbUtility class");
 		String sqlDeleteRow1 = " DELETE FROM DISPLAY_EXAMS_QUESTIONS_TABLE_1 WHERE id = 1";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlDeleteRow1)) {
 			int affectedRows = stmt.executeUpdate();
 			System.out.println(affectedRows + " Number of affectedRows deleted");
@@ -156,10 +156,10 @@ public class dbUtility implements Serializable {
 		System.out.println("Bottom of deleteEQDisplayRow() in dbUtility class");
 	}
 
-	public Integer rowCountEQDisplay() throws SQLException {
+	public Integer rowCountEQDisplay() throws SQLException, ClassNotFoundException {
 		System.out.println("Top of rowCountEQDisplay() in dbUtility class");
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				Statement stmt = conn.createStatement();
 				ResultSet rs = stmt.executeQuery(" SELECT COUNT(*) AS rowcount FROM DISPLAY_EXAMS_QUESTIONS_TABLE_1")) {
 			rs.next();
@@ -181,7 +181,7 @@ public class dbUtility implements Serializable {
 		// FIRST, GRAB IT FROM THE DB
 		String sqlRS = " SELECT id, EXAM_NUMBER, LISTOFQUESTIONS, LISTOFEXAMLISTS FROM DISPLAY_EXAMS_QUESTIONS_TABLE_1 ";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(sqlRS);
 				ResultSet rs = stmt.executeQuery()) {
 			byte[] listOfAQdisplayBytes = null;
@@ -212,7 +212,7 @@ public class dbUtility implements Serializable {
 
 						String displayEQSQL = "UPDATE DISPLAY_EXAMS_QUESTIONS_TABLE_1  SET id = ?, EXAM_NUMBER =?, LISTOFQUESTIONS = ?, LISTOFEXAMLISTS = ?  WHERE id=?";
 
-						Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+						Connection conn2 = DatabaseConfig.getConnection();
 						PreparedStatement stmt2 = conn2.prepareStatement(displayEQSQL);
 						stmt2.setInt(1, 1);
 						stmt2.setInt(2, 424242);

@@ -63,7 +63,7 @@ public class InsertInitialStudentsFinalGraded {
 		String insertSQL = "INSERT INTO Students_Graded_Exams_Table2 (id, STUDENTLASTNAME, STUDENTFIRSTNAME, "
 				+ "LISTOFQUESTIONS, LISTOFGRADEDEXAMSLISTS ) VALUES(?, ?, ?, ?, ?)";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(insertSQL)) {
 
 			BreakerBreaker: for (int k = 0; k < 10; k++) {
@@ -111,7 +111,7 @@ public class InsertInitialStudentsFinalGraded {
 		String updateSQL = "UPDATE Students_Graded_Exams_Table2 SET id = ?, STUDENTLASTNAME = ?, STUDENTFIRSTNAME = ?,"
 				+ "LISTOFQUESTIONS = ?, LISTOFGRADEDEXAMSLISTS = ? WHERE id = ?";
 
-		try (Connection conn2 = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn2 = DatabaseConfig.getConnection();
 				PreparedStatement stmt2 = conn2.prepareStatement(updateSQL)) {
 			stmt2.setInt(1, selectedExamIndex + 1);
 			stmt2.setObject(2, "Last Name");

@@ -12,14 +12,14 @@ import java.sql.SQLException;
 // Outer master table, a master of inner masters
 public class CreateStudentsOuterNestedTable {
 
-	public void createOuterNestedTable() throws SQLException {
+	public void createOuterNestedTable() throws SQLException, ClassNotFoundException {
 		// This table uses the outernestedJlist to contain the other master lists,
 		// like a master list of master lists
 		String createTableSQLT = "CREATE TABLE STUDENTS_OUTERNESTED_TABLE4 (" + "id Integer NOT NULL,"
 				+ "STUDENTLASTNAME VARCHAR(100)," + "STUDENTFIRSTNAME VARCHAR(100),"
 				+ "OUTERNESTEDMASTERS JAVA_OBJECT(1000000000) ," + "LISTOFGRADEDEXAMSLISTS JAVA_OBJECT(1000000000) " + ");";
 
-		try (Connection conn = DriverManager.getConnection("jdbc:h2:~/test", "sa", "");
+		try (Connection conn = DatabaseConfig.getConnection();
 				PreparedStatement stmt = conn.prepareStatement(createTableSQLT)) {
 			String myTableName = "STUDENTS_OUTERNESTED_TABLE4";
 
