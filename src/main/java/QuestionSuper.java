@@ -16,11 +16,13 @@ import java.util.ArrayList;
 
 // Work in progress, always
 public class QuestionSuper implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 	Integer sizeOfSerList;
 	Integer numberOfPass;
 	Integer initialNumberOfQuestions; // Need getter/setter for this? Yes
 	Integer additionalQuestions; // Need getter/setter for this? Yes
-	Integer totalNumberOfQuestions;
+	Integer totalNumberOfQuestions = 0;
 	Integer primaryKeyDB;// Not sure I'm using this. I think this is also the exam number that should
 						// always match up?
 	Integer questionNumber; // important also for navigation back and forth
@@ -423,7 +425,7 @@ public class QuestionSuper implements Serializable {
 	}	
 	
 	public void setTotalNumberOfQuestions(Integer totalNumberOfQuestions) {
-		
+		//
 		this.totalNumberOfQuestions += totalNumberOfQuestions;
 	}
 	// If I want to use the first anon object to get the total number of questions, 
