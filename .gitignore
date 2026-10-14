@@ -1,0 +1,49 @@
+# ==========================================
+# 1. Project Specific / Local Data Files
+# ==========================================
+# Ignore local student data folder
+Builder studentapp_data/
+
+# Ignore any serialized Java files
+*.ser
+
+# Ignore loose text records if they happen to build locally
+*StudentFile.txt
+
+# ==========================================
+# 2. Java Compilation & JAR Outputs
+# ==========================================
+# Ignore compiled Java class files
+*.class
+
+# Ignore log files generated during desktop execution
+*.log
+
+# Ignore package distribution directories (where your compiled JAR will sit)
+dist/
+build/
+target/
+out/
+
+# If you want to store your final production JAR on GitHub, leave this commented out.
+# If you want to keep the final built JAR off GitHub to save space, uncomment the line below:
+# *.jar
+
+# ==========================================
+# 3. Eclipse & IDE Core Configurations
+# ==========================================
+bin/
+.settings/
+.project
+.classpath
+.factorypath
+
+# ==========================================
+# 4. Operating System Garbage Files
+# ==========================================
+# Windows Explorer thumbnail caches
+Thumbs.db
+ehthumbs.db
+
+# macOS Finder system files
+.DS_Store

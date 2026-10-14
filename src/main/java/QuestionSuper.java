@@ -17,7 +17,10 @@ import java.util.ArrayList;
 // Work in progress, always
 public class QuestionSuper implements Serializable {
 	
-	private static final long serialVersionUID = 1L;
+	// Goog had me add this serialVersionUID so I don't need to clear out the db every time
+	// but when I did that it threw the exceptions I was trying to avoid, and I don'td want to recreate 
+	// all of those questions. 
+	//private static final long serialVersionUID = 1L;
 	Integer sizeOfSerList;
 	Integer numberOfPass;
 	Integer initialNumberOfQuestions; // Need getter/setter for this? Yes
