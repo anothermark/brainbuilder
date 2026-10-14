@@ -19,7 +19,7 @@ Builder studentapp_data/
 # Ignore log files generated during desktop execution
 *.log
 
-# Ignore package distribution directories (where your compiled JAR will sit)
+# Ignore package distribution directories (where your compiled JAR will sit )
 dist/
 build/
 target/
