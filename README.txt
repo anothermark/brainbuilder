@@ -444,68 +444,67 @@ METHOD: showExamQuestions() - Gets a masterOfCreatedExamsDisplayed and uses it t
 METHOD: getMasterListOfQuestionsSER() - Returns a masterListOfQuestionsSER from Students_Graded_Exams_Table2. 
 METHOD: setMasterListOfQuestionsSER() - UPDATES listOfQuestionsSER  masterListOfQuestionsSER in the Students_Graded_Exams_Table2. 
 
-METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly)
-questionFactory.setQuestionArray(questionArray, selectedIndex, selectedValueQ, selectedExamIndex, profsRadioButtonSelections, previouslySelectedCommand);
-outerMasterCorrectAnswers.insertOuterMasterAnswers(outerMasterCorrectAnswersProfs)
-outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs)
-insertlistOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER);	(updates BUILDER_EXAMS_LISTS_17)
-updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER); (updates TESTER_EXAMS_LIST_4; student gets exam from here)
-upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
-upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER);
-displayExamsAndQuestions.getTheBigGradedOuter(selectedExamIndex, listOfQuestionsSER);
+METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly) 
+questionFactory.setQuestionArray(questionArray, selectedIndex, selectedValueQ, selectedExamIndex, profsRadioButtonSelections, previouslySelectedCommand); 
+outerMasterCorrectAnswers.insertOuterMasterAnswers(outerMasterCorrectAnswersProfs) 
+outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs) 
+insertlistOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER);	(updates BUILDER_EXAMS_LISTS_17) 
+updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER); (updates TESTER_EXAMS_LIST_4; student gets exam from here) 
+upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER); 
+upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER); 
+displayExamsAndQuestions.getTheBigGradedOuter(selectedExamIndex, listOfQuestionsSER); 
 
+UPDATING QUESTION AND ANSWER FIELDS AFTER CREATION  ----------------------------------------------------- 
 
-UPDATING QUESTION AND ANSWER FIELDS AFTER CREATION  -----------------------------------------------
-
-	After you have created (populated with data) your questions you will want to review them and possibly make changes and
-	update them. First, select an exam from the left-most 'All Available Exams' list which will display  
-	each exam's questions in the 'Individual Exams with Questions' panel to the right. Select a question and
+	After you have created (populated with data) your questions you will want to review them and possibly make changes and 
+	update them. First, select an exam from the left-most 'All Available Exams' list which will display 
+	each exam's questions in the 'Individual Exams with Questions' panel to the right. Select a question and 
 	the question's data will be displayed. Click 'Preview Answers' or 'Preview Correct Answers' to display 
-	that information in a more-readable format in the large preview pane, if desired. Then simply copy your changes
+	that information in a more-readable format in the large preview pane, if desired. Then simply copy your changes 
 	from your text editor and paste that in the appropriate field (or insert changes directly into the field) 
-	and click 'Update Question'.
+	and click 'Update Question'. 
 	
 	This retrieves the listOfQuestionsSER from the outerMasterListOfMastersSER in the DISPLAY_EXAMS_QUESTIONS_TABLE_1 
-	table via the getOuterExamsDisplayed() method of the DisplayExamsAndQuestions class:
-	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed().
-	listOfQuestionsSER = outerMasterListOfMastersSER.get(selectedExamIndex).get(selectedExamIndex).
+	table via the getOuterExamsDisplayed() method of the DisplayExamsAndQuestions class: 
+	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed(). 
+	listOfQuestionsSER = outerMasterListOfMastersSER.get(selectedExamIndex).get(selectedExamIndex). 
 	
-	And this listOfQuestionsSER list of QuestionSuper objects is used to capture all, and updated, data in your text fields,
-	set it in the respective question objects, and display that data. Updating might involve changing the
-	previously selected radio button. As such, whatever selection exists, whether the original or a
-	different selection, that profsRadioButtonSelections is captured, set in the outerMasterCorrectAnswersProfs
-	which was retrieved from the OUTER_MASTER_ANSWERS_TABLE_1 table. That new outerMasterCorrectAnswersProfs is
-	UPDATED in the OUTER_MASTER_ANSWERS_TABLE_1. Now that new selection is displayed in the Builder preview,
+	And this listOfQuestionsSER list of QuestionSuper objects is used to capture all, and updated, data in your text fields, 
+	set it in the respective question objects, and display that data. Updating might involve changing the 
+	previously selected radio button. As such, whatever selection exists, whether the original or a 
+	different selection, that profsRadioButtonSelections is captured, set in the outerMasterCorrectAnswersProfs 
+	which was retrieved from the OUTER_MASTER_ANSWERS_TABLE_1 table. That new outerMasterCorrectAnswersProfs is 
+	UPDATED in the OUTER_MASTER_ANSWERS_TABLE_1. Now that new selection is displayed in the Builder preview, 
 	and when the student takes the exam: 
 	
-	masterListOfProfsCorrectAnswers = outerMasterCorrectAnswersProfs.get(selectedExamIndex);							
-	masterListOfProfsCorrectAnswers.set(selectedIndex, profsRadioButtonSelections);									
+	masterListOfProfsCorrectAnswers = outerMasterCorrectAnswersProfs.get(selectedExamIndex); 						
+	masterListOfProfsCorrectAnswers.set(selectedIndex, profsRadioButtonSelections); 							
 	outerMasterCorrectAnswersProfs.set(selectedExamIndex, masterListOfProfsCorrectAnswers);	
-	outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs);
+	outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs); 
 												
 	And like the original question creation process, after the QuestionFactory stage, Java 
 	sends the new listOfQuestionsSER down the line again via 
 	updateListOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER). 
 		
 
-CLASS: DisplayExamsAndQuestions
-CLASS: InsertlistOfQuestionsSERtoDB ... etc.
-CLASS: UpdateProfsFinalList from where the following are called:
+CLASS: DisplayExamsAndQuestions 
+CLASS: InsertlistOfQuestionsSERtoDB ... etc. 
+CLASS: UpdateProfsFinalList from where the following are called: 
 	a) updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER);		
-	b) updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
-	c) updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER);
-	d) displayExamsAndQuestions.getTheBigGradedOuter(selectedExamIndex, listOfQuestionsSER); (UPDATES DISPLAY_EXAMS_QUESTIONS_TABLE_1
-	   with an outerMasterListOfMastersSER.)
+	b) updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER); 
+	c) updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER); 
+	d) displayExamsAndQuestions.getTheBigGradedOuter(selectedExamIndex, listOfQuestionsSER); (UPDATES DISPLAY_EXAMS_QUESTIONS_TABLE_1 
+	   with an outerMasterListOfMastersSER.) 
 
 
-DELETING YOUR QUESTIONS ---------------------------------------------------------------------
+DELETING YOUR QUESTIONS --------------------------------------------------------------------- 
 
-	As always, first, select your exam which will present you with the questions in that exam. Then,
+	As always, first, select your exam which will present you with the questions in that exam. Then, 
 	after serious, hand-wringing reflection hold your breath and click 'Delete Question'. Now exhale. 
-	As a preliminary matter, deleting a question merely sets it to null thereby preserving the index order
+	As a preliminary matter, deleting a question merely sets it to null thereby preserving the index order 
 	of all remaining questions, which is very important. Consequently, at some point you must re-create that 
-	deleted question in order to make the exam work because an empty/null question throws a nullpointer exception
-	in the Tester when the student takes the exam; which is another reason to always take your exam
+	deleted question in order to make the exam work because an empty/null question throws a nullpointer exception 
+	in the Tester when the student takes the exam; which is another reason to always take your exam 
 	for a test run over in the Tester app., preferably multiple times. 
 	
 	Remember to always retain that deleted information in your text editor in the event you feel the need 
@@ -513,42 +512,42 @@ DELETING YOUR QUESTIONS --------------------------------------------------------
 	all of your hard work. Method deleteQuestion() of Class DeleteQuestions 
 	is called, setting the list at the selectedIndex to null, whereupon it serializes that newly 
 	modified listOfQuestionsSER and saves (UPDATES) it to table BUILDER_EXAMS_LISTS_17, etc., down the line. 
-	After deletion you are notified that the question is now null. And because it is null, if you want to re-create
-	it you cannot use the 'Update Question' button because there is nothing to update. You must
+	After deletion you are notified that the question is now null. And because it is null, if you want to re-create 
+	it you cannot use the 'Update Question' button because there is nothing to update. You must 
 	use 'Create Exam Question' instead. 
 	
 	Of course deleting a question modifies the previously selected radio buttons. The profsRadioButtonSelections 
 	must be set to null, which means you must UPDATE the outerMasterCorrectAnswersProfs in 
 	the OUTER_MASTER_ANSWERS_TABLE_1 table. Questions are deleted in the deleteQuestion() method 
-	of the DeleteQuestions class. And it is in this deleteQuestion() method that the profsRadioButtonSelections
+	of the DeleteQuestions class. And it is in this deleteQuestion() method that the profsRadioButtonSelections 
 	is set to null by retrieving the OuterMasterCorrectAnswers, getting the appropriate inner 
 	masterListOfProfsCorrectAnswers, and setting the specific index to null: 
 	
-	OuterMasterCorrectAnswers outerMasterCorrectAnswers = new OuterMasterCorrectAnswers();
-	outerMasterCorrectAnswersProfs = outerMasterCorrectAnswers.getOuterMasterCorrectAns();
-	masterListOfProfsCorrectAnswers = outerMasterCorrectAnswersProfs.get(selectedExamIndex);
-	masterListOfProfsCorrectAnswers.set(selectedIndex, null);
+	OuterMasterCorrectAnswers outerMasterCorrectAnswers = new OuterMasterCorrectAnswers(); 
+	outerMasterCorrectAnswersProfs = outerMasterCorrectAnswers.getOuterMasterCorrectAns(); 
+	masterListOfProfsCorrectAnswers = outerMasterCorrectAnswersProfs.get(selectedExamIndex); 
+	masterListOfProfsCorrectAnswers.set(selectedIndex, null); 
 	
-	After the master is set back into the outer, the outer is updated in table OUTER_MASTER_ANSWERS_TABLE_1:
-	outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs);
+	After the master is set back into the outer, the outer is updated in table OUTER_MASTER_ANSWERS_TABLE_1: 
+	outerMasterCorrectAnswers.setUpdateOuterMasterAnswers(outerMasterCorrectAnswersProfs); 
 
-CLASS: DeleteQuestions does just that - BUILDER_EXAMS_LISTS_17 table ...
-METHOD: Calling deleteQuestion() on the listOfQuestionsSER list sets the old question in the listOfQuestionsSER
+CLASS: DeleteQuestions does just that - BUILDER_EXAMS_LISTS_17 table ... 
+METHOD: Calling deleteQuestion() on the listOfQuestionsSER list sets the old question in the listOfQuestionsSER 
 	to  null via an update to the BUILDER_EXAMS_LISTS_17 table, and on down the line. From the bottom of 
 	deleteQuestion() saveListOfQuestionsSER() is called which UPDATEs the BUILDER_EXAMS_LISTS_17 table. 
-METHOD: saveListOfQuestionsSER() updates BUILDER_EXAMS_LISTS_17. It also calls these (3) methods
-	a) updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER);		
-	b) updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER);
-	c) updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER);
+METHOD: saveListOfQuestionsSER() updates BUILDER_EXAMS_LISTS_17. It also calls these (3) methods 
+	a) updateProfsFinalList.upDateProfsListInTester(selectedExamIndex, listOfQuestionsSER); 
+	b) updateProfsFinalList.upDateFINAL_GRADED_EXAMS_2(selectedExamIndex, listOfQuestionsSER); 
+	c) updateProfsFinalList.upDateStudents_Graded_Exams_Table2(selectedExamIndex, listOfQuestionsSER); 
 METHOD: getUpdatedListOfQuestionsSER() returns a copy of that newly modified listOfQuestionsSER list 
-	from BUILDER_EXAMS_LISTS_17.
+	from BUILDER_EXAMS_LISTS_17. 
 	
 
-DISPLAY QUESTIONS IN THE SELECTED EXAM------------------------------------------------------
+DISPLAY QUESTIONS IN THE SELECTED EXAM------------------------------------------------------ 
 
 	Once these (empty/null) question fields have been populated with information via the 
 	'Create Exam Question' button, select an exam and click 'Questions In Selected Exam' 
-	which will display each question's title and topic, or if empty because the question has not
+	which will display each question's title and topic, or if empty because the question has not 
 	been created yet, the word 'empty'. For additional information about each question, just 
 	click the question in the second JList for a comprehensive 	preview of each such 
 	QuestionSuper object's data. 
@@ -558,124 +557,123 @@ DISPLAY QUESTIONS IN THE SELECTED EXAM------------------------------------------
 	creating the exam initially an outerMasterListOfMastersSER, containing a 
 	masterListOfQuestionsSER, which contains one listOfQuestionsSER, is inserted in this table. 
 	
-	And now that an exam has been created one may display a list of the questions in that exam.
-	First, an outer is returned from table DISPLAY_EXAMS_QUESTIONS_TABLE_1:
-	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed().
-	This outer is then sent to method showExamQuestionsFromOuter() of the ShowQuestionsPerExam
+	And now that an exam has been created one may display a list of the questions in that exam. 
+	First, an outer is returned from table DISPLAY_EXAMS_QUESTIONS_TABLE_1: 
+	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed(). 
+	This outer is then sent to method showExamQuestionsFromOuter() of the ShowQuestionsPerExam 
 	class where the masterListOfQuestionsSER is extracted, then the listOfQuestionsSER from 
-	which the relevant information such as title, topic, or "empty" is concatenated and
-	returned for display as an anonStr String variable.
+	which the relevant information such as title, topic, or "empty" is concatenated and 
+	returned for display as an anonStr String variable. 
 		
-	anonStr = showQuestionsPerExam.showExamQuestionsFromOuter(selectedExamIndex,
-								outerMasterListOfMastersSER);
+	anonStr = showQuestionsPerExam.showExamQuestionsFromOuter(selectedExamIndex, 
+								outerMasterListOfMastersSER); 		
 		
-		
-	When you click on 'Create Exam Question' you can retrieve an outerMasterListOfMastersSER
+	When you click on 'Create Exam Question' you can retrieve an outerMasterListOfMastersSER 
 	from the DISPLAY_EXAMS_QUESTIONS_TABLE_1 table that contains buried therein the questions 
 	you will use to display in the textPanePreview preview pane. 
 	
-	anonStr = showQuestionsPerExam.showExamQuestionsFromOuter(selectedExamIndex,
-	outerMasterListOfMastersSER);
-	textPanePreview.setText(anonStr);
+	anonStr = showQuestionsPerExam.showExamQuestionsFromOuter(selectedExamIndex, 
+	outerMasterListOfMastersSER); 
+	textPanePreview.setText(anonStr); 
 
-CLASS: ShowQuestionsPerExam - DISPLAY_EXAMS_QUESTIONS_TABLE_1 .
-METHOD: showExamQuestions();
-METHOD: getMasterListOfQuestionsSER
-METHOD: setMasterListOfQuestionsSER();
+CLASS: ShowQuestionsPerExam - DISPLAY_EXAMS_QUESTIONS_TABLE_1. 
+METHOD: showExamQuestions(); 
+METHOD: getMasterListOfQuestionsSER 
+METHOD: setMasterListOfQuestionsSER(); 
 
-FIVE (5) UTILITY CLASSES FOR DELETING TABLE ROWS, RETRIEVING TABLE ROW COUNTS & listOfQuestionsSER ------------------------------
+FIVE (5) UTILITY CLASSES FOR DELETING TABLE ROWS, RETRIEVING TABLE ROW COUNTS & listOfQuestionsSER ------------------------------ 
 
 CLASS: dbUtility - Primarily deletes table rows, retrieves row counts, 
-		and updates tables. And yes, I know the first letter should be capitalized.
-METHOD: getRowCount() from BUILDER_EXAMS_LISTS_17 table.
-METHOD: updateExamToNull1stTbl() updates BUILDER_EXAMS_LISTS_17 table.
-METHOD: updateExamToNull2ndTbl() updates TESTER_EXAMS_LIST_4 table.
-METHOD: updateExamToNull3rdTbl() updates FINAL_GRADED_EXAMS_2 table.
-METHOD: updateExamToNull4thTbl() updates Students_Graded_Exams_Table2.
-METHOD: deleteRows() deletes from BUILDER_EXAMS_LISTS_17 table.
-METHOD: deleteEQDisplayRow() deletes from the first row in DISPLAY_EXAMS_QUESTIONS_TABLE_1.
-METHOD: rowCountEQDisplay() returns the number of rows (0 or 1) in DISPLAY_EXAMS_QUESTIONS_TABLE_1.
+		and updates tables. And yes, I know the first letter should be capitalized. 
+METHOD: getRowCount() from BUILDER_EXAMS_LISTS_17 table. 
+METHOD: updateExamToNull1stTbl() updates BUILDER_EXAMS_LISTS_17 table. 
+METHOD: updateExamToNull2ndTbl() updates TESTER_EXAMS_LIST_4 table. 
+METHOD: updateExamToNull3rdTbl() updates FINAL_GRADED_EXAMS_2 table. 
+METHOD: updateExamToNull4thTbl() updates Students_Graded_Exams_Table2. 
+METHOD: deleteRows() deletes from BUILDER_EXAMS_LISTS_17 table. 
+METHOD: deleteEQDisplayRow() deletes from the first row in DISPLAY_EXAMS_QUESTIONS_TABLE_1. 
+METHOD: rowCountEQDisplay() returns the number of rows (0 or 1) in DISPLAY_EXAMS_QUESTIONS_TABLE_1. 
 METHOD: deleteExamRowsMasterDisplayed() deletes/removes exams from masterOfCreatedExamsDisplayed 
-	and updates DISPLAY_EXAMS_QUESTIONS_TABLE_1. (buggy)
+	and updates DISPLAY_EXAMS_QUESTIONS_TABLE_1. (buggy) 
 	
-CLASS: BuilderDBTesterUtility - Primarily deletes table rows and retrieves row counts.
-METHOD: getRowCount() from TESTER_EXAMS_LIST_4 table.
-METHOD: getRowCountFinalGraded() from FINAL_GRADED_EXAMS_2 table.
-METHOD: deleteRows() in TESTER_EXAMS_LIST_4 table.
+CLASS: BuilderDBTesterUtility - Primarily deletes table rows and retrieves row counts. 
+METHOD: getRowCount() from TESTER_EXAMS_LIST_4 table. 
+METHOD: getRowCountFinalGraded() from FINAL_GRADED_EXAMS_2 table. 
+METHOD: deleteRows() in TESTER_EXAMS_LIST_4 table. 
 METHOD: getGradedRowCount() from FINAL_GRADED_EXAMS_2 table, although it 
-		seems to duplicate getRowCountFinalGraded(), so which is used?
-METHOD: deleteGradedRows() from FINAL_GRADED_EXAMS_2 table.
-METHOD: getRowCountStudentsFinalGraded() from Students_Graded_Exams_Table2.
-METHOD: deleteStudentsFinalRows() in Students_Graded_Exams_Table2.
-METHOD: deleteOuterNestedRows() in STUDENTS_OUTERNESTED_TABLE4.
-METHOD: getRowCountOuterNested() from STUDENTS_OUTERNESTED_TABLE4.
+		seems to duplicate getRowCountFinalGraded(), so which is used? 
+METHOD: deleteGradedRows() from FINAL_GRADED_EXAMS_2 table. 
+METHOD: getRowCountStudentsFinalGraded() from Students_Graded_Exams_Table2. 
+METHOD: deleteStudentsFinalRows() in Students_Graded_Exams_Table2. 
+METHOD: deleteOuterNestedRows() in STUDENTS_OUTERNESTED_TABLE4. 
+METHOD: getRowCountOuterNested() from STUDENTS_OUTERNESTED_TABLE4. 
 
-CLASS: DbTableUtility - shows which tables exist in the database, and
-		is used to delete those not used anymore, and other things ...
+CLASS: DbTableUtility - shows which tables exist in the database, and 
+		is used to delete those not used anymore, and other things ... 
 METHOD: displayAllTables() - Displays all tables in the H2 database at jdbc:h2:~/test. 
-		Click 'Show Tables' to see in Preview.
-METHOD: deleteRemoveTable() - Disconnected for now. jdbc:h2:~/test
+		Click 'Show Tables' to see in Preview. 
+METHOD: deleteRemoveTable() - Disconnected for now. jdbc:h2:~/test 
 
-CLASS: LastUtilityInBuilder - recreates a deleted exam which isn't actually
-	removed when deleted but set back to null. Important distinction.
-METHOD: recreateDeletedExam() - Calls insertlistOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER);
+CLASS: LastUtilityInBuilder - recreates a deleted exam which isn't actually 
+	removed when deleted but set back to null. Important distinction. 
+METHOD: recreateDeletedExam() - Calls insertlistOfQuestionsSERtoDB.updateRows(selectedExamIndex, listOfQuestionsSER); 
 
-CLASS: GetListFromDB - Gets a listOfQuestionsSER from the BUILDER_EXAMS_LISTS_17 table.
+CLASS: GetListFromDB - Gets a listOfQuestionsSER from the BUILDER_EXAMS_LISTS_17 table. 
 METHOD: getRowData() called with a selectedExamIndex and retrieves from the 
-	BUILDER_EXAMS_LISTS_17 table a listOfQuestionsSER list.
+	BUILDER_EXAMS_LISTS_17 table a listOfQuestionsSER list. 
 
-BUILDER FAQ -  CHANGING THE BUILDER FAQ TEXT ------------------------------------------------------------------
+BUILDER FAQ -  CHANGING THE BUILDER FAQ TEXT ------------------------------------------------------------------ 
 
-	No doubt you will wish to modify text in the FAQ. That text is contained in class FAQText where formatted text is
-	assigned to String variables and returned to the object's call in the 'User FAQ' actionPerformed() method. The
+	No doubt you will wish to modify text in the FAQ. That text is contained in class FAQText where formatted text is 
+	assigned to String variables and returned to the object's call in the 'User FAQ' actionPerformed() method. The 
 	process is rather simple and self-explanatory. 
 
-CLASS: FAQText
+CLASS: FAQText 
 METHOD: getFAQTextString() assigns String data to concatenated String variables and returns them/it to 
 	the 'User FAQ' actionPerformed() method for display in a scrollable JTextPane contained 
 	within a JOptionPane.showConfirmDialog() message. 
 
-HOW TO MODIFY AND CUSTOMIZE EXAM TITLES/LABELS IN THE 'All Available Exams' JLIST -------------------
+HOW TO MODIFY AND CUSTOMIZE EXAM TITLES/LABELS IN THE 'All Available Exams' JLIST ------------------- 
 
-	Most likely the exam creator/instructor will want to customize the 'All Available Exams' list. The default settings
-	list exams as Exam 1, Exam 2, Exam 3, etc., and you might want to change that to something like
+	Most likely the exam creator/instructor will want to customize the 'All Available Exams' list. The default settings 
+	list exams as Exam 1, Exam 2, Exam 3, etc., and you might want to change that to something like 
 	Exam 1 - Trinity. The following explains how to make these changes, and describes the relevant classes 
-	and methods related thereto.
+	and methods related thereto. 
 	
 	When the Builder app is first loaded in BrainBuilder3 it displays default settings of the 'All Available Exams' list exams 
 	such as Exam 1, Exam 2, Exam 3, etc. These String values are obtained from an instance of the LoadInitExamLabsJList class: 
-	examLabelsJlist1 = loadInitExamLabsJList.getExamLabelsJlist1();
+	examLabelsJlist1 = loadInitExamLabsJList.getExamLabelsJlist1(); 
 	exam1 = examLabelsJlist1.getExam1Str(); 
 	
 	You are going to want to change these captions to conform to your exams. And you do that by clicking 'Exam Labels' in 
-	the top-right of your screen. A JOptionPane dialog pops up displaying the current values and text fields that
+	the top-right of your screen. A JOptionPane dialog pops up displaying the current values and text fields that 
 	you fill out with the new values. For instance, you might wish to change Exam 1 to Exam 1 - Soteriology. Type it in, click yes, 
-	and then, unfortunately, you will be told the program must close and you need to restart it to see those
-	modified exam labels - until I figure out how to dynamically make those changes on the fly. It has something
+	and then, unfortunately, you will be told the program must close and you need to restart it to see those 
+	modified exam labels - until I figure out how to dynamically make those changes on the fly. It has something 
 	to do with a class loader, says Google. 	
 	
-	So, when the program is loaded an examLabelsJlist1 is returned by calling getExamLabelsJlist1() on an instance of
+	So, when the program is loaded an examLabelsJlist1 is returned by calling getExamLabelsJlist1() on an instance of 
 	LoadInitExamLabsJList. Calling a getter such as getExam1Str() on examLabelsJlist1 returns a String that 
 	is added to the DefaultListModel, and automatically displayed in the first JList, such as Exam 1. And it is 
 	this global examLabelsJlist1 that is used when 'Exam Labels' is clicked and the dialog pops up. 
 	examLabelsJlist1.getExam1Str() populates the dialog with that same String in the same row that contains 
-	the text field you will fill out. What you enter in a text field is assigned to a String variable, that
-	new value is set in the examLabelsJlist1, ie., jTextField1.setText(examLabelsJlist1.getExam1Str());
+	the text field you will fill out. What you enter in a text field is assigned to a String variable, that 
+	new value is set in the examLabelsJlist1, ie., jTextField1.setText(examLabelsJlist1.getExam1Str()); 
 
 CLASS: ExamLabelsJlist1 - Class ExamLabelsJlist1 provides getters and setters for each exam label in 
-	the 'All Available Exams' JList. Used to allow creator to customize each exam label/caption  
+	the 'All Available Exams' JList. Used to allow creator to customize each exam label/caption 
 	such as 'Exam 1 - Apologetics 101'. 
-	METHODS: setExam1Str(), getExam1Str() etc.
+	METHODS: setExam1Str(), getExam1Str() etc. 
 
-CLASS: LoadInitExamLabsJList - Modifies the exam labels JList.
-METHOD: loadJListExamLabs() - Serializes and inserts an initial instance of ExamLabelsJlist1 into EXAMS_JLIST_LABELS table.
-METHOD: setExamLabelsJlist1() - Serializes and updates an instance of ExamLabelsJlist1 in EXAMS_JLIST_LABELS table.
-METHOD: getExamLabelsJlist1() - De-serializes and returns an instance of ExamLabelsJlist1 in EXAMS_JLIST_LABELS table.
-METHOD: rowCountExamsLab() - Counts and returns the number of rows ( 0 or 1) in table EXAMS_JLIST_LABELS.
-METHOD: deleteExamsLablsRows() - Deletes, if available, the first and only row in EXAMS_JLIST_LABELS.
+CLASS: LoadInitExamLabsJList - Modifies the exam labels JList. 
+METHOD: loadJListExamLabs() - Serializes and inserts an initial instance of ExamLabelsJlist1 into EXAMS_JLIST_LABELS table. 
+METHOD: setExamLabelsJlist1() - Serializes and updates an instance of ExamLabelsJlist1 in EXAMS_JLIST_LABELS table. 
+METHOD: getExamLabelsJlist1() - De-serializes and returns an instance of ExamLabelsJlist1 in EXAMS_JLIST_LABELS table. 
+METHOD: rowCountExamsLab() - Counts and returns the number of rows ( 0 or 1) in table EXAMS_JLIST_LABELS. 
+METHOD: deleteExamsLablsRows() - Deletes, if available, the first and only row in EXAMS_JLIST_LABELS. 
 
 
-WHY NO UML CHART?  -----------------------------------------------------------------------------------------------
+WHY NO UML CHART?  ----------------------------------------------------------------------------------------------- 
 	
 	This Swing app was built in Eclipse using WindowBuilder. The main class is BrainBuilder3.java which displays the GUI, and 
 	roughly 3,300 lines of code are contained within the constructor. It's a one-way-street of sorts. From what I can 
@@ -687,10 +685,12 @@ WHY NO UML CHART?  -------------------------------------------------------------
 	interconnecting lines between the roughly 37 classes (not including the many 
 	anonymous QuestionSuper subclasses). But feel free to try. 
 
-MISCELLANEOUS ---------------------------------------------------------------------------------
+MISCELLANEOUS --------------------------------------------------------------------------------- 
 
-
-
-Not thread safe but as it is a one-person stand-alone app, probably not necessary.
-Not protected from injection attacks but also might not be necessary.
+Not thread safe but as it is a one-person stand-alone app, probably not necessary. 
+Not protected from injection attacks but also might not be necessary. 
 Built for Java 11, although by now some features are Java 17. 
+
+
+
+
