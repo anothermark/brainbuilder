@@ -185,39 +185,39 @@ METHOD: serialAdditionalListOfQuestionsSER() UPDATES FINAL_GRADED_EXAMS_2 table 
 		Chained insertInitialStudentsFinalGraded.setStudentsFinalGradedExams() is called at the bottom 
 		of both methods. 
 
-4) CLASS: InsertInitialStudentsFinalGraded - Students_Graded_Exams_Table2
-METHOD: setStudentsFinalGradedExams() INSERTS a listOfQuestionsSER into Students_Graded_Exams_Table2.
-METHOD: setUpdateOuterMasterListofMastersSER() UPDATES a listOfQuestionsSER into Students_Graded_Exams_Table2.
+4) CLASS: InsertInitialStudentsFinalGraded - Students_Graded_Exams_Table2 
+METHOD: setStudentsFinalGradedExams() INSERTS a listOfQuestionsSER into Students_Graded_Exams_Table2. 
+METHOD: setUpdateOuterMasterListofMastersSER() UPDATES a listOfQuestionsSER into Students_Graded_Exams_Table2. 
 
 5) CLASS: InsertInitialOuterNestedPlaceholders - STUDENTS_OUTERNESTED_TABLE4. Is important and the final resting place 
-		for a student's graded exams. ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER
-		is serialized and saved. It consists of three ArrayLists which are nested within each other. An outer, an inner, and
-		the listOfQuestionsSER. This object allows the student to retrieve graded exams and review them. Each  
-		innerMasterListOfLists index represents an exam, which can be taken multiple times by the student. The most recent
+		for a student's graded exams. ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER 
+		is serialized and saved. It consists of three ArrayLists which are nested within each other. An outer, an inner, and 
+		the listOfQuestionsSER. This object allows the student to retrieve graded exams and review them. Each 
+		innerMasterListOfLists index represents an exam, which can be taken multiple times by the student. The most recent 
 		exam is displayed in the horizontal review table in Tester. 
-METHOD: insertInitialOuter() - 	INSERTS outerMasterListOfMastersSER INTO STUDENTS_OUTERNESTED_TABLE4.	 
+METHOD: insertInitialOuter() - 	INSERTS outerMasterListOfMastersSER INTO STUDENTS_OUTERNESTED_TABLE4. 
 METHOD: loadInitialOuterNested() - If necessary adds innerMasterListOfLists to outerMasterListOfMastersSER object, 
 		and INSERTS outerMasterListOfMastersSER into STUDENTS_OUTERNESTED_TABLE4. 
-METHOD: getOuterMasterListOfMastersSER() - returns outerMasterListofMastersSER object from STUDENTS_OUTERNESTED_TABLE4.
+METHOD: getOuterMasterListOfMastersSER() - returns outerMasterListofMastersSER object from STUDENTS_OUTERNESTED_TABLE4. 
 METHOD: serialAdditionalListOfQuestionsSER() - adds additional questions and UPDATES STUDENTS_OUTERNESTED_TABLE4, the 
-		first row, always.
-METHOD: setUpdateOuterMasterListofMastersSER() - also serializes and UPDATES STUDENTS_OUTERNESTED_TABLE4 with the triple-nested
+		first row, always. 
+METHOD: setUpdateOuterMasterListofMastersSER() - also serializes and UPDATES STUDENTS_OUTERNESTED_TABLE4 with the triple-nested 
 		outer object, although it appears to duplicate serialAdditionalListOfQuestionsSER(); am not sure where it is called from. Must track that down. 
 
-METHOD FLOW (Generally called near the bottom of each method): Loads the first four tables with initial listOfQuestionsSER list objects.
-loadInitialMasterList.loadMasterList(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, 0);
-insertProfsFinalExamsTesterTable.setOriginalProfExams(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER);
-insertInitialGradedExPlaceholders.loadInitialFinalGraded(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER);
-insertInitialStudentsFinalGraded.setStudentsFinalGradedExams(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER);
+METHOD FLOW (Generally called near the bottom of each method): Loads the first four tables with initial listOfQuestionsSER list objects. 
+loadInitialMasterList.loadMasterList(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, 0); 
+insertProfsFinalExamsTesterTable.setOriginalProfExams(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER); 
+insertInitialGradedExPlaceholders.loadInitialFinalGraded(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER); 
+insertInitialStudentsFinalGraded.setStudentsFinalGradedExams(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER); 
 
-Inserts the outerMasterListOfMastersSER into STUDENTS_OUTERNESTED_TABLE4 from button "Create an Exam":
-insertInitialOuterNestedPlaceholders.loadInitialOuterNested(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, masterListOfQuestionsSER);
+Inserts the outerMasterListOfMastersSER into STUDENTS_OUTERNESTED_TABLE4 from button "Create an Exam": 
+insertInitialOuterNestedPlaceholders.loadInitialOuterNested(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, masterListOfQuestionsSER); 
 
-Inserts an outerMasterListOfMastersSER into DISPLAY_EXAMS_QUESTIONS_TABLE_1 from button "Create an Exam":
-displayExamsAndQuestions.insertOuterDisplayTable(outerMasterListOfMastersSER);
+Inserts an outerMasterListOfMastersSER into DISPLAY_EXAMS_QUESTIONS_TABLE_1 from button "Create an Exam": 
+displayExamsAndQuestions.insertOuterDisplayTable(outerMasterListOfMastersSER); 
 	
 	
-CREATING AN EXAM STRUCTURE ---------------------------------------------- 
+CREATING AN EXAM STRUCTURE --------------------------------------------------------------------------- 
 
 	Select an exam from the 'All Available Exams' JList sequentially (first Exam 1, then Exam 2, etc.). Then, 
 	click "Create An Exam" to create an exam structure. Creating an exam structure does three things. First, it 
@@ -236,52 +236,51 @@ CREATING AN EXAM STRUCTURE ----------------------------------------------
 	one listOfQuestionsSER, never more. 	
 	
 CLASS: InsertInitialOuterNestedPlaceholders - See the entry above in the 
-	section FIVE CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS.
+	section FIVE CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS. 
 CLASS: LoadInitialMasterList -  See the entry above in the 
-	section FIVE CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS.
+	section FIVE CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS. 
 	
  
-ADDING ADDITIONAL QUESTIONS ---------------------------------------------------
+ADDING ADDITIONAL QUESTIONS --------------------------------------------------- 
 
 	To add additional questions to the exam structure, select the exam from the 'All Available Exams' JList 
-	and click "Add Additional Questions to this Exam" and follow the prompt to indicate the number of questions.
+	and click "Add Additional Questions to this Exam" and follow the prompt to indicate the number of questions. 
 	
-	The selectedExamIndex and numberOfAdditionalQuestions are passed to the loadMasterList(0 method of
-	LoadInitialMasterList class where the listOfQuestionsSER is assembled:
-	listOfQuestionsSER = loadInitialMasterList.loadMasterList(selectedExamIndex,
-									initialNumberOfQuestions, selectedValue, listOfQuestionsSER,
+	The selectedExamIndex and numberOfAdditionalQuestions are passed to the loadMasterList(0 method of 
+	LoadInitialMasterList class where the listOfQuestionsSER is assembled: 
+	listOfQuestionsSER = loadInitialMasterList.loadMasterList(selectedExamIndex, 
+									initialNumberOfQuestions, selectedValue, listOfQuestionsSER, 
 									numberOfAdditionalQuestions); 
 	Then, the new listOfQuestionsSER with additional null values added, is sent down the line  
-	beginning with the serialAdditionalListOfQuestionsSER() method of the LoadInitialMasterList class where
-	the new listOfQuestionsSER is added to the first 4 tables and the DISPLAY_EXAMS_QUESTIONS_TABLE_1, as
-	described similarly above with the initial placholder loading process.
+	beginning with the serialAdditionalListOfQuestionsSER() method of the LoadInitialMasterList class where 
+	the new listOfQuestionsSER is added to the first 4 tables and the DISPLAY_EXAMS_QUESTIONS_TABLE_1, as 
+	described similarly above with the initial placholder loading process. 
 
-CLASS: LoadInitialMasterList - BUILDER_EXAMS_LISTS_17
-METHOD: deSerializeListOfQuestionsSER() returns a listOfQuestionsSER from BUILDER_EXAMS_LISTS_17
+CLASS: LoadInitialMasterList - BUILDER_EXAMS_LISTS_17 
+METHOD: deSerializeListOfQuestionsSER() returns a listOfQuestionsSER from BUILDER_EXAMS_LISTS_17 
 
-METHOD FLOW: this might be wrong due to refactoring
-loadInitialMasterList2.deSerializeListOfQuestionsSER(selectedExamIndex);
-loadInitialMasterList.loadMasterList(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, numberOfAdditionalQuestions);
-serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
-insertProfsFinalExamsTesterTable.serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
-insertInitialGradedExPlaceholders.serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
-insertInitialStudentsFinalGraded.setUpdateOuterMasterListofMastersSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions);
+METHOD FLOW: this might be wrong due to refactoring 
+loadInitialMasterList2.deSerializeListOfQuestionsSER(selectedExamIndex); 
+loadInitialMasterList.loadMasterList(selectedExamIndex, initialNumberOfQuestions, selectedValue, listOfQuestionsSER, numberOfAdditionalQuestions); 
+serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions); 
+insertProfsFinalExamsTesterTable.serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions); 
+insertInitialGradedExPlaceholders.serialAdditionalListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions); 
+insertInitialStudentsFinalGraded.setUpdateOuterMasterListofMastersSER(selectedExamIndex, listOfQuestionsSER, numberOfAdditionalQuestions); 
 
-DELETING AN EXAM STRUCTURE (Setting values to null) -----------------------------------------------
+DELETING AN EXAM STRUCTURE (Setting values to null) ---------------------------------------------------------- 
 
-	To reiterate, clicking 'Delete An Exam' does not remove the exams from tables, but rather, sets their values to
-	the null placeholder status quo. If they were removed entirely other exams would be impacted and indexes
+	To reiterate, clicking 'Delete An Exam' does not remove the exams from tables, but rather, sets their values to 
+	the null placeholder status quo. If they were removed entirely other exams would be impacted and indexes 
 	would shift accordingly. This way you may re-create, say Exam 1, in the same Exam 1 'slot', so to speak. 
 	
 	Note that deleting an exam 'structure' deletes any questions you might have created. After deleting the 
-	exam, select it, then click 'Questions in Selected Exam' and those questions should say 'empty'.
+	exam, select it, then click 'Questions in Selected Exam' and those questions should say 'empty'. 
 
 CLASS: dbUtility - Four (4) relevant methods that update the first four tables. 
-METHOD: updateExamToNull1stTbl() - BUILDER_EXAMS_LISTS_17 table
-METHOD: updateExamToNull2ndTbl() - TESTER_EXAMS_LIST_4 table
-METHOD: updateExamToNull3rdTbl() - FINAL_GRADED_EXAMS_2 table
-METHOD: updateExamToNull4thTbl() - Students_Graded_Exams_Table2
-
+METHOD: updateExamToNull1stTbl() - BUILDER_EXAMS_LISTS_17 table 
+METHOD: updateExamToNull2ndTbl() - TESTER_EXAMS_LIST_4 table 
+METHOD: updateExamToNull3rdTbl() - FINAL_GRADED_EXAMS_2 table 
+METHOD: updateExamToNull4thTbl() - Students_Graded_Exams_Table2 
 
 DELETING AN EXAM STRUCTURE (Removing it from tables) ---------------------------------------------------------
 
@@ -289,28 +288,27 @@ DELETING AN EXAM STRUCTURE (Removing it from tables) ---------------------------
 	row count to 0, use the buttons in the 5th column (beginning with DeleteOrigRows) under the 
 	section entitled 'Administrator Only Below This (yellow) Line'. Be careful using these 
 	options as the changes are permanent. Remember to select an exam first. The row count is displayed in the 4th column to the 
-	left of the delete buttons. The 3rd column buttons also display the adjoining row count.
+	left of the delete buttons. The 3rd column buttons also display the adjoining row count. 
 	 
 	Quite often during development it's important to clear the decks and start from scratch. 
-	In particular, if you modify the QuestionSuper class, for instance, by adding a new method,
+	In particular, if you modify the QuestionSuper class, for instance, by adding a new method, 
 	you will generate SerialVersionUID class incompatibility exceptions. Fixing this requires 
 	cleaning out the tables, and building your exams and questions again from scratch using the new 
 	QuestionSuper class. Hopefully those earlier exams have been backed-up properly to make the re-creation transition 
-	as painless as possible.
+	as painless as possible. 
 
-RE-CREATING A DELETED EXAM -----------------------------------------------------------------------
+RE-CREATING A DELETED EXAM ----------------------------------------------------------------------- 
 
 	If you 'Delete an Exam' (returning it to a null status) and wish to re-create that exam in 
-	the same 'slot', say, 'Exam 1', click 'Create an Exam' where you will be prompted
+	the same 'slot', say, 'Exam 1', click 'Create an Exam' where you will be prompted 
 	for the number of questions (currently max 10) you wish to include. You are basically 
-	just creating another exam like before. 
+	just creating another exam like before. 	
 	
-	
-DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (potential/available) QUESTIONS CREATED -------------------------------------
+DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (potential/available) QUESTIONS CREATED ---------------------------------------- 
 
 	For the time being only ten (10) exams can be created. Sometimes it can be confusing keeping track of 
 	which exams have been created, and the number of available questions in each exam. 
-	Clicking 'Number of Created Exams/Questions' helps in this regard and will display this information in the preview pane.
+	Clicking 'Number of Created Exams/Questions' helps in this regard and will display this information in the preview pane. 
 			
 	With respect to the 'Number of Created Exams/Questions' button section, which contains the logic for displaying 
 	the number of exams and available, un-populated questions, Java simply loops through an ArrayList<ArrayList<ArrayList<QuestionSuper>>> 
@@ -322,39 +320,37 @@ DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (potential/available) QUESTIONS CRE
 	only listOfQuestionsSER's size informs us how many anon QuestionSuper question objects are available per exam. 
 	This data are concatenated and assigned to variable ExQStr. And ExQStr is finally displayed in the preview pane. 
 	So the outer tells us which masterOfCreatedExamsDispSlayed exam structures have been created, and the nested 
-	masterOfCreatedExamsDispSlayed's single listOfQuestionsSER's tells us how many questions reside in each exam.
-	In other words, a masterOfCreatedExamsDispSlayed represents and exam (Exam 1) and its listOfQuestionsSER list holds anon question objects.
+	masterOfCreatedExamsDispSlayed's single listOfQuestionsSER's tells us how many questions reside in each exam. 
+	In other words, a masterOfCreatedExamsDispSlayed represents and exam (Exam 1) and its listOfQuestionsSER list holds anon question objects. 
 		
-	Specifically, in the 'Number of Created Exams/Questions' button section, an outerMasterListOfMastersSER is returned by
-	calling getOuterExamsDisplayed() from class DisplayExamsAndQuestions:
-	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed();:	
+	Specifically, in the 'Number of Created Exams/Questions' button section, an outerMasterListOfMastersSER is returned by 
+	calling getOuterExamsDisplayed() from class DisplayExamsAndQuestions: 
+	outerMasterListOfMastersSER = displayExamsAndQuestions.getOuterExamsDisplayed(); 
 		
-	If the outerMasterListOfMastersSER is not null a for-loop spins through this outer and gets
+	If the outerMasterListOfMastersSER is not null a for-loop spins through this outer and gets 
 	a masterOfCreatedExamsDisplayed (each representing a specific type of exam), and this 
-	masterOfCreatedExamsDisplayed gets its listOfQuestionsSER, a list of anonymous QuestionSuper objects:
-	listOfQuestionsSER = masterOfCreatedExamsDisplayed.get(0).
+	masterOfCreatedExamsDisplayed gets its listOfQuestionsSER, a list of anonymous QuestionSuper objects: 
+	listOfQuestionsSER = masterOfCreatedExamsDisplayed.get(0). 
 	
 	In the preview pane header captions the exam number and the number of available questions in the 
-	listOfQuestionsSER is displayed.  
+	listOfQuestionsSER is displayed. 
 	
-	Displaying the 'Questions in Selected Exam' in the preview pane is a bit more involved as explained
-	in the below section DISPLAY QUESTIONS IN THE SELECTED EXAM.
+	Displaying the 'Questions in Selected Exam' in the preview pane is a bit more involved as explained 
+	in the below section DISPLAY QUESTIONS IN THE SELECTED EXAM. 
 
-
-POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question ) -----------------------------------
-
+POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question ) ----------------------------------- 
 	
-	How to populate each question and answer field (and more) with data after the exam structure has been
+	How to populate each question and answer field (and more) with data after the exam structure has been 
 	created and the number of questions specified, and create the final version of 
 	those questions and answers, and save them to the appropriate table[s], which the student will retrieve 
-	in the BrainTester app (Tester) when beginning an exam. Each exam in this current version
+	in the BrainTester app (Tester) when beginning an exam. Each exam in this current version 
 	is limited to ten (10) questions. The first question created should always be question number 1. 
 		
-	Once a question is created initially, or added later, that question must still be used in the final exam. If
-	you delete it, at some point it must be re-created in that 'slot' or at that list index. An exam cannot
+	Once a question is created initially, or added later, that question must still be used in the final exam. If 
+	you delete it, at some point it must be re-created in that 'slot' or at that list index. An exam cannot 
 	be taken in the Tester if any questions are null. See the section DELETING YOUR QUESTIONS for further information. 
 	
-	WARNING!! Never type your questions and answers directly into the data fields. Always type Q&As into
+	WARNING!! Never type your questions and answers directly into the data fields. Always type Q&As into 
 	a word processor or similar program, then copy and paste that information into the appropriate fields. 
 	The Builder app is temperamental and all of your hard work may be lost. Also, database redundancy is 
 	essential, and due to the significant amount of data involved, backing up everything (the database) on a separate 
@@ -368,7 +364,7 @@ POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question ) --------
 	
 	GRADING THE EXAM IN TESTER IS AS FOLLOW. When the instructor creates a question and selects the correct 
 	answer, that choice is set in an ArrayList<Boolean> profsRadioButtonSelections as true. 
-	That Boolean list is stored in table OUTER_MASTER_ANSWERS_TABLE_1 via class OuterMasterCorrectAnswers.  
+	That Boolean list is stored in table OUTER_MASTER_ANSWERS_TABLE_1 via class OuterMasterCorrectAnswers. 
 	Initially, for each question, all five Boolean values in the list are initialized to false. The 
 	correct answer, when selected, is set to true. The student in the Tester also makes a radio button selection stored in a 
 	similar ArrayList<Boolean> (radioButtonSelections). When the question is evaluated and graded these two 
@@ -377,7 +373,7 @@ POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question ) --------
 	preferably with detailed answer explanations. 
 	
 	After the fields have been populated and a button selection made, and when the question's creator is 
-	ready and clicks the "Create Exam Question" button, the fields' String data is assigned
+	ready and clicks the "Create Exam Question" button, the fields' String data is assigned 
 	to the 'questionArray' String array. The instructor's profsRadioButtonSelections list is also 
 	created with the appropriate selection (a false converted to true). Both the String array 
 	containing all of the input data, and ArrayList<Boolean> (and, ie., selectedExamIndex and 
@@ -389,18 +385,18 @@ POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question ) --------
 	is set or added to a triple-nested ArrayList<ArrayList<ArrayList<Boolean>>> outerMasterCorrectAnswersProfs 
 	which in turn is INSERTED in the OUTER_MASTER_ANSWERS_TABLE_1 table via method 
 	insertOuterMasterAnswers() of class OuterMasterCorrectAnswers, or UPDATED using the 
-	setUpdateOuterMasterAnswers() method of the same class. After these calls the data is automatically
+	setUpdateOuterMasterAnswers() method of the same class. After these calls the data is automatically 
 	displayed in the textPanePreview section. 
 
-RELEVANT CLASSES WITH RESPECT TO "Create Exam Question", WHEREBY QUESTIONS ARE POPULATED WITH DATA ----------
+RELEVANT CLASSES WITH RESPECT TO "Create Exam Question", WHEREBY QUESTIONS ARE POPULATED WITH DATA ---------- 
 
 CLASS: QuestionSuper - Central to the Builder and Tester apps, this super or parent class contains 
 	over seventy (70) getter and setter methods (some of which aren't being used and need to be removed). 
 	Too numerous to list, these methods set and get such things as title, topic, question, possible answers, 
-	correct answers, time of creation, test taken, pass/fail messages, percent grades, previouslySelectedCommand,
-	masterListOfProfsCorrectAnswers, and much more.
+	correct answers, time of creation, test taken, pass/fail messages, percent grades, previouslySelectedCommand, 
+	masterListOfProfsCorrectAnswers, and much more. 
 
-CLASS: QuestionFactory - Important class whereby anonymous subclasses of the QuestionSuper superclass are instantiated
+CLASS: QuestionFactory - Important class whereby anonymous subclasses of the QuestionSuper superclass are instantiated 
 	and initialized with data from the array, a list of the prof's correct answers, etc., and added to the listOfQuestionsSER 
 	ArrayList, an extremely important and often-used variable reference to an ArrayList of anonymous QuestionSuper objects 
 	throughout both the Builder and Tester applications. 
@@ -409,44 +405,44 @@ CLASS: QuestionFactory - Important class whereby anonymous subclasses of the Que
 	the masterListOfProfsCorrectAnswers which is a list of all the exam's profsRadioButtonSelections, 
 	and which is set in an anonymous questionSub object that in turn is set in the listOfQuestionsSER. 
 	
-	The listOfQuestionsSER now 'contains' those anonymous QuestionSuper subclasses, and it's this listOfQuestionsSER which is
-	finally sent to the InsertlistOfQuestionsSERtoDB class via the updateRows() method for addition to the BUILDER_EXAMS_LISTS_17
+	The listOfQuestionsSER now 'contains' those anonymous QuestionSuper subclasses, and it's this listOfQuestionsSER which is 
+	finally sent to the InsertlistOfQuestionsSERtoDB class via the updateRows() method for addition to the BUILDER_EXAMS_LISTS_17 
 	table, the first in a series of four (4) tables used in the process of building, testing and reviewing exams. The 
-	listOfQuestionsSER is not added to the 5th STUDENTS_OUTERNESTED_TABLE4 table which is reserved for a student's final
+	listOfQuestionsSER is not added to the 5th STUDENTS_OUTERNESTED_TABLE4 table which is reserved for a student's final 
 	graded exam. However, it is inserted into the DISPLAY_EXAMS_QUESTIONS_TABLE_1 via the 
 	DisplayExamsAndQuestions class (a very important step). The call is located at the bottom of the 
-	upDateStudents_Graded_Exams_Table2() method of the UpdateProfsFinalList class.
+	upDateStudents_Graded_Exams_Table2() method of the UpdateProfsFinalList class. 
 	
 METHOD: setQuestionArray() - With six (6) parameters this method takes a questionArray, selectedIndex, 
-	selectedValueQ, selectedExamIndex, profsRadioButtonSelections list, and a previouslySelectedCommand String. It
-	is called from the "Create Exam Question" button.
+	selectedValueQ, selectedExamIndex, profsRadioButtonSelections list, and a previouslySelectedCommand String. It 
+	is called from the "Create Exam Question" button. 
 	
-CLASS: OuterMasterCorrectAnswers - OUTER_MASTER_ANSWERS_TABLE_1
-METHOD: getOuterMasterCorrectAns() - Retrieve outerMasterCorrectAnswersProfs from OUTER_MASTER_ANSWERS_TABLE_1.
-METHOD: insertOuterMasterAnswers() - INSERT outerMasterCorrectAnswersProfs into OUTER_MASTER_ANSWERS_TABLE_1.
-METHOD: setUpdateOuterMasterAnswers() - UPDATE OUTER_MASTER_ANSWERS_TABLE_1 with outerMasterCorrectAnswersProfs.
-METHOD: getRowCountOuterAnswers() - OUTER_MASTER_ANSWERS_TABLE_1.
-METHOD: deleteRows() - OUTER_MASTER_ANSWERS_TABLE_1.
+CLASS: OuterMasterCorrectAnswers - OUTER_MASTER_ANSWERS_TABLE_1 
+METHOD: getOuterMasterCorrectAns() - Retrieve outerMasterCorrectAnswersProfs from OUTER_MASTER_ANSWERS_TABLE_1. 
+METHOD: insertOuterMasterAnswers() - INSERT outerMasterCorrectAnswersProfs into OUTER_MASTER_ANSWERS_TABLE_1. 
+METHOD: setUpdateOuterMasterAnswers() - UPDATE OUTER_MASTER_ANSWERS_TABLE_1 with outerMasterCorrectAnswersProfs. 
+METHOD: getRowCountOuterAnswers() - OUTER_MASTER_ANSWERS_TABLE_1. 
+METHOD: deleteRows() - OUTER_MASTER_ANSWERS_TABLE_1. 
 
 CLASS: InsertlistOfQuestionsSERtoDB is where the listOfQuestionsSER is serialized and set/updated 
 	in the BUILDER_EXAMS_LISTS_17 table using the selectedExamIndex to identify the proper row. 
-	It is called at the bottom of the QuestionFactory's setQuestionArray() method.
+	It is called at the bottom of the QuestionFactory's setQuestionArray() method. 
 METHOD: updateRows() updates the first BUILDER_EXAMS_LISTS_17 table, and lastly updates the second TESTER_EXAMS_LIST_4 
 	table (the profs final) with the latest listOfQuestionsSER, calling upDateProfsListInTester() 
-	method in the UpdateProfsFinalList class.
+	method in the UpdateProfsFinalList class. 
 
 CLASS: UpdateProfsFinalList updates the second TESTER_EXAMS_LIST_4 table with the latest listOfQuestionsSER list; 
-	The second, third and fourth tables are updated whereby upDateProfsListInTester() UPDATES and calls
-	upDateFINAL_GRADED_EXAMS_2() which UPDATES and calls upDateStudents_Graded_Exams_Table2, which lastly
+	The second, third and fourth tables are updated whereby upDateProfsListInTester() UPDATES and calls 
+	upDateFINAL_GRADED_EXAMS_2() which UPDATES and calls upDateStudents_Graded_Exams_Table2, which lastly 
 	creates an instance of the ShowQuestionsPerExam class and UPDATES the setMasterListOfQuestionsSER(selectedExamIndex, listOfQuestionsSER); 
 METHOD: upDateProfsListInTester() updates TESTER_EXAMS_LIST_4 (also called profsfinal table). 
-METHOD: upDateFINAL_GRADED_EXAMS_2() updates the FINAL_GRADED_EXAMS_2 table.
-METHOD: upDateStudents_Graded_Exams_Table2() updates the upDateStudents_Graded_Exams_Table2 table.
+METHOD: upDateFINAL_GRADED_EXAMS_2() updates the FINAL_GRADED_EXAMS_2 table. 
+METHOD: upDateStudents_Graded_Exams_Table2() updates the upDateStudents_Graded_Exams_Table2 table. 
 
 CLASS: ShowQuestionsPerExam - Methods that display a question's title or whether empty, 
-METHOD: showExamQuestions() - Gets a masterOfCreatedExamsDisplayed and uses it to display a question's title, or empty.
-METHOD: getMasterListOfQuestionsSER() - Returns a masterListOfQuestionsSER from Students_Graded_Exams_Table2.
-METHOD: setMasterListOfQuestionsSER() - UPDATES listOfQuestionsSER  masterListOfQuestionsSER in the Students_Graded_Exams_Table2.
+METHOD: showExamQuestions() - Gets a masterOfCreatedExamsDisplayed and uses it to display a question's title, or empty. 
+METHOD: getMasterListOfQuestionsSER() - Returns a masterListOfQuestionsSER from Students_Graded_Exams_Table2. 
+METHOD: setMasterListOfQuestionsSER() - UPDATES listOfQuestionsSER  masterListOfQuestionsSER in the Students_Graded_Exams_Table2. 
 
 METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly)
 questionFactory.setQuestionArray(questionArray, selectedIndex, selectedValueQ, selectedExamIndex, profsRadioButtonSelections, previouslySelectedCommand);
