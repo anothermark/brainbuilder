@@ -40,18 +40,18 @@ TABLE OF CONTENTS:
 
 OVERVIEW - The Big Picture ---------------------------------------------------------
 
-	This single-user stand-alone BrainBuilder (Builder) application works in conjunction with the BrainTester (Tester) app.
+	This single-user stand-alone BrainBuilder (Builder) application works in conjunction with the BrainTester (Tester) app. 
 	The Builder creates exam questions and answers in essentially multiple-choice or true/false format, and a student takes 
 	these exams in the Tester. The Tester is not merely a test-taking program you might find in 
 	a university environment, but much more - an enhanced study and learning tool, something that is intended to be used 
-	repeatedly to better learn a particular subject and improve one's knowledge base in that field. Repetition
+	repeatedly to better learn a particular subject and improve one's knowledge base in that field. Repetition 
 	is the key. Unlike a regular multiple-choice testing program which simply evaluates a student's knowledge of a particular 
 	subject and merely returns a grade, this program reviews each graded question and (should) provide a wealth of feedback 
 	information explaining why a particular answer is wrong or right. 
 	
-	Builder and Tester use Swing, a GUI toolkit for Java, and the embedded H2 database. Approximately 37 classes are used
+	Builder and Tester use Swing, a GUI toolkit for Java, and the embedded H2 database. Approximately 37 classes are used 
 	in Builder (src.main.java), and ten (10) database tables. The main super class QuestionSuper houses methods 
-	and state related to each exam's questions and answers. Anonymous (anon) subclasses of QuestionSuper are used
+	and state related to each exam's questions and answers. Anonymous (anon) subclasses of QuestionSuper are used 
 	extensively. 	
 	
 	ArrayLists are relied upon to a great degree in these programs. The primary list is referenced by the variable listOfQuestionsSER 
@@ -60,30 +60,29 @@ OVERVIEW - The Big Picture -----------------------------------------------------
 	exam title, question topic, the actual question with suggested answers, and after the question 
 	is evaluated or graded, correct answers with detailed explanations regarding each option. 
 	
-	A listOfQuestionsSER might be contained within a master list of listOfQuestionsSERs. And that master list might
-	in turn be contained within another outer list of such lists. And it is primarily these list objects, depending on the
+	A listOfQuestionsSER might be contained within a master list of listOfQuestionsSERs. And that master list might 
+	in turn be contained within another outer list of such lists. And it is primarily these list objects, depending on the 
 	situation, which are written to an H2 database table (serialized) and read back (deserialized). To illustrate, once 
 	a student has finished a graded exam the graded listOfQuestionsSER questions are added to a master list. Each such 
-	master list represents one particular exam and contains one or multiple listOfQuestionsSERs. A student may take the
-	same exam multiple times and they are added (inserted) sequentially to the master list. That master list in turn is added
-	to the outer list, a list of inner master list exams. That one outer list is thus triple-nested which
+	master list represents one particular exam and contains one or multiple listOfQuestionsSERs. A student may take the 
+	same exam multiple times and they are added (inserted) sequentially to the master list. That master list in turn is added 
+	to the outer list, a list of inner master list exams. That one outer list is thus triple-nested which 
 	makes it convenient to retrieve exams, display their contents and review one's answers, all from one object. 
 	
 	You begin by creating an exam structure (Create an Exam) which initially populates four (4) tables with an ArrayList 
-	(listOfQuestionsSER) holding null values that will eventually be populated with anonymous QuestionSuper objects.
-	At this initial stage a triple-nested ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER is inserted into
+	(listOfQuestionsSER) holding null values that will eventually be populated with anonymous QuestionSuper objects. 
+	At this initial stage a triple-nested ArrayList<ArrayList<ArrayList<QuestionSuper>>> outerMasterListOfMastersSER is inserted into 
 	a 5th table. This outerMasterListOfMastersSER holds 10 (for now) ArrayList<ArrayList<QuestionSuper>> masterListOfQuestionsSER objects, 
 	each such nested ArrayList representing one exam. And each such exam will hold multiple final graded exams 
-	as an ArrayList<QuestionSuper> listOfQuestionsSER, a list of the QuestionSuper objects. Initially the outerMasterListOfMastersSER
-	contains only 10 masterListOfQuestionsSER exams which in turn contain nothing but serve only as placeholders for
-	future final graded listOfQuestionsSER exams.
+	as an ArrayList<QuestionSuper> listOfQuestionsSER, a list of the QuestionSuper objects. Initially the outerMasterListOfMastersSER 
+	contains only 10 masterListOfQuestionsSER exams which in turn contain nothing but serve only as placeholders for 
+	future final graded listOfQuestionsSER exams. 
 	
 	Finally, when the first exam is created (Exam 1) a similar outerMasterListOfMastersSER containing 
 	10 masterListOfQuestionsSER lists, which contain exactly one, and only one, listOfQuestionsSER is inserted in the 
 	DISPLAY_EXAMS_QUESTIONS_TABLE_1, explained in further detail below. These listOfQuestionsSER lists each begin 
 	with 10 null placeholders which will eventually be replaced with created questions. 
-	
-	
+		
 	Sometimes a list object, such as a triple-nested outerMasterListOfMastersSER, is set only - and every time - in 
 	the first row of a table that should only contain that one row. When working with these tables beware of 
 	using SQL's 'INSERT', and removing particular rows, because that shifts indexes of other entries up or down 
@@ -98,95 +97,93 @@ OVERVIEW - The Big Picture -----------------------------------------------------
 	InsertlistOfQuestionsSERtoDB class which sets it in the first of four (4) cascading tables, the BUILDER_EXAMS_LISTS_17 table. 
 	What is meant by cascading here is that at the bottom of the relevant method there is a call to the next method 
 	where the listOfQuestionsSER is inserted or updated in the next table. One method calls the next method which inserts or 
-	updates the next table, of which there are four. It is important to note that the listOfQuestionsSER lists inserted/updated
-	in the first four tables are NOT placed in the 5th table, the STUDENTS_OUTERNESTED_TABLE4 table. Only after the student
-	has taken the exam is it placed in this 5th table. 	
+	updates the next table, of which there are four. It is important to note that the listOfQuestionsSER lists inserted/updated 
+	in the first four tables are NOT placed in the 5th table, the STUDENTS_OUTERNESTED_TABLE4 table. Only after the student 
+	has taken the exam is it placed in this 5th table. 
 	 
 	From the first table, the instructor's final product of created questions (listOfQuestionsSER) is sent to the next - second - profs final 
 	table, TESTER_EXAMS_LIST_4. The student, then, in the Tester app retrieves this exam from this second table and 
-	takes the test and, after evaluation, it is sent via method calls 
-	to the FINAL_GRADED_EXAMS_2 table, and then Students_Graded_Exams_Table2. Again, that final graded exam eventually ends up 
-	in the fifth (5th) triple-nested outerMasterListOfMastersSER list in the STUDENTS_OUTERNESTED_TABLE4, which is used to preview questions 
-	and answers, etc., a vital step in this learning process.   
+	takes the test and, after evaluation, it is sent via method calls to the FINAL_GRADED_EXAMS_2 table, and then 
+	Students_Graded_Exams_Table2. Again, that final graded exam eventually ends up in the fifth (5th) triple-nested 
+	outerMasterListOfMastersSER list in the STUDENTS_OUTERNESTED_TABLE4, which is used to preview questions and 
+	answers, etc., a vital step in this learning process.   
  
- THE GRAPHICAL USER INTERFACE (GUI) ---------------------------------------------
+ THE GRAPHICAL USER INTERFACE (GUI) --------------------------------------------------------- 
 
-	Much of the GUI is self-explanatory on its face. BrainBuilder3 (with main()) is the primary class with over 3,300 lines
-	of source code, far too much to explain in detail here. Most of the code is contained within the
-	class constructor. In the Design view of WindowBuilder, simply double-click a button, for instance, and
+	Much of the GUI is self-explanatory on its face. BrainBuilder3 (with main()) is the primary class with over 3,300 lines 
+	of source code, far too much to explain in detail here. Most of the code is contained within the 
+	class constructor. In the Design view of WindowBuilder, simply double-click a button, for instance, and 
 	it will take you to an actionPerformed() method wherein you can begin to track the logic. For example, 
 	'Number of Created Exams/Questions' retrieves an outerMasterListOfMastersSER list object through the 
-	DisplayExamsAndQuestions class and uses it to get a listOfQuestionsSER and displays how many
-	exams have been created, and how many available questions per such exam exist. That information
+	DisplayExamsAndQuestions class and uses it to get a listOfQuestionsSER and displays how many 
+	exams have been created, and how many available questions per such exam exist. That information 
 	is then displayed in the preview pane. The contents of BrainBuilder3 will be covered in more detail as 
-	it relates to the below sections.
+	it relates to the below sections. 
 
 
-CLASSES THAT CREATE H2 DATABASE TABLES --------------------------------------------------------
+CLASSES THAT CREATE H2 DATABASE TABLES -------------------------------------------------------- 
 
 These TEN (10) classes create tables used in the exam building and student testing phases, all of which are 
-	created in Builder via buttons in the first column located in the yellow ADMINISTRATOR ONLY BELOW THIS LINE section.
+	created in Builder via buttons in the first column located in the yellow ADMINISTRATOR ONLY BELOW THIS LINE section. 
 	How many tables are in the database? Run BrainBuilder3, click 'ShowTables' near the bottom center of your 
 	screen and numerous db tables will appear in the preview pane. The displayAllTables() method is called 
 	in the DbTableUtility class. The developer-created tables used here are listed at the bottom 
 	of this preview, beginning with BUILDER_EXAMS_LISTS_17. 
 		
 	To create a new table use the buttons in the 1st column (beginning with CreateOrigTable) under the 
-	section entitled 'Administrator Only Below This (yellow) Line'. Simply give your new table a new
+	section entitled 'Administrator Only Below This (yellow) Line'. Simply give your new table a new 
 	version number in the method code (if necessary), ie., from TESTER_EXAMS_LIST_4 to TESTER_EXAMS_LIST_5. It's 
-	rather straight forward and painless.
+	rather straight forward and painless. 
 	
-	These two applications gradually evolved, piece-by-piece, which helps explain ten (10) individual
+	These two applications gradually evolved, piece-by-piece, which helps explain ten (10) individual 
 	tables. In hindsight, looking at the final product, these tables probably could, and should, be 
 	combined in one or two tables. 
 	
 CLASS: CreateBuilderExamsTable1 - BUILDER_EXAMS_LISTS_17  table 
-CLASS: CreateExTableOrigFinished - TESTER_EXAMS_LIST_4 (prof's final)
-CLASS: CreateGradedFinalTable_2 - FINAL_GRADED_EXAMS_2
-CLASS: CreateStudentsGradedExamsTable - Students_Graded_Exams_Table2
-CLASS: CreateStudentsOuterNestedTable - STUDENTS_OUTERNESTED_TABLE4
-CLASS: CreateOuterMasterAnswers_Table1 - OUTER_MASTER_ANSWERS_TABLE_1 - Contains the Crown Jewels, the instructor's correct answers.
+CLASS: CreateExTableOrigFinished - TESTER_EXAMS_LIST_4 (prof's final) 
+CLASS: CreateGradedFinalTable_2 - FINAL_GRADED_EXAMS_2 
+CLASS: CreateStudentsGradedExamsTable - Students_Graded_Exams_Table2 
+CLASS: CreateStudentsOuterNestedTable - STUDENTS_OUTERNESTED_TABLE4 
+CLASS: CreateOuterMasterAnswers_Table1 - OUTER_MASTER_ANSWERS_TABLE_1 - Contains the Crown Jewels, the instructor's correct answers. 
 
-CLASS: CreateDisplayExamsQuestionsTable - DISPLAY_EXAMS_QUESTIONS_TABLE_1 - For displaying number of exams and questions
-		in the Preview Pane, and other things.
-CLASS: CreateComboLabelsTable - EXAMS_COMBO_LABELS_1 - Used in modifying the JComboBox selectable exams in/from  
-		the Tester, not the Builder app.
+CLASS: CreateDisplayExamsQuestionsTable - DISPLAY_EXAMS_QUESTIONS_TABLE_1 - For displaying number of exams and questions 
+		in the Preview Pane, and other things. 
+CLASS: CreateComboLabelsTable - EXAMS_COMBO_LABELS_1 - Used in modifying the JComboBox selectable exams in/from 
+		the Tester, not the Builder app. 
 CLASS: CreateExamLabelsJListTable - EXAMS_JLIST_LABELS - Used in the creation/modification of exam labels in the 
 		first JList, ie., Exam 1. 
 CLASS: CreateEvaluationTable - CREATE_EVAL_ONCE_AND_IMMEDIATE_TABLE_1 - stores one 
-		ArrayList<ArrayList<Boolean>> gradeOnceListOfListsSER;	
+		ArrayList<ArrayList<Boolean>> gradeOnceListOfListsSER; 
 
 
-FIVE (5) CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS ---------------------------------------------
+FIVE (5) CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS --------------------------------------------- 
 	As explained in the above overview, when creating an exam, an exam structure with initial questions 
 	is first created using placeholders in a cascading fashion. 
 	
 
-1) CLASS: LoadInitialMasterList class - BUILDER_EXAMS_LISTS_17 table
+1) CLASS: LoadInitialMasterList class - BUILDER_EXAMS_LISTS_17 table 
 METHOD: loadMasterList() creates listOfQuestionsSER placeholder, writes it to the db, also calls chained 
-		insertProfsFinalExamsTesterTable.setOriginalProfExams() at bottom of method
-		and passes in (null) listOfQuestionsSER placeholder.
-METHOD: serializeListOfQuestionsSER() INSERTS listOfQuestionsSER into BUILDER_EXAMS_LISTS_17		
-METHOD: serialAdditionalListOfQuestionsSER() UPDATES the BUILDER_EXAMS_LISTS_17 table when adding additional questions.
-METHOD: deSerializeListOfQuestionsSER() returns a listOfQuestionsSER from BUILDER_EXAMS_LISTS_17
+		insertProfsFinalExamsTesterTable.setOriginalProfExams() at bottom of method 
+		and passes in (null) listOfQuestionsSER placeholder. 
+METHOD: serializeListOfQuestionsSER() INSERTS listOfQuestionsSER into BUILDER_EXAMS_LISTS_17 	
+METHOD: serialAdditionalListOfQuestionsSER() UPDATES the BUILDER_EXAMS_LISTS_17 table when adding additional questions. 
+METHOD: deSerializeListOfQuestionsSER() returns a listOfQuestionsSER from BUILDER_EXAMS_LISTS_17 
 
-
-2) CLASS: InsertProfsFinalExamsTesterTable class - TESTER_EXAMS_LIST_4 table
+2) CLASS: InsertProfsFinalExamsTesterTable class - TESTER_EXAMS_LIST_4 table 
 		Inserts the prof's final exam/questions into the second table TESTER_EXAMS_LIST_4, from where the 
-		student retrieves it when beginning the test.
+		student retrieves it when beginning the test. 
 METHOD: setOriginalProfExams() INSERTS listOfQuestionsSER in the TESTER_EXAMS_LIST_4 table, and also calls 
-		'chained' insertInitialGradedExPlaceholders.loadInitialFinalGraded() at bottom.
-METHOD: serialAdditionalListOfQuestionsSER() UPDATES the TESTER_EXAMS_LIST_4 table when adding additional questions.
-
+		'chained' insertInitialGradedExPlaceholders.loadInitialFinalGraded() at bottom. 
+METHOD: serialAdditionalListOfQuestionsSER() UPDATES the TESTER_EXAMS_LIST_4 table when adding additional questions. 
 
 3) CLASS: InsertInitialGradedExPlaceholders class - FINAL_GRADED_EXAMS_2 table 
 		INSERTS listOfQuestionsSER into FINAL_GRADED_EXAMS_2 table using loadInitialFinalGraded() 
 		while the student is taking the exam. 
 METHOD: loadInitialFinalGraded() serializes and sets listOfQuestionsSER into FINAL_GRADED_EXAMS_2 table, and 
-		also at the bottom of the method calls insertInitialStudentsFinalGraded.setStudentsFinalGradedExams.
-METHOD: serialAdditionalListOfQuestionsSER() UPDATES FINAL_GRADED_EXAMS_2 table when additional questions are added.
-		Chained insertInitialStudentsFinalGraded.setStudentsFinalGradedExams() is called at the bottom
-		of both methods.
+		also at the bottom of the method calls insertInitialStudentsFinalGraded.setStudentsFinalGradedExams. 
+METHOD: serialAdditionalListOfQuestionsSER() UPDATES FINAL_GRADED_EXAMS_2 table when additional questions are added. 
+		Chained insertInitialStudentsFinalGraded.setStudentsFinalGradedExams() is called at the bottom 
+		of both methods. 
 
 4) CLASS: InsertInitialStudentsFinalGraded - Students_Graded_Exams_Table2
 METHOD: setStudentsFinalGradedExams() INSERTS a listOfQuestionsSER into Students_Graded_Exams_Table2.
