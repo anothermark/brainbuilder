@@ -47,3 +47,7 @@ ehthumbs.db
 
 # macOS Finder system files
 .DS_Store
+
+.metadata/
+
+
