@@ -1,41 +1,41 @@
 
-Licenses: 
+Licenses: Pending
 Copyright: MKS (2025 - 2026)
 
-Brain Builder READ_ME_BUILDER File. Classes, tables, methods, and instructions on their use and deployment.
-This Java 11 Swing app was designed and created in the open-source Eclipse IDE using WindowBuilder
+Brain Builder READ_ME_BUILDER File. Classes, tables, methods, and instructions on their use and deployment. 
+This Java 11 Swing app was designed and created in the open-source Eclipse IDE using WindowBuilder 
 and employs an H2 Database shared with the Brain Tester app. The database is located in the Users 
-directory (Windows), not the working directory. Also, a common convention in both applications
+directory (Windows), not the working directory. Also, a common convention in both applications 
 is to name a class reference variable the same as the class but with a lower-case first letter, such as: 
-DisplayExamsAndQuestions displayExamsAndQuestions = new DisplayExamsAndQuestions();
-displayExamsAndQuestions.getOuterExamsDisplayed();
+DisplayExamsAndQuestions displayExamsAndQuestions = new DisplayExamsAndQuestions(); 
+displayExamsAndQuestions.getOuterExamsDisplayed(); 
 
 
-Table of Contents:
-	OVERVIEW - The Big Picture
-	THE GRAPHICAL USER INTERFACE (GUI)
-	WHICH TABLES ARE IN THE DATABASE?
-	CLASSES THAT CREATE H2 DATABASE TABLES
-	SHOW DATABASE TABLES CURRENTLY USED
-	CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS
-	CREATING AN EXAM STRUCTURE 
-	ADDING ADDITIONAL QUESTIONS
-	DELETING AN EXAM STRUCTURE (Setting values to null)
-	RE-CREATING A DELETED EXAM
-	DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (empty) QUESTIONS CREATED
-	POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question)
-	RELEVANT CLASSES WITH RESPECT TO "Create Exam Question", WHEREBY QUESTIONS ARE POPULATED WITH DATA 
-	METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly)
-	UPDATING QUESTION AND ANSWER FIELDS AFTER CREATION
-	DISPLAY QUESTIONS IN THE SELECTED EXAM
-	DELETING YOUR QUESTIONS
-	UTILITY CLASSES FOR DELETING TABLE ROWS, RETRIEVING TABLE ROW COUNT & listOfQuestionsSER
-	BUILDER FAQ - CHANGING THE BUILDER FAQ TEXT
-	HOW TO MODIFY AND CUSTOMIZE EXAM TITLES/LABELS IN THE 'All Available Exams' JLIST
-	WHY NO UML CHART?  
-	MISCELLANEOUS
-	TODO LIST OF THINGS TO DO
-	*ADMINISTRATOR ONLY BELOW THIS LINE ISSUES
+TABLE OF CONTENTS:
+- OVERVIEW - The Big Picture
+- THE GRAPHICAL USER INTERFACE (GUI)
+- WHICH TABLES ARE IN THE DATABASE?
+- CLASSES THAT CREATE H2 DATABASE TABLES
+- SHOW DATABASE TABLES CURRENTLY USED
+- CLASSES THAT LOAD INITIAL (null) PLACEHOLDERS
+- CREATING AN EXAM STRUCTURE 
+- ADDING ADDITIONAL QUESTIONS
+- DELETING AN EXAM STRUCTURE (Setting values to null)
+- RE-CREATING A DELETED EXAM
+- DISPLAYING THE NUMBER OF EXAM STRUCTURES AND (empty) QUESTIONS CREATED
+- POPULATING QUESTION AND ANSWER FIELDS WITH DATA (Create Exam Question)
+- RELEVANT CLASSES WITH RESPECT TO "Create Exam Question", WHEREBY QUESTIONS ARE POPULATED WITH DATA 
+- METHOD FLOW BEGINNING WITH "Create Exam Question" button, INCLUDING DISPLAY OF EXAMS AND QUESTIONS (roughly)
+- UPDATING QUESTION AND ANSWER FIELDS AFTER CREATION
+- DISPLAY QUESTIONS IN THE SELECTED EXAM
+- DELETING YOUR QUESTIONS
+- UTILITY CLASSES FOR DELETING TABLE ROWS, RETRIEVING TABLE ROW COUNT & listOfQuestionsSER
+- BUILDER FAQ - CHANGING THE BUILDER FAQ TEXT
+- HOW TO MODIFY AND CUSTOMIZE EXAM TITLES/LABELS IN THE 'All Available Exams' JLIST- 
+- NO UML CHART?  
+- MISCELLANEOUS
+- TODO LIST OF THINGS TO DO
+- *ADMINISTRATOR ONLY BELOW THIS LINE ISSUES
 
 
 OVERVIEW - The Big Picture ---------------------------------------------------------
